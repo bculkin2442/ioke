@@ -1,0 +1,5 @@
+tmp = BundleSpec mimic(
+	"Testing Bundle",
+	1,
+	1
+)
