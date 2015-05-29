@@ -59,7 +59,7 @@ Threading = Origin mimic do(
                         pool submit(block, obj)
                 )
                 
-                
+                doAll
                 
         )       
          

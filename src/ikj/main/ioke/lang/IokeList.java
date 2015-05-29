@@ -849,6 +849,28 @@ public class IokeList extends IokeData {
                 }
             }));
 
+        
+        obj.registerMethod(obj.runtime.newNativeMethod("Import a java list into this one", new TypeCheckingNativeMethod("importList") {
+			
+        	private final TypeCheckingArgumentsDefinition ARGUMENTS = TypeCheckingArgumentsDefinition
+        			.builder()
+        			.receiverMustMimic(runtime.list)
+        			.withRequiredPositional("list")
+        			.getArguments();
+        			
+			@Override
+			public TypeCheckingArgumentsDefinition getArguments() {
+				return ARGUMENTS;
+			}
+			
+			@Override
+			public Object activate(IokeObject method, Object on, List<Object> args, Map<String, Object> keywords,
+					IokeObject context, IokeObject message) throws ControlFlow {
+				
+				return context.runtime.newList((List<Object>)args.get(0));
+			}
+		}));
+        
         obj.registerMethod(runtime.newNativeMethod("takes one or two arguments, and will then use these arguments as code to transform each element in this list. the transform happens in place. finally the method will return the receiver.", new NativeMethod("map!") {
                 private final DefaultArgumentsDefinition ARGUMENTS = DefaultArgumentsDefinition
                     .builder()
