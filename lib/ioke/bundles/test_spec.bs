@@ -1,5 +1,1 @@
-tmp = BundleSpec mimic(
-	"Testing Bundle",
-	1,
-	1
-)
+1.0

@@ -21,41 +21,6 @@ Cane = Origin mimic
 Cane BundleDB = Origin mimic do(
         documentation = "Database for holding loaded bundles."
         
-        BundleSpec = Origin mimic do(
-                documentation = "Specification for a single, installed bundle."
-
-                name = "Unnamed Bundle"
-                major_version = 0
-                minor_version = 0
-                depends = list()
-                
-                name documentation = "The name of the bundle."
-                
-                major_version documentation = "The major version of this bundle. Every major version is assumed to be mutually incompatible."
-                minor_version documentation = "The minor version of this bundle. Every minor version is assumed to be backwards compatible with all major versions before it."
-                
-                depends documentation = "A list of all of this packages dependancies. Is a list of (name, major, minor) tuples."
-                
-                initialize = method("Create a new bundle with set name, major/minor version and dependancies.",
-                        bundle_name, majr_version 1, minr_version 0, dependancies list(),
-                                @name = bundle_name
-                                @major_version = majr_version
-                                @minor_version = minr_version
-                                @depends = dependancies
-                )
-                
-                print = method(
-                        printDepend = method("Print out info for a dependancy", dependancy, indent,
-                                indent + "Depends on #{dependancy first} v#{dependancy second}.#{dependancy third}."
-                        )
-                        
-                        "Bundle Details for bundle #{name} v#{major_version}.#{minor_version}: " println
-                        depends each(dependency
-                                printDepend(dependancy, "\t")
-                        )
-                )   
-        )
-
         initialize = method(bundLocs,
                 @loadedBunds = list(
                         tuple("Ioke", 0, 4),
@@ -79,25 +44,46 @@ Cane BundleDB = Origin mimic do(
                 nil; Don't print out the list of loaded bundles again
         )
         
-        toDependTuple = method("Convert a BundleSpec to a dependancy tuple.", bund_spec,
-                tuple(bund_spec name, bund_spec major_version, bund_spec minor_version)
-        )
-        
-        loadSpec = method("Load a BundleSpec from a .bs file (just ioke code)", bundle_name,
+        loadSpec = method("Load a bundle's info from a .bs file (just ioke code)", bundle_name,
                 bundleLocs each(path,
-                        "Built path: " + path + bundle_name + ".bs" println
+                        "Built path: #{path}/#{bundle_name}.bs" println
                         if(FileSystem file?(path + "/" + bundle_name + ".bs"),
-                                doSpecLoad!(path + "/" + bundle_name + ".bs"),
+                                return doSpecLoad!(path + "/" + bundle_name + ".bs"),
                                 false
                         )
 	        )
         )
         
         doSpecLoad! = method("Handle actually loading the BundleSpec", spec_path,
+                "Spec_path: " + spec_path println
                 
-                bundSpec = do(FileSystem readFully(spec_path))
+                @bundText = FileSystem readLines(spec_path)
                 
-                bundSpec print
+                ; Build initial spec
+                props = bundText[0] split(";")
+                
+                spec = BundleSpec mimic(props[0], props[1], props[2])
+                
+                loaded = false;
+                
+                ; Handle dependancies
+                bundText rest each(depnd,
+                        dep = Tuple fromArgs(depnd split(";")
+                        
+                        if(loadedBunds include?(dep),
+                                ; Do nothing, we have an exact match
+                                nil,
+                                ; Handle a possible inexact match
+                                if(loadedBunds select(d, inexactMatch(d, dep)),
+                                        ; We got an inexact match
+                                        nil,
+                                        ; Dispatch a load
+                                        
+                )
+                
+                unless(loaded,
+                        error!("Could not succesfully load package #{spec first}")
+                )
         )
 )
 
