@@ -45,11 +45,10 @@ public abstract class NativeMethod extends Method implements CanRun {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
-						return context.runtime
-								.newList(new ArrayList<Object>());
+						return context.runtime.newList(new ArrayList<>());
 					}
 				}));
 		javaMethod.registerMethod(javaMethod.runtime.newNativeMethod(
@@ -61,7 +60,7 @@ public abstract class NativeMethod extends Method implements CanRun {
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(
 								dynamicContext, message, on,
-								new ArrayList<Object>(),
+								new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						IokeData data = IokeObject.data(on);
@@ -86,8 +85,8 @@ public abstract class NativeMethod extends Method implements CanRun {
 
 	public Object activate(IokeObject self, IokeObject context,
 			IokeObject message, Object on) throws ControlFlow {
-		List<Object> args = new ArrayList<Object>();
-		Map<String, Object> keywords = new HashMap<String, Object>();
+		List<Object> args = new ArrayList<>();
+		Map<String, Object> keywords = new HashMap<>();
 		getArguments().getEvaluatedArguments(context, message, on, args,
 				keywords);
 		return activate(self, on, args, keywords, context, message);

@@ -33,15 +33,15 @@ public class IokeSystem extends IokeData {
 		}
 	}
 
-	public static final Collection<String>	FEATURES	= new HashSet<String>(
+	public static final Collection<String>	FEATURES	= new HashSet<>(
 			Arrays.asList("java"));
 
-	private List<String>					currentFile	= new ArrayList<String>(
+	private List<String>					currentFile	= new ArrayList<>(
 			Arrays.asList("<init>"));
 	private String							currentProgram;
 	private String							currentWorkingDirectory;
-	private Set<String>						loaded		= new HashSet<String>();
-	private List<AtExitInfo>				atExit		= new ArrayList<AtExitInfo>();
+	private Set<String>						loaded		= new HashSet<>();
+	private List<AtExitInfo>				atExit		= new ArrayList<>();
 
 	private IokeObject						loadPath;
 	private IokeObject						programArguments;
@@ -112,11 +112,11 @@ public class IokeSystem extends IokeData {
 		if (DOSISH) {
 			return name.length() > 2 && name.charAt(1) == ':'
 					&& name.charAt(2) == '\\';
-		} else {
-			return name.length() > 0 && name.charAt(0) == '/';
 		}
+		return name.length() > 0 && name.charAt(0) == '/';
 	}
 
+	@SuppressWarnings("resource")
 	public boolean use(IokeObject self, IokeObject context,
 			IokeObject message, String name, boolean forceReload)
 			throws ControlFlow {
@@ -125,70 +125,73 @@ public class IokeSystem extends IokeData {
 		if (b != null) {
 			if (!forceReload && loaded.contains(name)) {
 				return false;
-			} else {
-				try {
-					b.load(context.runtime, context, message);
-					if (!forceReload) {
-						loaded.add(name);
-					}
-					return true;
-				} catch (Throwable e) {
-					final IokeObject condition = IokeObject.as(
-							IokeObject.getCellChain(runtime.condition,
-									message, context, "Error", "Load"),
-							context).mimic(message, context);
-					condition.setCell("message", message);
-					condition.setCell("context", context);
-					condition.setCell("receiver", self);
-					condition.setCell("moduleName", runtime.newText(name));
-					condition.setCell("exceptionMessage",
-							runtime.newText(e.getMessage()));
-					List<Object> ob = new ArrayList<Object>();
-					for (StackTraceElement ste : e.getStackTrace()) {
-						ob.add(runtime.newText(ste.toString()));
-					}
+			}
+			try {
+				b.load(context.runtime, context, message);
+				if (!forceReload) {
+					loaded.add(name);
+				}
+				return true;
+			} catch (Throwable e) {
+				final IokeObject condition = IokeObject
+						.as(IokeObject.getCellChain(runtime.condition,
+								message, context, "Error", "Load"),
+								context)
+						.mimic(message, context);
+				condition.setCell("message", message);
+				condition.setCell("context", context);
+				condition.setCell("receiver", self);
+				condition.setCell("moduleName", runtime.newText(name));
+				condition.setCell("exceptionMessage",
+						runtime.newText(e.getMessage()));
+				List<Object> ob = new ArrayList<>();
+				for (StackTraceElement ste : e.getStackTrace()) {
+					ob.add(runtime.newText(ste.toString()));
+				}
 
-					condition.setCell("exceptionStackTrace",
-							runtime.newList(ob));
+				condition.setCell("exceptionStackTrace",
+						runtime.newList(ob));
 
-					final boolean[] continueLoadChain = new boolean[] {
-							false };
+				final boolean[] continueLoadChain = new boolean[] {
+						false };
 
-					runtime.withRestartReturningArguments(
-							new RunnableWithControlFlow() {
-								public void run() throws ControlFlow {
-									runtime.errorCondition(condition);
-								}
-							}, context, new Restart.ArgumentGivingRestart(
-									"continueLoadChain") {
-								public List<String> getArgumentNames() {
-									return new ArrayList<String>();
-								}
+				runtime.withRestartReturningArguments(
+						new RunnableWithControlFlow() {
+							@Override
+							public void run() throws ControlFlow {
+								runtime.errorCondition(condition);
+							}
+						}, context, new Restart.ArgumentGivingRestart(
+								"continueLoadChain") {
+							@Override
+							public List<String> getArgumentNames() {
+								return new ArrayList<>();
+							}
 
-								public IokeObject invoke(
-										IokeObject context,
-										List<Object> arguments)
-										throws ControlFlow {
-									continueLoadChain[0] = true;
-									return runtime.nil;
-								}
-							}, new Restart.ArgumentGivingRestart(
-									"ignoreLoadError") {
-								public List<String> getArgumentNames() {
-									return new ArrayList<String>();
-								}
+							@Override
+							public IokeObject invoke(IokeObject context,
+									List<Object> arguments)
+									throws ControlFlow {
+								continueLoadChain[0] = true;
+								return runtime.nil;
+							}
+						}, new Restart.ArgumentGivingRestart(
+								"ignoreLoadError") {
+							@Override
+							public List<String> getArgumentNames() {
+								return new ArrayList<>();
+							}
 
-								public IokeObject invoke(
-										IokeObject context,
-										List<Object> arguments)
-										throws ControlFlow {
-									continueLoadChain[0] = false;
-									return runtime.nil;
-								}
-							});
-					if (!continueLoadChain[0]) {
-						return false;
-					}
+							@Override
+							public IokeObject invoke(IokeObject context,
+									List<Object> arguments)
+									throws ControlFlow {
+								continueLoadChain[0] = false;
+								return runtime.nil;
+							}
+						});
+				if (!continueLoadChain[0]) {
+					return false;
 				}
 			}
 		}
@@ -215,39 +218,39 @@ public class IokeSystem extends IokeData {
 					if (!forceReload
 							&& loaded.contains(f.getCanonicalPath())) {
 						return false;
-					} else {
-						if (f.getCanonicalPath().endsWith(".jar")) {
-							context.runtime.classRegistry.getClassLoader()
-									.addURL(f.toURI().toURL());
-						} else {
-							context.runtime.evaluateFile(f, message,
-									context);
-						}
-
-						if (!forceReload) {
-							loaded.add(f.getCanonicalPath());
-						}
-						return true;
 					}
+
+					if (f.getCanonicalPath().endsWith(".jar")) {
+						context.runtime.classRegistry.getClassLoader()
+								.addURL(f.toURI().toURL());
+					} else {
+						context.runtime.evaluateFile(f, message, context);
+					}
+
+					if (!forceReload) {
+						loaded.add(f.getCanonicalPath());
+					}
+					return true;
 				}
 
 				if (null != is) {
 					if (!forceReload && loaded.contains(name + suffix)) {
 						return false;
-					} else {
-						if ((name + suffix).endsWith(".jar")) {
-							// load jar here - can't do it correctly at the
-							// moment, though.
-						} else {
-							context.runtime.evaluateStream(name + suffix,
-									new InputStreamReader(is, "UTF-8"),
-									message, context);
-						}
-						if (!forceReload) {
-							loaded.add(name + suffix);
-						}
-						return true;
 					}
+
+					if ((name + suffix).endsWith(".jar")) {
+						// load jar here - can't do it correctly at the
+						// moment, though.
+					} else {
+						context.runtime.evaluateStream(name + suffix,
+								new InputStreamReader(is, "UTF-8"),
+								message, context);
+					}
+					if (!forceReload) {
+						loaded.add(name + suffix);
+					}
+
+					return true;
 				}
 			} catch (Throwable e) {
 				final IokeObject condition = IokeObject
@@ -261,7 +264,7 @@ public class IokeSystem extends IokeData {
 				condition.setCell("moduleName", runtime.newText(name));
 				condition.setCell("exceptionMessage",
 						runtime.newText(e.getMessage()));
-				List<Object> ob = new ArrayList<Object>();
+				List<Object> ob = new ArrayList<>();
 				for (StackTraceElement ste : e.getStackTrace()) {
 					ob.add(runtime.newText(ste.toString()));
 				}
@@ -274,15 +277,18 @@ public class IokeSystem extends IokeData {
 
 				runtime.withRestartReturningArguments(
 						new RunnableWithControlFlow() {
+							@Override
 							public void run() throws ControlFlow {
 								runtime.errorCondition(condition);
 							}
 						}, context, new Restart.ArgumentGivingRestart(
 								"continueLoadChain") {
+							@Override
 							public List<String> getArgumentNames() {
-								return new ArrayList<String>();
+								return new ArrayList<>();
 							}
 
+							@Override
 							public IokeObject invoke(IokeObject context,
 									List<Object> arguments)
 									throws ControlFlow {
@@ -291,10 +297,12 @@ public class IokeSystem extends IokeData {
 							}
 						}, new Restart.ArgumentGivingRestart(
 								"ignoreLoadError") {
+							@Override
 							public List<String> getArgumentNames() {
-								return new ArrayList<String>();
+								return new ArrayList<>();
 							}
 
+							@Override
 							public IokeObject invoke(IokeObject context,
 									List<Object> arguments)
 									throws ControlFlow {
@@ -335,45 +343,41 @@ public class IokeSystem extends IokeData {
 						if (!forceReload
 								&& loaded.contains(f.getCanonicalPath())) {
 							return false;
-						} else {
-							if (f.getCanonicalPath().endsWith(".jar")) {
-								context.runtime.classRegistry
-										.getClassLoader()
-										.addURL(f.toURI().toURL());
-							} else {
-								context.runtime.evaluateFile(f, message,
-										context);
-							}
-
-							if (!forceReload) {
-								loaded.add(f.getCanonicalPath());
-							}
-
-							return true;
 						}
+						if (f.getCanonicalPath().endsWith(".jar")) {
+							context.runtime.classRegistry.getClassLoader()
+									.addURL(f.toURI().toURL());
+						} else {
+							context.runtime.evaluateFile(f, message,
+									context);
+						}
+
+						if (!forceReload) {
+							loaded.add(f.getCanonicalPath());
+						}
+
+						return true;
 					}
 
 					if (null != is) {
 						if (!forceReload
 								&& loaded.contains(name + suffix)) {
 							return false;
-						} else {
-							if ((name + suffix).endsWith(".jar")) {
-								// load jar here - can't do it correctly at
-								// the moment, though.
-							} else {
-								context.runtime.evaluateStream(
-										name + suffix,
-										new InputStreamReader(is, "UTF-8"),
-										message, context);
-							}
-
-							if (!forceReload) {
-								loaded.add(name + suffix);
-							}
-
-							return true;
 						}
+						if ((name + suffix).endsWith(".jar")) {
+							// load jar here - can't do it correctly at
+							// the moment, though.
+						} else {
+							context.runtime.evaluateStream(name + suffix,
+									new InputStreamReader(is, "UTF-8"),
+									message, context);
+						}
+
+						if (!forceReload) {
+							loaded.add(name + suffix);
+						}
+
+						return true;
 					}
 				} catch (Throwable e) {
 					final IokeObject condition = IokeObject.as(
@@ -386,7 +390,7 @@ public class IokeSystem extends IokeData {
 					condition.setCell("moduleName", runtime.newText(name));
 					condition.setCell("exceptionMessage",
 							runtime.newText(e.getMessage()));
-					List<Object> ob = new ArrayList<Object>();
+					List<Object> ob = new ArrayList<>();
 					for (StackTraceElement ste : e.getStackTrace()) {
 						ob.add(runtime.newText(ste.toString()));
 					}
@@ -399,15 +403,18 @@ public class IokeSystem extends IokeData {
 
 					runtime.withRestartReturningArguments(
 							new RunnableWithControlFlow() {
+								@Override
 								public void run() throws ControlFlow {
 									runtime.errorCondition(condition);
 								}
 							}, context, new Restart.ArgumentGivingRestart(
 									"continueLoadChain") {
+								@Override
 								public List<String> getArgumentNames() {
-									return new ArrayList<String>();
+									return new ArrayList<>();
 								}
 
+								@Override
 								public IokeObject invoke(
 										IokeObject context,
 										List<Object> arguments)
@@ -417,10 +424,12 @@ public class IokeSystem extends IokeData {
 								}
 							}, new Restart.ArgumentGivingRestart(
 									"ignoreLoadError") {
+								@Override
 								public List<String> getArgumentNames() {
-									return new ArrayList<String>();
+									return new ArrayList<>();
 								}
 
+								@Override
 								public IokeObject invoke(
 										IokeObject context,
 										List<Object> arguments)
@@ -447,6 +456,7 @@ public class IokeSystem extends IokeData {
 
 		runtime.withReturningRestart("ignoreLoadError", context,
 				new RunnableWithControlFlow() {
+					@Override
 					public void run() throws ControlFlow {
 						runtime.errorCondition(condition);
 					}
@@ -454,11 +464,13 @@ public class IokeSystem extends IokeData {
 		return false;
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
 		return new IokeSystem();
 	}
 
+	@Override
 	public void init(IokeObject obj) throws ControlFlow {
 		final Runtime runtime = obj.runtime;
 
@@ -473,10 +485,10 @@ public class IokeSystem extends IokeData {
 			}
 		}
 
-		List<Object> l = new ArrayList<Object>();
+		List<Object> l = new ArrayList<>();
 		l.add(runtime.newText("."));
 		loadPath = runtime.newList(l);
-		programArguments = runtime.newList(new ArrayList<Object>());
+		programArguments = runtime.newList(new ArrayList<>());
 
 		IokeObject outx = runtime.io.mimic(null, null);
 		outx.setData(new IokeIO(runtime.out));
@@ -508,7 +520,7 @@ public class IokeSystem extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -517,9 +529,8 @@ public class IokeSystem extends IokeData {
 								runtime.asText, context, args.get(0)));
 						if (FEATURES.contains(name)) {
 							return runtime._true;
-						} else {
-							return runtime._false;
 						}
+						return runtime._false;
 					}
 				}));
 
@@ -531,7 +542,7 @@ public class IokeSystem extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return runtime.newText(((IokeSystem) IokeObject
 								.data(on)).currentFile.get(0));
@@ -546,7 +557,7 @@ public class IokeSystem extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return DOSISH ? runtime._true : runtime._false;
@@ -562,7 +573,7 @@ public class IokeSystem extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								return ((IokeSystem) IokeObject
 										.data(on)).loadPath;
@@ -578,7 +589,7 @@ public class IokeSystem extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 
 								return context.runtime
@@ -596,7 +607,7 @@ public class IokeSystem extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						String name = Message.file(message);
 						File f = null;
@@ -626,7 +637,7 @@ public class IokeSystem extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime.newText(context.runtime
 								.getCurrentWorkingDirectory());
@@ -641,7 +652,7 @@ public class IokeSystem extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						String tt;
 						try {
@@ -670,7 +681,7 @@ public class IokeSystem extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -719,9 +730,8 @@ public class IokeSystem extends IokeData {
 							return context.runtime.interpreter.evaluate(
 									msg, context, context.getRealContext(),
 									context);
-						} else {
-							return runtime.nil;
 						}
+						return runtime.nil;
 					}
 				}));
 
@@ -769,7 +779,7 @@ public class IokeSystem extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -782,13 +792,13 @@ public class IokeSystem extends IokeData {
 								.use(IokeObject.as(on, context), context,
 										message, name, forceReload)) {
 							return runtime._true;
-						} else {
-							return runtime._false;
 						}
+						return runtime._false;
 					}
 				}));
 	}
 
+	@Override
 	public String toString() {
 		return "System";
 	}

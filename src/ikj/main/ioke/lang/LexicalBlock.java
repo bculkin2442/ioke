@@ -33,10 +33,12 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 				context.runtime.nilMessage);
 	}
 
+	@Override
 	public IokeObject getCode() {
 		return message;
 	}
 
+	@Override
 	public String getArgumentsCode() {
 		return arguments.getCode(false);
 	}
@@ -65,7 +67,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							Object on) throws ControlFlow {
 						Runtime runtime = dynamicContext.runtime;
 
-						List<Object> positionalArgs = new ArrayList<Object>();
+						List<Object> positionalArgs = new ArrayList<>();
 						getArguments().getEvaluatedArguments(
 								dynamicContext, message, on,
 								positionalArgs,
@@ -119,7 +121,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(
 								dynamicContext, message, on,
-								new ArrayList<Object>(),
+								new ArrayList<>(),
 								new HashMap<String, Object>());
 						IokeObject obj = IokeObject.as(on, dynamicContext);
 						String x = obj.isActivatable() ? "x" : "";
@@ -143,7 +145,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(
 								dynamicContext, message, on,
-								new ArrayList<Object>(),
+								new ArrayList<>(),
 								new HashMap<String, Object>());
 						return dynamicContext.runtime.newText(
 								((AssociatedCode) IokeObject.data(on))
@@ -159,9 +161,9 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
-						List<Object> keywords = new ArrayList<Object>();
+						List<Object> keywords = new ArrayList<>();
 
 						for (String keyword : ((LexicalBlock) IokeObject
 								.data(on)).arguments.getKeywords()) {
@@ -181,9 +183,9 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
-						List<Object> names = new ArrayList<Object>();
+						List<Object> names = new ArrayList<>();
 
 						for (DefaultArgumentsDefinition.Argument arg : ((LexicalBlock) IokeObject
 								.data(on)).arguments.getArguments()) {
@@ -205,7 +207,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return ((AssociatedCode) IokeObject.data(on))
 								.getCode();
@@ -219,7 +221,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime
 								.newText(LexicalBlock.getInspect(on));
@@ -233,7 +235,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime
 								.newText(LexicalBlock.getNotice(on));
@@ -247,7 +249,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime.newText(
 								((AssociatedCode) IokeObject.data(on))
@@ -309,6 +311,7 @@ public class LexicalBlock extends IokeData implements AssociatedCode {
 		return ((LexicalBlock) (IokeObject.data(on))).notice(on);
 	}
 
+	@Override
 	public String getFormattedCode(Object self) throws ControlFlow {
 		String args = arguments == null ? "" : arguments.getCode();
 		if (IokeObject.as(self, (IokeObject) self).isActivatable()) {

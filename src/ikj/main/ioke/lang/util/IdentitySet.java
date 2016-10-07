@@ -15,7 +15,7 @@ import java.util.Map;
  * @author <a href="mailto:ola.bini@gmail.com">Ola Bini</a>
  */
 public class IdentitySet<T> extends AbstractSet<T> {
-	private final Map<T, Object> internal = new IdentityHashMap<T, Object>();
+	private final Map<T, Object> internal = new IdentityHashMap<>();
 
 	public IdentitySet(Collection<? extends T> initialElements) {
 		for (T t : initialElements) {

@@ -24,12 +24,12 @@ public class Base {
 			Object on, boolean includeMimics, Object cutoff)
 			throws ControlFlow {
 		if (includeMimics) {
-			IdentityHashMap<Object, Object> visited = new IdentityHashMap<Object, Object>();
-			List<Object> names = new ArrayList<Object>();
-			Set<Object> visitedNames = new HashSet<Object>();
-			Set<String> undefined = new HashSet<String>();
+			IdentityHashMap<Object, Object> visited = new IdentityHashMap<>();
+			List<Object> names = new ArrayList<>();
+			Set<Object> visitedNames = new HashSet<>();
+			Set<String> undefined = new HashSet<>();
 			Runtime runtime = context.runtime;
-			List<Object> toVisit = new ArrayList<Object>();
+			List<Object> toVisit = new ArrayList<>();
 			toVisit.add(on);
 
 			while (!toVisit.isEmpty()) {
@@ -62,34 +62,32 @@ public class Base {
 			}
 
 			return runtime.newList(names);
-		} else {
-
-			List<Object> names = new ArrayList<Object>();
-			Runtime runtime = context.runtime;
-
-			Body.Cell c = IokeObject.as(on, context).body.firstAdded;
-			while (c != null) {
-				String s = c.name;
-				if (c.value != runtime.nul) {
-					names.add(runtime.getSymbol(s));
-				}
-				c = c.orderedNext;
-			}
-
-			return runtime.newList(names);
 		}
+		List<Object> names = new ArrayList<>();
+		Runtime runtime = context.runtime;
+
+		Body.Cell c = IokeObject.as(on, context).body.firstAdded;
+		while (c != null) {
+			String s = c.name;
+			if (c.value != runtime.nul) {
+				names.add(runtime.getSymbol(s));
+			}
+			c = c.orderedNext;
+		}
+
+		return runtime.newList(names);
 	}
 
 	public static Object cells(IokeObject context, IokeObject message,
 			Object on, boolean includeMimics) throws ControlFlow {
-		Map<Object, Object> cells = new LinkedHashMap<Object, Object>();
+		Map<Object, Object> cells = new LinkedHashMap<>();
 		Runtime runtime = context.runtime;
 
 		if (includeMimics) {
-			IdentityHashMap<Object, Object> visited = new IdentityHashMap<Object, Object>();
-			Set<String> undefined = new HashSet<String>();
+			IdentityHashMap<Object, Object> visited = new IdentityHashMap<>();
+			Set<String> undefined = new HashSet<>();
 
-			List<Object> toVisit = new ArrayList<Object>();
+			List<Object> toVisit = new ArrayList<>();
 			toVisit.add(on);
 
 			while (!toVisit.isEmpty()) {
@@ -186,7 +184,7 @@ public class Base {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return documentation(context, message, on);
 					}
@@ -200,7 +198,7 @@ public class Base {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return IokeObject.as(on, context).isActivatable()
 								? context.runtime._true
@@ -242,7 +240,7 @@ public class Base {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								return on;
 							}
@@ -370,7 +368,7 @@ public class Base {
 											context, on, values[i]);
 								} else {
 									String newName = name + "=";
-									List<Object> arguments = new ArrayList<Object>(
+									List<Object> arguments = new ArrayList<>(
 											m1.getArguments());
 									arguments.add(context.runtime
 											.createMessage(Message
@@ -454,25 +452,23 @@ public class Base {
 								}
 
 								return value;
-							} else {
-								String newName = name + "=";
-								List<Object> arguments = new ArrayList<Object>(
-										m1.getArguments());
-								arguments.add(args.get(1));
-								IokeObject msg = context.runtime
-										.newMessageFrom(message, newName,
-												arguments);
-								return Interpreter.send(msg, context, on);
 							}
-						} else {
-							int lastIndex = args.size() - 1;
-							int numPlaces = lastIndex;
-
-							return recursiveDestructuring(args, numPlaces,
-									message, context, on,
-									Interpreter.getEvaluatedArgument(
-											args.get(lastIndex), context));
+							String newName = name + "=";
+							List<Object> arguments = new ArrayList<>(
+									m1.getArguments());
+							arguments.add(args.get(1));
+							IokeObject msg = context.runtime
+									.newMessageFrom(message, newName,
+											arguments);
+							return Interpreter.send(msg, context, on);
 						}
+						int lastIndex = args.size() - 1;
+						int numPlaces = lastIndex;
+
+						return recursiveDestructuring(args, numPlaces,
+								message, context, on,
+								Interpreter.getEvaluatedArgument(
+										args.get(lastIndex), context));
 					}
 				}));
 
@@ -492,7 +488,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -521,7 +517,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -552,7 +548,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -582,7 +578,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -615,7 +611,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -644,7 +640,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -677,7 +673,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -707,7 +703,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -733,7 +729,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -759,7 +755,7 @@ public class Base {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -780,7 +776,7 @@ public class Base {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime

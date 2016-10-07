@@ -28,7 +28,7 @@ public class Origin {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						Interpreter.send(runtime.printlnMessage, context,
 								Interpreter.send(runtime.outMessage,
@@ -46,7 +46,7 @@ public class Origin {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						Interpreter.send(runtime.printMessage, context,
 								Interpreter.send(runtime.outMessage,

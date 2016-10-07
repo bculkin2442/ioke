@@ -92,8 +92,9 @@ public class Operators {
 
 		Map<Object, Object> tmpOperatorTable = getOpTable(parser, opTable,
 				"operators", new OpTableCreator() {
+					@Override
 					public Map<Object, Object> create(Runtime runtime) {
-						Map<Object, Object> table = new HashMap<Object, Object>();
+						Map<Object, Object> table = new HashMap<>();
 						for (OpEntry ot : DEFAULT_OPERATORS.values()) {
 							table.put(runtime.getSymbol(ot.name),
 									runtime.newNumber(ot.precedence));
@@ -104,8 +105,9 @@ public class Operators {
 
 		Map<Object, Object> tmpTrinaryOperatorTable = getOpTable(parser,
 				opTable, "trinaryOperators", new OpTableCreator() {
+					@Override
 					public Map<Object, Object> create(Runtime runtime) {
-						Map<Object, Object> table = new HashMap<Object, Object>();
+						Map<Object, Object> table = new HashMap<>();
 						for (OpArity ot : DEFAULT_ASSIGNMENT_OPERATORS
 								.values()) {
 							table.put(runtime.getSymbol(ot.name),
@@ -117,8 +119,9 @@ public class Operators {
 
 		Map<Object, Object> tmpInvertedOperatorTable = getOpTable(parser,
 				opTable, "invertedOperators", new OpTableCreator() {
+					@Override
 					public Map<Object, Object> create(Runtime runtime) {
-						Map<Object, Object> table = new HashMap<Object, Object>();
+						Map<Object, Object> table = new HashMap<>();
 						for (OpEntry ot : DEFAULT_INVERTED_OPERATORS
 								.values()) {
 							table.put(runtime.getSymbol(ot.name),
@@ -149,7 +152,7 @@ public class Operators {
 	}
 
 	static {
-		Map<String, OpEntry> operators = new HashMap<String, OpEntry>();
+		Map<String, OpEntry> operators = new HashMap<>();
 
 		addOpEntry("!", 0, operators);
 		addOpEntry("?", 0, operators);
@@ -258,7 +261,7 @@ public class Operators {
 
 		DEFAULT_OPERATORS = operators;
 
-		Map<String, OpArity> aoperators = new HashMap<String, OpArity>();
+		Map<String, OpArity> aoperators = new HashMap<>();
 
 		addOpArity("=", 2, aoperators);
 		addOpArity("+=", 2, aoperators);
@@ -279,7 +282,7 @@ public class Operators {
 
 		DEFAULT_ASSIGNMENT_OPERATORS = aoperators;
 
-		Map<String, OpEntry> ioperators = new HashMap<String, OpEntry>();
+		Map<String, OpEntry> ioperators = new HashMap<>();
 
 		addOpEntry("\u2208", 12, ioperators);
 		addOpEntry("\u2209", 12, ioperators);

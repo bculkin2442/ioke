@@ -47,12 +47,13 @@ public class FixedRealFormat extends java.text.Format {
 		int digits;
 		int oldSize = sbuf.length();
 		int signLen = 1;
-		if (negative)
+		if (negative) {
 			sbuf.append('-');
-		else if (showPlus)
+		} else if (showPlus) {
 			sbuf.append('+');
-		else
+		} else {
 			signLen = 0;
+		}
 		String string;
 		int length;
 		if (decimals < 0) {
@@ -62,12 +63,14 @@ public class FixedRealFormat extends java.text.Format {
 			string = RealNum.toScaledInt(val, cur_scale).toString();
 			int i = string.length();
 			digits = i - cur_scale + scale;
-			if (width > 0)
+			if (width > 0) {
 				decimals = width - signLen - 1 - digits;
-			else
+			} else {
 				decimals = (i > 16 ? 16 : i) - digits;
-			if (decimals < 0)
+			}
+			if (decimals < 0) {
 				decimals = 0;
+			}
 			sbuf.append(string);
 			int digStart = oldSize + signLen;
 			int digEnd = digStart + digits + decimals;
@@ -76,13 +79,15 @@ public class FixedRealFormat extends java.text.Format {
 			if (digEnd >= i) {
 				digEnd = i;
 				nextDigit = '0';
-			} else
+			} else {
 				nextDigit = sbuf.charAt(digEnd);
+			}
 			boolean addOne = nextDigit >= '5';
 			char skip = addOne ? '9' : '0';
 			while (digEnd > digStart + digits
-					&& sbuf.charAt(digEnd - 1) == skip)
+					&& sbuf.charAt(digEnd - 1) == skip) {
 				digEnd--;
+			}
 			length = digEnd - digStart;
 			decimals = length - digits;
 			if (addOne) {
@@ -111,30 +116,36 @@ public class FixedRealFormat extends java.text.Format {
 		int total_digits = digits + decimals;
 		// Number of initial zeros to add.
 		int zero_digits = getMinimumIntegerDigits();
-		if (digits >= 0 && digits > zero_digits)
+		if (digits >= 0 && digits > zero_digits) {
 			zero_digits = 0;
-		else
+		} else {
 			zero_digits -= digits;
+		}
 		// If there are no integer digits, add an initial '0', if there is
 		// room.
 		if (digits + zero_digits <= 0
-				&& (width <= 0 || width > decimals + 1 + signLen))
+				&& (width <= 0 || width > decimals + 1 + signLen)) {
 			zero_digits++;
+		}
 		int needed = signLen + length + zero_digits
 				+ 1; /* Add 1 for '.'. */
 		int padding = width - needed;
-		for (int i = zero_digits; --i >= 0;)
+		for (int i = zero_digits; --i >= 0;) {
 			sbuf.insert(oldSize + signLen, '0');
+		}
 		if (padding >= 0) {
 			int i = oldSize;
-			if (internalPad && signLen > 0)
+			if (internalPad && signLen > 0) {
 				i++;
-			while (--padding >= 0)
+			}
+			while (--padding >= 0) {
 				sbuf.insert(i, padChar);
+			}
 		} else if (overflowChar != '\0') {
 			sbuf.setLength(oldSize);
-			for (i = width; --i >= 0;)
+			for (i = width; --i >= 0;) {
 				sbuf.append(overflowChar);
+			}
 			return;
 		}
 		int newSize = sbuf.length();
@@ -152,17 +163,19 @@ public class FixedRealFormat extends java.text.Format {
 	public void format(RatNum number, StringBuffer sbuf,
 			FieldPosition fpos) {
 		boolean negative = number.isNegative();
-		if (negative)
+		if (negative) {
 			number = (RatNum) number.rneg();
+		}
 		format(number, negative, sbuf, fpos);
 	}
 
 	public void format(RealNum number, StringBuffer sbuf,
 			FieldPosition fpos) {
-		if (number instanceof RatNum)
+		if (number instanceof RatNum) {
 			format((RatNum) number, sbuf, fpos);
-		else
+		} else {
 			format(number.doubleValue(), sbuf, fpos);
+		}
 	}
 
 	public StringBuffer format(long num, StringBuffer sbuf,
@@ -177,12 +190,14 @@ public class FixedRealFormat extends java.text.Format {
 		if (num < 0) {
 			negative = true;
 			num = -num;
-		} else
+		} else {
 			negative = false;
+		}
 		format(DFloNum.toExact(num), negative, sbuf, fpos);
 		return sbuf;
 	}
 
+	@Override
 	public StringBuffer format(Object num, StringBuffer sbuf,
 			FieldPosition fpos) {
 		// Common Lisp says if value is non-real, print as if with ~wD.
@@ -195,6 +210,7 @@ public class FixedRealFormat extends java.text.Format {
 		throw new Error("RealFixedFormat.parse - not implemented");
 	}
 
+	@Override
 	public Object parseObject(String text,
 			java.text.ParsePosition status) {
 		throw new Error("RealFixedFormat.parseObject - not implemented");

@@ -21,6 +21,7 @@ public class SpaceshipComparator implements Comparator<Object> {
 		this.message = message;
 	}
 
+	@Override
 	public int compare(Object one, Object two) {
 		Runtime runtime = context.runtime;
 		try {

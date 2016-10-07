@@ -26,6 +26,7 @@ public final class Level {
 		this.type = type;
 	}
 
+	@Override
 	public String toString() {
 		return "Level<" + precedence + ", " + operatorMessage + ", " + type
 				+ ", " + parent + ">";

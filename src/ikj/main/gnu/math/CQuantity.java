@@ -24,18 +24,22 @@ public class CQuantity extends Quantity implements Externalizable {
 		this.unt = unit;
 	}
 
+	@Override
 	public Complex number() {
 		return num;
 	}
 
+	@Override
 	public Unit unit() {
 		return unt;
 	}
 
+	@Override
 	public boolean isExact() {
 		return num.isExact();
 	}
 
+	@Override
 	public boolean isZero() {
 		return num.isZero();
 	}
@@ -45,11 +49,13 @@ public class CQuantity extends Quantity implements Externalizable {
 	 *             the Unit (also using writeUnit).
 	 */
 
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeObject(num);
 		out.writeObject(unt);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		num = (Complex) in.readObject();

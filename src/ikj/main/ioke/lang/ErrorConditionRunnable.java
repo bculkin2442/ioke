@@ -18,6 +18,7 @@ public class ErrorConditionRunnable implements RunnableWithControlFlow {
 		this.condition = condition;
 	}
 
+	@Override
 	public void run() throws ControlFlow {
 		runtime.errorCondition(condition);
 	}

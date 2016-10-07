@@ -60,6 +60,7 @@ public class JavaIntegration {
 
 	private static void sort(Class[] types) {
 		Arrays.sort(types, new Comparator<Class>() {
+			@Override
 			public int compare(Class one, Class two) {
 				return one.getName().compareTo(two.getName());
 			}
@@ -92,7 +93,7 @@ public class JavaIntegration {
 		// System.err.println("have name: " + className);
 
 		Class superClass = Object.class;
-		List<Class> interfaces = new LinkedList<Class>();
+		List<Class> interfaces = new LinkedList<>();
 		for (Class type : types) {
 			if (!type.isInterface()) {
 				superClass = type;
@@ -377,7 +378,7 @@ public class JavaIntegration {
 		return type.getName().replaceAll("\\.", "/");
 	}
 
-	private static final Map<String, String> NAMES = new ConcurrentHashMap<String, String>();
+	private static final Map<String, String> NAMES = new ConcurrentHashMap<>();
 
 	private static synchronized String findFirstUnusedNameFor(
 			Class[] types) {

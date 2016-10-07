@@ -82,7 +82,7 @@ public final class Predicates {
 	 * predicate evaluates to {@code false}.
 	 */
 	public static <T> Predicate<T> not(Predicate<T> predicate) {
-		return new NotPredicate<T>(predicate);
+		return new NotPredicate<>(predicate);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public final class Predicates {
 	 */
 	public static <T> Predicate<T> and(
 			Iterable<? extends Predicate<? super T>> components) {
-		return new AndPredicate<T>(defensiveCopy(components));
+		return new AndPredicate<>(defensiveCopy(components));
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class Predicates {
 	 */
 	public static <T> Predicate<T> and(
 			Predicate<? super T>... components) {
-		return new AndPredicate<T>(defensiveCopy(components));
+		return new AndPredicate<>(defensiveCopy(components));
 	}
 
 	/**
@@ -125,7 +125,7 @@ public final class Predicates {
 	 */
 	public static <T> Predicate<T> and(Predicate<? super T> first,
 			Predicate<? super T> second) {
-		return new AndPredicate<T>(Predicates
+		return new AndPredicate<>(Predicates
 				.<T> asList(checkNotNull(first), checkNotNull(second)));
 	}
 
@@ -142,7 +142,7 @@ public final class Predicates {
 	 */
 	public static <T> Predicate<T> or(
 			Iterable<? extends Predicate<? super T>> components) {
-		return new OrPredicate<T>(defensiveCopy(components));
+		return new OrPredicate<>(defensiveCopy(components));
 	}
 
 	/**
@@ -157,7 +157,7 @@ public final class Predicates {
 	 * false}.
 	 */
 	public static <T> Predicate<T> or(Predicate<? super T>... components) {
-		return new OrPredicate<T>(defensiveCopy(components));
+		return new OrPredicate<>(defensiveCopy(components));
 	}
 
 	/**
@@ -168,8 +168,8 @@ public final class Predicates {
 	 */
 	public static <T> Predicate<T> or(Predicate<? super T> first,
 			Predicate<? super T> second) {
-		return new OrPredicate<T>(Predicates
-				.<T> asList(checkNotNull(first), checkNotNull(second)));
+		return new OrPredicate<>(Predicates.<T> asList(checkNotNull(first),
+				checkNotNull(second)));
 	}
 
 	/**
@@ -179,7 +179,7 @@ public final class Predicates {
 	public static <T> Predicate<T> equalTo(T target) {
 		// TODO: Change signature to return Predicate<Object>.
 		return (target == null) ? Predicates.<T> isNull()
-				: new IsEqualToPredicate<T>(target);
+				: new IsEqualToPredicate<>(target);
 	}
 
 	/**
@@ -190,6 +190,7 @@ public final class Predicates {
 	 * <p>
 	 * If you want to filter an {@code Iterable} to narrow its type,
 	 * consider using
+	 *
 	 * {@link com.google.common.collect.Iterables#filter(Iterable, Class)}
 	 * in preference.
 	 */
@@ -212,7 +213,7 @@ public final class Predicates {
 	 *            the collection that may contain the function input
 	 */
 	public static <T> Predicate<T> in(Collection<? extends T> target) {
-		return new InPredicate<T>(target);
+		return new InPredicate<>(target);
 	}
 
 	/**
@@ -224,7 +225,7 @@ public final class Predicates {
 	 */
 	public static <A, B> Predicate<A> compose(Predicate<B> predicate,
 			Function<A, ? extends B> function) {
-		return new CompositionPredicate<A, B>(predicate, function);
+		return new CompositionPredicate<>(predicate, function);
 	}
 
 	/** @see Predicates#alwaysTrue() */
@@ -232,6 +233,7 @@ public final class Predicates {
 	private enum AlwaysTruePredicate implements Predicate<Object> {
 		INSTANCE;
 
+		@Override
 		public boolean apply(Object o) {
 			return true;
 		}
@@ -247,6 +249,7 @@ public final class Predicates {
 	private enum AlwaysFalsePredicate implements Predicate<Object> {
 		INSTANCE;
 
+		@Override
 		public boolean apply(Object o) {
 			return false;
 		}
@@ -266,6 +269,7 @@ public final class Predicates {
 			this.predicate = checkNotNull(predicate);
 		}
 
+		@Override
 		public boolean apply(T t) {
 			return !predicate.apply(t);
 		}
@@ -304,6 +308,7 @@ public final class Predicates {
 			this.components = components;
 		}
 
+		@Override
 		public boolean apply(T t) {
 			for (Predicate<? super T> predicate : components) {
 				if (!predicate.apply(t)) {
@@ -349,6 +354,7 @@ public final class Predicates {
 			this.components = components;
 		}
 
+		@Override
 		public boolean apply(T t) {
 			for (Predicate<? super T> predicate : components) {
 				if (predicate.apply(t)) {
@@ -393,6 +399,7 @@ public final class Predicates {
 			this.target = target;
 		}
 
+		@Override
 		public boolean apply(T t) {
 			return target.equals(t);
 		}
@@ -428,6 +435,7 @@ public final class Predicates {
 			this.clazz = checkNotNull(clazz);
 		}
 
+		@Override
 		public boolean apply(Object o) {
 			return Platform.isInstance(clazz, o);
 		}
@@ -459,6 +467,7 @@ public final class Predicates {
 	private enum IsNullPredicate implements Predicate<Object> {
 		INSTANCE;
 
+		@Override
 		public boolean apply(Object o) {
 			return o == null;
 		}
@@ -474,6 +483,7 @@ public final class Predicates {
 	private enum NotNullPredicate implements Predicate<Object> {
 		INSTANCE;
 
+		@Override
 		public boolean apply(Object o) {
 			return o != null;
 		}
@@ -493,6 +503,7 @@ public final class Predicates {
 			this.target = checkNotNull(target);
 		}
 
+		@Override
 		public boolean apply(T t) {
 			try {
 				return target.contains(t);
@@ -537,6 +548,7 @@ public final class Predicates {
 			this.f = checkNotNull(f);
 		}
 
+		@Override
 		public boolean apply(A a) {
 			return p.apply(f.apply(a));
 		}
@@ -614,7 +626,7 @@ public final class Predicates {
 	}
 
 	static <T> List<T> defensiveCopy(Iterable<T> iterable) {
-		ArrayList<T> list = new ArrayList<T>();
+		ArrayList<T> list = new ArrayList<>();
 		for (T element : iterable) {
 			list.add(checkNotNull(element));
 		}

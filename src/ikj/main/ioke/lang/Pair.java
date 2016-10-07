@@ -61,7 +61,7 @@ public class Pair extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								int one = ((Pair) IokeObject
 										.data(on)).first.hashCode();
@@ -192,6 +192,7 @@ public class Pair extends IokeData {
 				}));
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
 		return new Pair(first, second);

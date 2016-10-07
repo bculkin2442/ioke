@@ -55,6 +55,7 @@ public class NamedUnit extends Unit implements Externalizable {
 		table[index] = this;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -64,8 +65,9 @@ public class NamedUnit extends Unit implements Externalizable {
 		int hash = name.hashCode();
 		int index = (hash & 0x7FFFFFFF) % table.length;
 		for (NamedUnit unit = table[index]; unit != null; unit = unit.chain) {
-			if (unit.name == name)
+			if (unit.name == name) {
 				return unit;
+			}
 		}
 		return null;
 	}
@@ -76,8 +78,9 @@ public class NamedUnit extends Unit implements Externalizable {
 		int index = (hash & 0x7FFFFFFF) % table.length;
 		for (NamedUnit unit = table[index]; unit != null; unit = unit.chain) {
 			if (unit.name == name && unit.scale == scale
-					&& unit.base == base)
+					&& unit.base == base) {
 				return unit;
+			}
 		}
 		return null;
 	}
@@ -89,13 +92,14 @@ public class NamedUnit extends Unit implements Externalizable {
 
 	public static NamedUnit make(String name, Quantity value) {
 		double scale;
-		if (value instanceof DQuantity)
+		if (value instanceof DQuantity) {
 			scale = ((DQuantity) value).factor;
-		else if (value.imValue() != 0.0)
+		} else if (value.imValue() != 0.0) {
 			throw new ArithmeticException(
 					"defining " + name + " using complex value");
-		else
+		} else {
 			scale = value.re().doubleValue();
+		}
 		Unit base = value.unit();
 		NamedUnit old = lookup(name, scale, base);
 		return old == null ? new NamedUnit(name, scale, base) : old;
@@ -107,12 +111,14 @@ public class NamedUnit extends Unit implements Externalizable {
 	 *             base.
 	 */
 
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeUTF(name);
 		out.writeDouble(scale);
 		out.writeObject(base);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		name = in.readUTF();
@@ -122,8 +128,9 @@ public class NamedUnit extends Unit implements Externalizable {
 
 	public Object readResolve() throws ObjectStreamException {
 		NamedUnit unit = lookup(name, scale, base);
-		if (unit != null)
+		if (unit != null) {
 			return unit;
+		}
 		init();
 		return this;
 	}

@@ -30,6 +30,7 @@ public class DefaultMethod extends Method implements AssociatedCode {
 		this.code = code;
 	}
 
+	@Override
 	public IokeObject getCode() {
 		return code;
 	}
@@ -48,7 +49,7 @@ public class DefaultMethod extends Method implements AssociatedCode {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						List<Object> keywordList = new ArrayList<Object>();
+						List<Object> keywordList = new ArrayList<>();
 
 						for (String keyword : ((DefaultMethod) IokeObject
 								.data(on)).arguments.getKeywords()) {
@@ -114,10 +115,12 @@ public class DefaultMethod extends Method implements AssociatedCode {
 				}));
 	}
 
+	@Override
 	public String getArgumentsCode() {
 		return arguments.getCode(false);
 	}
 
+	@Override
 	public String getFormattedCode(Object self) throws ControlFlow {
 		String args = arguments == null ? "" : arguments.getCode();
 		return "method(" + args + "\n  "
@@ -135,9 +138,8 @@ public class DefaultMethod extends Method implements AssociatedCode {
 		String args = arguments == null ? "" : arguments.getCode();
 		if (name == null) {
 			return "method(" + args + Message.code(code) + ")";
-		} else {
-			return name + ":method(" + args + Message.code(code) + ")";
 		}
+		return name + ":method(" + args + Message.code(code) + ")";
 	}
 
 	private static IokeObject createSuperCallFor(final IokeObject out_self,
@@ -177,14 +179,12 @@ public class DefaultMethod extends Method implements AssociatedCode {
 								return Interpreter.activate(
 										((IokeObject) superCell), context,
 										message, out_on);
-							} else {
-								return superCell;
 							}
-						} else {
-							return Interpreter.signalNoSuchCell(message,
-									context, out_on, out_name, superCell,
-									out_self);
+							return superCell;
 						}
+						return Interpreter.signalNoSuchCell(message,
+								context, out_on, out_name, superCell,
+								out_self);
 					}
 				});
 	}
@@ -222,7 +222,7 @@ public class DefaultMethod extends Method implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return self;
 					}
@@ -246,9 +246,8 @@ public class DefaultMethod extends Method implements AssociatedCode {
 		} catch (ControlFlow.Return e) {
 			if (e.context == c) {
 				return e.getValue();
-			} else {
-				throw e;
 			}
+			throw e;
 		}
 	}
 
@@ -284,7 +283,7 @@ public class DefaultMethod extends Method implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return self;
 					}
@@ -302,9 +301,8 @@ public class DefaultMethod extends Method implements AssociatedCode {
 		} catch (ControlFlow.Return e) {
 			if (e.context == c) {
 				return e.getValue();
-			} else {
-				throw e;
 			}
+			throw e;
 		}
 	}
 
@@ -340,7 +338,7 @@ public class DefaultMethod extends Method implements AssociatedCode {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return self;
 					}
@@ -363,9 +361,8 @@ public class DefaultMethod extends Method implements AssociatedCode {
 		} catch (ControlFlow.Return e) {
 			if (e.context == c) {
 				return e.getValue();
-			} else {
-				throw e;
 			}
+			throw e;
 		}
 	}
 }// DefaultMethod

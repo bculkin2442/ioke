@@ -36,7 +36,7 @@ public class InternalBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -128,7 +128,7 @@ public class InternalBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -197,10 +197,9 @@ public class InternalBehavior {
 								Message.cacheValue(message, value);
 							}
 							return value;
-						} else {
-							return IokeObject.convertToText(o, message,
-									context, true);
 						}
+						return IokeObject.convertToText(o, message,
+								context, true);
 					}
 				}));
 
@@ -241,10 +240,9 @@ public class InternalBehavior {
 									new StringUtils()
 											.replaceRegexpEscapes(s),
 									(String) o2, context, message);
-						} else {
-							return IokeObject.convertToRegexp(o, message,
-									context);
 						}
+						return IokeObject.convertToRegexp(o, message,
+								context);
 					}
 				}));
 

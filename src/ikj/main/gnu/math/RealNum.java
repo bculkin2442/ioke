@@ -10,10 +10,12 @@ public abstract class RealNum extends Complex
 		implements Comparable
 /* #endif */
 {
+	@Override
 	public final RealNum re() {
 		return this;
 	}
 
+	@Override
 	public final RealNum im() {
 		return IntNum.zero();
 	}
@@ -26,16 +28,18 @@ public abstract class RealNum extends Complex
 	public RealNum max(RealNum x) {
 		boolean exact = isExact() && x.isExact();
 		RealNum result = grt(x) ? this : x;
-		if (!exact && result.isExact())
+		if (!exact && result.isExact()) {
 			result = new DFloNum(result.doubleValue());
+		}
 		return result;
 	}
 
 	public RealNum min(RealNum x) {
 		boolean exact = isExact() && x.isExact();
 		RealNum result = grt(x) ? x : this;
-		if (!exact && result.isExact())
+		if (!exact && result.isExact()) {
 			result = new DFloNum(result.doubleValue());
+		}
 		return result;
 	}
 
@@ -52,12 +56,16 @@ public abstract class RealNum extends Complex
 	}
 
 	/* These are defined in Complex, but have to be overridden. */
+	@Override
 	public abstract Numeric add(Object obj, int k);
 
+	@Override
 	public abstract Numeric mul(Object obj);
 
+	@Override
 	public abstract Numeric div(Object obj);
 
+	@Override
 	public Numeric abs() {
 		return isNegative() ? neg() : this;
 	}
@@ -66,6 +74,7 @@ public abstract class RealNum extends Complex
 		return (RealNum) neg();
 	}
 
+	@Override
 	public boolean isZero() {
 		return sign() == 0;
 	}
@@ -121,35 +130,41 @@ public abstract class RealNum extends Complex
 	 * Converts an integral double (such as a toInt result) to an IntNum.
 	 */
 	public static IntNum toExactInt(double value) {
-		if (Double.isInfinite(value) || Double.isNaN(value))
+		if (Double.isInfinite(value) || Double.isNaN(value)) {
 			throw new ArithmeticException(
 					"cannot convert " + value + " to exact integer");
+		}
 		long bits = Double.doubleToLongBits(value);
 		boolean neg = bits < 0;
 		int exp = (int) (bits >> 52) & 0x7FF;
 		bits &= 0xfffffffffffffL;
-		if (exp == 0)
+		if (exp == 0) {
 			bits <<= 1;
-		else
+		} else {
 			bits |= 0x10000000000000L;
+		}
 		if (exp <= 1075) {
 			int rshift = 1075 - exp;
-			if (rshift > 53)
+			if (rshift > 53) {
 				return IntNum.zero();
+			}
 			bits >>= rshift;
 			return IntNum.make(neg ? -bits : bits);
 		}
 		return IntNum.shift(IntNum.make(neg ? -bits : bits), exp - 1075);
 	}
 
+	@Override
 	public Complex exp() {
 		return new DFloNum(Math.exp(doubleValue()));
 	}
 
+	@Override
 	public Complex log() {
 		double x = doubleValue();
-		if (x < 0)
+		if (x < 0) {
 			return DComplex.log(x, 0.0);
+		}
 		return new DFloNum(Math.log(x));
 	}
 
@@ -157,12 +172,14 @@ public abstract class RealNum extends Complex
 		return new DFloNum(Math.sin(doubleValue()));
 	}
 
+	@Override
 	public final Complex sqrt() {
 		double d = doubleValue();
-		if (d >= 0)
+		if (d >= 0) {
 			return new DFloNum(Math.sqrt(d));
-		else
+		} else {
 			return DComplex.sqrt(d, 0);
+		}
 	}
 
 	/** Convert double to (rounded) integer, after multiplying by 10**k. */
@@ -178,10 +195,11 @@ public abstract class RealNum extends Complex
 			IntNum power = IntNum.power(IntNum.ten(), k < 0 ? -k : k);
 			IntNum num = r.numerator();
 			IntNum den = r.denominator();
-			if (k >= 0)
+			if (k >= 0) {
 				num = IntNum.times(num, power);
-			else
+			} else {
 				den = IntNum.times(den, power);
+			}
 			r = RatNum.make(num, den);
 		}
 		return r.toExactInt(ROUND);
@@ -204,6 +222,7 @@ public abstract class RealNum extends Complex
 	 * consistent with equals, since say it returns 0 when comparing 1.5
 	 * and 3/2, though they are not equals.
 	 */
+	@Override
 	public int compareTo(Object o) {
 		return compare(o);
 	}
@@ -226,13 +245,15 @@ public abstract class RealNum extends Complex
 	 */
 	public static String toStringScientific(String dstr) {
 		int indexE = dstr.indexOf('E');
-		if (indexE >= 0)
+		if (indexE >= 0) {
 			return dstr;
+		}
 		int len = dstr.length();
 		// Check for "Infinity" or "NaN".
 		char ch = dstr.charAt(len - 1);
-		if (ch == 'y' || ch == 'N')
+		if (ch == 'y' || ch == 'N') {
 			return dstr;
+		}
 		StringBuffer sbuf = new StringBuffer(len + 10);
 		int exp = toStringScientific(dstr, sbuf);
 		sbuf.append('E');
@@ -242,8 +263,9 @@ public abstract class RealNum extends Complex
 
 	public static int toStringScientific(String dstr, StringBuffer sbuf) {
 		boolean neg = dstr.charAt(0) == '-';
-		if (neg)
+		if (neg) {
 			sbuf.append('-');
+		}
 		int pos = neg ? 1 : 0;
 		int exp;
 		int len = dstr.length();
@@ -260,11 +282,12 @@ public abstract class RealNum extends Complex
 					sbuf.append(ch);
 					sbuf.append('.');
 					exp = ch == '0' ? 0 : start - pos + 2;
-					if (pos == len)
+					if (pos == len) {
 						sbuf.append('0');
-					else {
-						while (pos < len)
+					} else {
+						while (pos < len) {
 							sbuf.append(dstr.charAt(pos++));
+						}
 					}
 					break;
 				}
@@ -285,8 +308,9 @@ public abstract class RealNum extends Complex
 			sbuf.append('.');
 			while (pos < len) {
 				char ch = dstr.charAt(pos++);
-				if (ch != '.')
+				if (ch != '.') {
 					sbuf.append(ch);
+				}
 			}
 		}
 		// Remove excess zeros.
@@ -294,28 +318,32 @@ public abstract class RealNum extends Complex
 		int slen = -1;
 		for (;;) {
 			char ch = sbuf.charAt(--pos);
-			if (ch == '0')
+			if (ch == '0') {
 				slen = pos;
-			else {
-				if (ch == '.')
+			} else {
+				if (ch == '.') {
 					slen = pos + 2;
+				}
 				break;
 			}
 		}
-		if (slen >= 0)
+		if (slen >= 0) {
 			sbuf.setLength(slen);
+		}
 		return exp;
 	}
 
 	public static String toStringDecimal(String dstr) {
 		int indexE = dstr.indexOf('E');
-		if (indexE < 0)
+		if (indexE < 0) {
 			return dstr;
+		}
 		int len = dstr.length();
 		// Check for "Infinity" or "NaN".
 		char ch = dstr.charAt(len - 1);
-		if (ch == 'y' || ch == 'N')
+		if (ch == 'y' || ch == 'N') {
 			return dstr;
+		}
 		StringBuffer sbuf = new StringBuffer(len + 10);
 		boolean neg = dstr.charAt(0) == '-';
 		if (dstr.charAt(indexE + 1) != '-') {
@@ -325,16 +353,20 @@ public abstract class RealNum extends Complex
 		} else {
 			int pos = indexE + 2; // skip "E-".
 			int exp = 0;
-			while (pos < len)
+			while (pos < len) {
 				exp = 10 * exp + (dstr.charAt(pos++) - '0');
-			if (neg)
+			}
+			if (neg) {
 				sbuf.append('-');
+			}
 			sbuf.append("0.");
-			while (--exp > 0)
+			while (--exp > 0) {
 				sbuf.append('0');
+			}
 			for (pos = 0; (ch = dstr.charAt(pos++)) != 'E';) {
-				if (ch != '-' & ch != '.' && (ch != '0' || pos < indexE))
+				if (ch != '-' & ch != '.' && (ch != '0' || pos < indexE)) {
 					sbuf.append(ch);
+				}
 			}
 			return sbuf.toString();
 		}

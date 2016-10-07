@@ -120,7 +120,7 @@ public class Arity extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						Arity a = (Arity) IokeObject.data(on);
-						List<Object> names = new ArrayList<Object>();
+						List<Object> names = new ArrayList<>();
 						boolean includeOptional = args.isEmpty() ? true
 								: IokeObject.isTrue(args.get(0));
 						if (a.argumentsDefinition != null) {
@@ -155,7 +155,7 @@ public class Arity extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						Arity a = (Arity) IokeObject.data(on);
-						List<Object> names = new ArrayList<Object>();
+						List<Object> names = new ArrayList<>();
 						if (a.argumentsDefinition != null) {
 							for (String name : a.argumentsDefinition
 									.getKeywords()) {
@@ -179,16 +179,16 @@ public class Arity extends IokeData {
 							throws ControlFlow {
 						Arity a = (Arity) IokeObject.data(on);
 						if (a.argumentsDefinition != null) {
-							String name = a.argumentsDefinition
+							String kRestName = a.argumentsDefinition
 									.getKrestName();
-							if (name == null) {
+							if (kRestName == null) {
 								return method.runtime.nil;
-							} else {
-								return method.runtime.getSymbol(name);
 							}
-						} else {
-							return method.runtime.nil;
+
+							return method.runtime.getSymbol(kRestName);
 						}
+
+						return method.runtime.nil;
 					}
 				}));
 
@@ -204,16 +204,14 @@ public class Arity extends IokeData {
 							throws ControlFlow {
 						Arity a = (Arity) IokeObject.data(on);
 						if (a.argumentsDefinition != null) {
-							String name = a.argumentsDefinition
+							String restName = a.argumentsDefinition
 									.getRestName();
-							if (name == null) {
+							if (restName == null) {
 								return method.runtime.nil;
-							} else {
-								return method.runtime.getSymbol(name);
 							}
-						} else {
-							return method.runtime.nil;
+							return method.runtime.getSymbol(restName);
 						}
+						return method.runtime.nil;
 					}
 				}));
 

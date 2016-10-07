@@ -69,8 +69,9 @@ public class WildcardPattern extends Pattern {
 					sb.append(")");
 					break;
 				default:
-					if (specials.indexOf(c) >= 0)
+					if (specials.indexOf(c) >= 0) {
 						sb.append('\\');
+					}
 					sb.append(c);
 			}
 		}
@@ -139,6 +140,7 @@ public class WildcardPattern extends Pattern {
 		str = wc;
 	}
 
+	@Override
 	public String toString() {
 		return str;
 	}

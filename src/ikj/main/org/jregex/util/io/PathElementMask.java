@@ -90,34 +90,41 @@ class RegularMask extends PathElementMask {
 			matcher = rm.pattern.matcher();
 		}
 
+		@Override
 		protected void setDir(File f) {
 			entries = rmask.elements(f, matcher);
 		}
 	}
 
+	@Override
 	PathElementEnumerator newEnumerator() {
 		return new MatchingElementEnumerator(this);
 	}
 
+	@Override
 	public Enumeration elements(File dir) {
 		throw new Error();
 	}
 
 	public Enumeration elements(File dir, final Matcher matcher) {
-		if (dir == null)
+		if (dir == null) {
 			throw new IllegalArgumentException();
+		}
 		// System.out.println("PathElementMask.elements("+dir+"{"+dir.getName()+","+dir.getAbsolutePath()+"},
 		// mask=\""+matcher.pattern()+")\"");
 		return new ListEnumerator(dir, new ListEnumerator.Instantiator() {
+			@Override
 			public File instantiate(File dir, String name) {
 				// System.out.println(" next name:"+name);
 				// if(matcher!=null && !matcher.matches(name)) return null;
-				if (!matcher.matches(name))
+				if (!matcher.matches(name)) {
 					return null;
+				}
 				// System.out.println(" mask ok");
 				File f = new File(dir, name);
-				if (dirsOnly && !f.isDirectory())
+				if (dirsOnly && !f.isDirectory()) {
 					return null;
+				}
 				return f;
 			}
 		});
@@ -134,18 +141,23 @@ class FixedPathElement extends PathElementMask {
 		list = new String[] { dirsOnly ? s + File.separator : s };
 	}
 
+	@Override
 	public Enumeration elements(File dir) {
 		// System.out.println("FixedPathElement.elements("+dir+"),
 		// mask=\""+name+"\"");
-		if (dir == null)
+		if (dir == null) {
 			throw new IllegalArgumentException();
+		}
 		return new ListEnumerator(dir, list,
 				new ListEnumerator.Instantiator() {
+					@Override
 					public File instantiate(File dir, String name) {
 						File f = dir.getName().equals(".") ? new File(name)
 								: new File(dir, name);
-						if (!f.exists() || (dirsOnly && !f.isDirectory()))
+						if (!f.exists()
+								|| (dirsOnly && !f.isDirectory())) {
 							return null;
+						}
 						return f;
 					}
 				});
@@ -158,15 +170,19 @@ class AnyFile extends PathElementMask {
 		// System.out.println("AnyFile("+dirsOnly+"):");
 	}
 
+	@Override
 	public Enumeration elements(File dir) {
 		// System.out.println("AnyFile.elements("+dir+")");
-		if (dir == null)
+		if (dir == null) {
 			throw new IllegalArgumentException();
+		}
 		return new ListEnumerator(dir, new ListEnumerator.Instantiator() {
+			@Override
 			public File instantiate(File dir, String name) {
 				File f = new File(dir, name);
-				if (dirsOnly && !f.isDirectory())
+				if (dirsOnly && !f.isDirectory()) {
 					return null;
+				}
 				return f;
 			}
 		});
@@ -175,12 +191,15 @@ class AnyFile extends PathElementMask {
 
 class AnyPath extends PathElementMask {
 	private ListEnumerator.Instantiator inst = new ListEnumerator.Instantiator() {
+		@Override
 		public File instantiate(File dir, String name) {
-			if (dir == null || name == null)
+			if (dir == null || name == null) {
 				throw new IllegalArgumentException();
+			}
 			File f = new File(dir, name);
-			if (dirsOnly && !f.isDirectory())
+			if (dirsOnly && !f.isDirectory()) {
 				return null;
+			}
 			return f;
 		}
 	};
@@ -190,10 +209,12 @@ class AnyPath extends PathElementMask {
 		// System.out.println("AnyFile("+dirsOnly+"):");
 	}
 
+	@Override
 	public Enumeration elements(final File dir) {
 		// System.out.println("AnyFile.elements("+dir+")");
-		if (dir == null)
+		if (dir == null) {
 			throw new IllegalArgumentException();
+		}
 		final Stack stack = new Stack();
 		stack.push(dir);
 		return new Enumerator() {
@@ -202,6 +223,7 @@ class AnyPath extends PathElementMask {
 			}
 			private Enumeration currEn;
 
+			@Override
 			protected boolean find() {
 				while (currEn == null || !currEn.hasMoreElements()) {
 					if (stack.size() == 0) {
@@ -210,8 +232,9 @@ class AnyPath extends PathElementMask {
 					currEn = new ListEnumerator((File) stack.pop(), inst);
 				}
 				currObj = currEn.nextElement();
-				if (((File) currObj).isDirectory())
+				if (((File) currObj).isDirectory()) {
 					stack.push(currObj);
+				}
 				return true;
 			}
 		};

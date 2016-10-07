@@ -50,6 +50,7 @@ public class JavaWrapper extends IokeData {
 		return wrapWithMethods(clz, obj, runtime, false);
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
 		return object == null ? new JavaWrapper()
@@ -64,13 +65,13 @@ public class JavaWrapper extends IokeData {
 				prefix = "class:";
 			}
 
-			Map<String, List<Method>> ms = new HashMap<String, List<Method>>();
-			Map<String, List<Method>> allMethods = new HashMap<String, List<Method>>();
+			Map<String, List<Method>> ms = new HashMap<>();
+			Map<String, List<Method>> allMethods = new HashMap<>();
 			for (Method m : clz.getMethods()) {
 				String name = m.getName();
 				List<Method> lm = null;
 				if (!allMethods.containsKey(name)) {
-					lm = new LinkedList<Method>();
+					lm = new LinkedList<>();
 					allMethods.put(name, lm);
 				} else {
 					lm = allMethods.get(name);
@@ -86,7 +87,7 @@ public class JavaWrapper extends IokeData {
 				String name = m.getName();
 				List<Method> lm = null;
 				if (!ms.containsKey(name)) {
-					lm = new LinkedList<Method>();
+					lm = new LinkedList<>();
 					ms.put(name, lm);
 					List<Method> mex = allMethods.get(name);
 					if (mex != null) {
@@ -173,10 +174,9 @@ public class JavaWrapper extends IokeData {
 							return context.runtime
 									.newText(((JavaWrapper) IokeObject
 											.data(on)).kind);
-						} else {
-							return context.runtime.newText(on.getClass()
-									.getName().replaceAll("\\.", ":"));
 						}
+						return context.runtime.newText(on.getClass()
+								.getName().replaceAll("\\.", ":"));
 					}
 				}));
 
@@ -194,11 +194,10 @@ public class JavaWrapper extends IokeData {
 									.data(on)).clazz == Class.class)
 											? context.runtime._true
 											: context.runtime._false;
-						} else {
-							return (on instanceof Class)
-									? context.runtime._true
-									: context.runtime._false;
 						}
+						return (on instanceof Class)
+								? context.runtime._true
+								: context.runtime._false;
 					}
 				}));
 
@@ -214,9 +213,8 @@ public class JavaWrapper extends IokeData {
 						if (on instanceof IokeObject) {
 							return ((JavaWrapper) IokeObject
 									.data(on)).object.toString();
-						} else {
-							return on.toString();
 						}
+						return on.toString();
 					}
 				}));
 
@@ -236,7 +234,7 @@ public class JavaWrapper extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -278,7 +276,7 @@ public class JavaWrapper extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());

@@ -37,10 +37,9 @@ public class JavaArray {
 									return runtime.newNumber(
 											Array.getLength(JavaWrapper
 													.getObject(on)));
-								} else {
-									return runtime.newNumber(
-											Array.getLength(on));
 								}
+								return runtime
+										.newNumber(Array.getLength(on));
 							}
 						}));
 
@@ -93,9 +92,8 @@ public class JavaArray {
 							} else {
 								return obj;
 							}
-						} else {
-							return context.runtime.nil;
 						}
+						return context.runtime.nil;
 					}
 				}));
 

@@ -132,7 +132,7 @@ public class FinalizableReferenceQueue {
 							+ " Reference cleanup will only occur when new references are"
 							+ " created.",
 					t);
-			queue = new ReferenceQueue<Object>();
+			queue = new ReferenceQueue<>();
 		}
 
 		this.queue = queue;
@@ -203,6 +203,7 @@ public class FinalizableReferenceQueue {
 	 * is in the system class path, we needn't create a separate loader.
 	 */
 	static class SystemLoader implements FinalizerLoader {
+		@Override
 		public Class<?> loadFinalizer() {
 			ClassLoader systemLoader;
 			try {
@@ -218,9 +219,8 @@ public class FinalizableReferenceQueue {
 					// Ignore. Finalizer is simply in a child class loader.
 					return null;
 				}
-			} else {
-				return null;
 			}
+			return null;
 		}
 	}
 
@@ -239,6 +239,8 @@ public class FinalizableReferenceQueue {
 				+ " resolve the underlying issue, or move Google Collections to your"
 				+ " system class path.";
 
+		@Override
+		@SuppressWarnings("resource")
 		public Class<?> loadFinalizer() {
 			try {
 				/*
@@ -298,6 +300,7 @@ public class FinalizableReferenceQueue {
 	 * doesn't end.
 	 */
 	static class DirectLoader implements FinalizerLoader {
+		@Override
 		public Class<?> loadFinalizer() {
 			try {
 				return Class.forName(FINALIZER_CLASS_NAME);

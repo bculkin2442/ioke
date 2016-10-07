@@ -43,6 +43,7 @@ public class FileSystem {
 					this.writer = new FileWriter(file, true);
 				}
 			} catch (IOException e) {
+				// We don't care
 			}
 		}
 
@@ -102,7 +103,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -110,7 +111,7 @@ public class FileSystem {
 								context.runtime,
 								IokeSystem.withReplacedHomeDirectory(
 										Text.getText(args.get(0))));
-						List<Object> result = new ArrayList<Object>();
+						List<Object> result = new ArrayList<>();
 						for (String s : dirs) {
 							result.add(context.runtime.newText(s));
 						}
@@ -135,7 +136,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -173,7 +174,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -224,7 +225,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -262,7 +263,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -300,7 +301,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -353,7 +354,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -411,7 +412,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -447,13 +448,16 @@ public class FileSystem {
 								f2.createNewFile();
 							}
 
+							@SuppressWarnings("resource")
 							FileChannel srcChannel = new FileInputStream(f)
 									.getChannel();
+							@SuppressWarnings("resource")
 							FileChannel dstChannel = new FileOutputStream(
 									f2).getChannel();
 
 							dstChannel.transferFrom(srcChannel, 0,
 									srcChannel.size());
+
 							srcChannel.close();
 							dstChannel.close();
 						} catch (IOException e) {
@@ -481,7 +485,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -523,6 +527,7 @@ public class FileSystem {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -559,7 +564,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -601,6 +606,7 @@ public class FileSystem {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -631,7 +637,7 @@ public class FileSystem {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -673,6 +679,7 @@ public class FileSystem {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(

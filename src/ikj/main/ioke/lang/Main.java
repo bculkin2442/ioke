@@ -29,13 +29,14 @@ public class Main {
 			+ " --copyright     print the copyright\n"
 			+ " --version       print current version\n";
 
+	@SuppressWarnings("null")
 	public static void main(String[] args) throws Throwable {
 		boolean debug = false;
 		String cwd = null;
 		boolean coverage = false;
 		String argError = null;
-		List<String> scripts = new ArrayList<String>();
-		List<String> loadDirs = new ArrayList<String>();
+		List<String> scripts = new ArrayList<>();
+		List<String> loadDirs = new ArrayList<>();
 		int start = 0;
 		boolean done = false;
 		boolean readStdin = false;

@@ -105,16 +105,19 @@ public class RETokenizer implements Enumeration {
 	}
 
 	public boolean hasMore() {
-		if (!checked)
+		if (!checked) {
 			check();
+		}
 		return hasToken;
 	}
 
 	public String nextToken() {
-		if (!checked)
+		if (!checked) {
 			check();
-		if (!hasToken)
+		}
+		if (!hasToken) {
 			throw new NoSuchElementException();
+		}
 		checked = false;
 		return token;
 	}
@@ -157,8 +160,9 @@ public class RETokenizer implements Enumeration {
 				if (emptyOk) {
 					hasMatch = true;
 					break;
-				} else
+				} else {
 					m.setTarget(m, MatchResult.SUFFIX);
+				}
 			}
 		}
 		if (!hasMatch) {
@@ -180,6 +184,7 @@ public class RETokenizer implements Enumeration {
 		// m.setTarget(m.suffix());
 	}
 
+	@Override
 	public boolean hasMoreElements() {
 		return hasMore();
 	}
@@ -187,6 +192,7 @@ public class RETokenizer implements Enumeration {
 	/**
 	 * @return a next token as a String
 	 */
+	@Override
 	public Object nextElement() {
 		return nextToken();
 	}

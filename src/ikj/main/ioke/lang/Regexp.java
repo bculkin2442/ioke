@@ -81,7 +81,7 @@ public class Regexp extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						Regexp r = (Regexp) IokeObject.data(on);
 						return context.runtime
@@ -273,7 +273,7 @@ public class Regexp extends IokeData {
 						Matcher m = ((Regexp) IokeObject.data(on)).regexp
 								.matcher(arg);
 
-						List<Object> result = new ArrayList<Object>();
+						List<Object> result = new ArrayList<>();
 						MatchIterator iter = m.findAll();
 						Runtime runtime = context.runtime;
 						while (iter.hasMore()) {
@@ -326,7 +326,7 @@ public class Regexp extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						Set names = Regexp.getRegexp(on).getGroupNames();
-						List<Object> theNames = new ArrayList<Object>();
+						List<Object> theNames = new ArrayList<>();
 						for (Object name : names) {
 							theNames.add(context.runtime
 									.getSymbol(((String) name)));

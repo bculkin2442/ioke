@@ -81,6 +81,7 @@ public class Range extends IokeData {
 			}
 		}
 
+		@Override
 		public boolean hasNext() {
 			try {
 				boolean sameEndpoints = IokeObject.isTrue(Interpreter
@@ -94,6 +95,7 @@ public class Range extends IokeData {
 			throw new RuntimeException("(TODO: fix) - got an error. =(");
 		}
 
+		@Override
 		public Object next() {
 			IokeObject obj = start;
 			try {
@@ -115,6 +117,7 @@ public class Range extends IokeData {
 			throw new RuntimeException("(TODO: fix) - iterating over end");
 		}
 
+		@Override
 		public void remove() {
 		}
 	}
@@ -182,7 +185,7 @@ public class Range extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -230,7 +233,7 @@ public class Range extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -269,7 +272,7 @@ public class Range extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return ((Range) IokeObject.data(on)).inclusive
 								? context.runtime._false
@@ -285,7 +288,7 @@ public class Range extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return ((Range) IokeObject.data(on)).inclusive
 								? context.runtime._true
@@ -304,7 +307,7 @@ public class Range extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return ((Range) IokeObject.data(on)).from;
 					}
@@ -318,7 +321,7 @@ public class Range extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return ((Range) IokeObject.data(on)).to;
 					}
@@ -513,7 +516,7 @@ public class Range extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -598,7 +601,7 @@ public class Range extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime
 								.newText(Range.getInspect(on));
@@ -613,13 +616,14 @@ public class Range extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime.newText(Range.getNotice(on));
 					}
 				}));
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
 		return new Range(from, to, inclusive, inverted);

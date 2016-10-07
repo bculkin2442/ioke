@@ -26,14 +26,17 @@ public class StoreValueRestart extends Restart.ArgumentGivingRestart {
 		this.recv = recv;
 	}
 
+	@Override
 	public String report() {
 		return "Store value for: " + name;
 	}
 
+	@Override
 	public List<String> getArgumentNames() {
-		return new ArrayList<String>(Arrays.asList("newValue"));
+		return new ArrayList<>(Arrays.asList("newValue"));
 	}
 
+	@Override
 	public IokeObject invoke(IokeObject context, List<Object> arguments)
 			throws ControlFlow {
 		newCell[0] = arguments.get(0);

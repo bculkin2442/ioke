@@ -15,6 +15,7 @@ public interface TypeChecker {
 			IokeObject context, boolean signal) throws ControlFlow;
 
 	public static final TypeChecker	None	= new TypeChecker() {
+												@Override
 												public Object convertToMimic(
 														Object on,
 														IokeObject message,
@@ -25,6 +26,7 @@ public interface TypeChecker {
 											};
 
 	public static final TypeChecker	Nil		= new TypeChecker() {
+												@Override
 												public Object convertToMimic(
 														Object on,
 														IokeObject message,
@@ -54,6 +56,7 @@ public interface TypeChecker {
 			this.second = second;
 		}
 
+		@Override
 		public Object convertToMimic(Object on, IokeObject message,
 				IokeObject context, boolean signal) throws ControlFlow {
 			Object firstResult = first.convertToMimic(on, message, context,

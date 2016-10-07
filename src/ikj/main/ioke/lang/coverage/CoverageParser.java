@@ -215,7 +215,7 @@ public class CoverageParser extends IokeParser {
 		}
 	}
 
-	public List<CoverageOutput>	currentLine	= new LinkedList<CoverageOutput>();
+	public List<CoverageOutput>	currentLine	= new LinkedList<>();
 	public CoverageOutput		last		= null;
 	public CoverageOutput		lastMessage	= null;
 
@@ -225,18 +225,16 @@ public class CoverageParser extends IokeParser {
 		if (cp == null || cp.count == 0) {
 			numberOfUncovered++;
 			return 0;
-		} else {
-			numberOfCovered++;
-			return cp.count;
 		}
+		numberOfCovered++;
+		return cp.count;
 	}
 
 	public String messageSendClass(int coverage) {
 		if (coverage == 0) {
 			return "srcUncovered";
-		} else {
-			return "green";
 		}
+		return "green";
 	}
 
 	private String nothingClass(char cc) {
@@ -251,7 +249,7 @@ public class CoverageParser extends IokeParser {
 		return null;
 	}
 
-	private static final Set<String>	KEYWORDS				= new HashSet<String>(
+	private static final Set<String>	KEYWORDS				= new HashSet<>(
 			Arrays.asList("if", "true", "false", "nil", "method", "unless",
 					"use", "macro", "fn", "fnx"));
 
@@ -339,8 +337,8 @@ public class CoverageParser extends IokeParser {
 		if (lastBad) {
 			output.print("</span>");
 		}
-		currentLine = new LinkedList<CoverageOutput>();
-		last = null;
+		currentLine = new LinkedList<>();
+		// last = null;
 		lastMessage = null;
 		output.print("</pre></td></tr>\n");
 	}
@@ -380,7 +378,7 @@ public class CoverageParser extends IokeParser {
 	@Override
 	protected List<Object> parseCommaSeparatedMessageChains()
 			throws IOException, ControlFlow {
-		ArrayList<Object> chain = new ArrayList<Object>();
+		ArrayList<Object> chain = new ArrayList<>();
 
 		IokeObject curr = parseMessageChain();
 		while (curr != null) {
@@ -395,7 +393,7 @@ public class CoverageParser extends IokeParser {
 					fail("Expected expression following comma");
 				}
 			} else {
-				if (curr != null && Message.isTerminator(curr)
+				if (Message.isTerminator(curr)
 						&& Message.next(curr) == null) {
 					chain.remove(chain.size() - 1);
 				}
@@ -499,9 +497,8 @@ public class CoverageParser extends IokeParser {
 					if ((rr = peek()) == '\n') {
 						read();
 						break;
-					} else {
-						fail("Expected newline after free-floating escape character");
 					}
+					fail("Expected newline after free-floating escape character");
 				case '\r':
 				case '\n':
 					read();
@@ -811,7 +808,7 @@ public class CoverageParser extends IokeParser {
 
 		int rr;
 		String name = "internal:createRegexp";
-		List<Object> args = new ArrayList<Object>();
+		List<Object> args = new ArrayList<>();
 
 		while (true) {
 			switch (rr = peek()) {
@@ -853,9 +850,8 @@ public class CoverageParser extends IokeParser {
 									return;
 							}
 						}
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case ']':
 					read();
@@ -891,9 +887,8 @@ public class CoverageParser extends IokeParser {
 									return;
 							}
 						}
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case '#':
 					read();
@@ -911,7 +906,7 @@ public class CoverageParser extends IokeParser {
 						addOutput(messageSendClass(coverage), coverage,
 								"}");
 					} else {
-						sb.append((char) '#');
+						sb.append('#');
 					}
 					break;
 				case '\\':
@@ -945,9 +940,9 @@ public class CoverageParser extends IokeParser {
 
 		int rr;
 		String name = "internal:createText";
-		List<Object> args = new ArrayList<Object>();
-		List<Integer> lines = new ArrayList<Integer>();
-		List<Integer> cols = new ArrayList<Integer>();
+		List<Object> args = new ArrayList<>();
+		List<Integer> lines = new ArrayList<>();
+		List<Integer> cols = new ArrayList<>();
 		lines.add(l);
 		cols.add(cc);
 
@@ -985,9 +980,8 @@ public class CoverageParser extends IokeParser {
 						addOutput(messageSendClass(coverage), coverage,
 								sb + "\"");
 						return;
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case ']':
 					read();
@@ -1018,9 +1012,8 @@ public class CoverageParser extends IokeParser {
 						addOutput(messageSendClass(coverage), coverage,
 								sb + "]");
 						return;
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case '#':
 					read();
@@ -1044,7 +1037,7 @@ public class CoverageParser extends IokeParser {
 						addOutput(messageSendClass(coverage), coverage,
 								"}");
 					} else {
-						sb.append((char) '#');
+						sb.append('#');
 					}
 					break;
 				case '\\':

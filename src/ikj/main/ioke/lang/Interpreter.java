@@ -76,7 +76,7 @@ public class Interpreter {
 	public static List<Object> getEvaluatedArguments(IokeObject self,
 			IokeObject context) throws ControlFlow {
 		List<Object> arguments = self.getArguments();
-		List<Object> args = new ArrayList<Object>(arguments.size());
+		List<Object> args = new ArrayList<>(arguments.size());
 		for (Object o : arguments) {
 			args.add(getEvaluatedArgument(o, context));
 		}
@@ -156,10 +156,9 @@ public class Interpreter {
 				|| IokeRegistry.isWrapped(obj, ctx)) {
 			IokeObject recv = IokeObject.as(obj, ctx);
 			return perform(recv, recv, ctx, message, message.getName());
-		} else {
-			return perform(obj, IokeRegistry.wrap(obj.getClass(), ctx),
-					ctx, message, message.getName());
 		}
+		return perform(obj, IokeRegistry.wrap(obj.getClass(), ctx), ctx,
+				message, message.getName());
 	}
 
 	public static Object signalNoSuchCell(IokeObject message,
@@ -230,9 +229,8 @@ public class Interpreter {
 		if ((obj instanceof IokeObject)
 				&& shouldActivate((IokeObject) obj, message)) {
 			return activate((IokeObject) obj, context, message, on);
-		} else {
-			return obj;
 		}
+		return obj;
 	}
 
 	public static Object activate(IokeObject receiver, IokeObject context,

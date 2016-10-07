@@ -16,6 +16,7 @@ import ioke.lang.exceptions.ControlFlow;
  */
 public class DefaultArgumentsDefinitionArgs0
 		implements ArgumentsDefinition {
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on, final Call call) throws ControlFlow {
@@ -26,36 +27,44 @@ public class DefaultArgumentsDefinitionArgs0
 		}
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on) throws ControlFlow {
 		DefaultArgumentsDefinitionArgs1.assign(context, message, on, 0);
 	}
 
+	@Override
 	public String getCode() {
 		return getCode(true);
 	}
 
+	@Override
 	public String getCode(boolean lastComma) {
 		return "";
 	}
 
+	@Override
 	public Collection<String> getKeywords() {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
+	@Override
 	public List<DefaultArgumentsDefinition.Argument> getArguments() {
-		return new ArrayList<DefaultArgumentsDefinition.Argument>();
+		return new ArrayList<>();
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return true;
 	}
 
+	@Override
 	public String getRestName() {
 		return null;
 	}
 
+	@Override
 	public String getKrestName() {
 		return null;
 	}

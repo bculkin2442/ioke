@@ -39,6 +39,7 @@ public class ListEnumerator extends Enumerator {
 	}
 
 	public static final Instantiator	defaultInstantiator	= new Instantiator() {
+																@Override
 																public File instantiate(
 																		File dir,
 																		String name) {
@@ -66,15 +67,18 @@ public class ListEnumerator extends Enumerator {
 	}
 
 	public ListEnumerator(File dir, String[] names, Instantiator i) {
-		if (names == null)
+		if (names == null) {
 			throw new IllegalArgumentException();
-		if (i == null)
+		}
+		if (i == null) {
 			throw new IllegalArgumentException();
+		}
 		this.dir = dir;
 		this.list = names;
 		this.instantiator = i;
 	}
 
+	@Override
 	protected boolean find() {
 		// System.out.println(" PathElementMask.elements().find():");
 		File dir = this.dir;
@@ -82,8 +86,9 @@ public class ListEnumerator extends Enumerator {
 		while (index < list.length) {
 			String name = list[index++];
 			File f = instantiator.instantiate(dir, name);
-			if (f == null)
+			if (f == null) {
 				continue;
+			}
 			currObj = f;
 			return true;
 		}

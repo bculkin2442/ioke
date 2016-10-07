@@ -113,6 +113,7 @@ public class JavaArgumentsDefinition {
 
 	private static class MethodComparator extends FullOrdering
 			implements Comparator<Method> {
+		@Override
 		public int compare(Method a, Method b) {
 			Class<?>[] aTypes = a.getParameterTypes();
 			Class<?>[] bTypes = b.getParameterTypes();
@@ -137,6 +138,7 @@ public class JavaArgumentsDefinition {
 
 	private static class ConstructorComparator extends FullOrdering
 			implements Comparator<Constructor> {
+		@Override
 		public int compare(Constructor a, Constructor b) {
 			Class<?>[] aTypes = a.getParameterTypes();
 			Class<?>[] bTypes = b.getParameterTypes();
@@ -272,7 +274,7 @@ public class JavaArgumentsDefinition {
 			Object on, List<Object> args) throws ControlFlow {
 		final Runtime runtime = context.runtime;
 		final List<Object> arguments = message.getArguments();
-		final List<JavaArgumentDefinition> resultArguments = new ArrayList<JavaArgumentDefinition>(
+		final List<JavaArgumentDefinition> resultArguments = new ArrayList<>(
 				arguments.size());
 		int argCount = 0;
 
@@ -307,6 +309,7 @@ public class JavaArgumentsDefinition {
 					List<Object> outp = IokeList
 							.getList(runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -707,14 +710,14 @@ public class JavaArgumentsDefinition {
 			condition.setCell("context", context);
 			condition.setCell("receiver", on);
 
-			List<Object> tries = new ArrayList<Object>(members.length);
+			List<Object> tries = new ArrayList<>(members.length);
 			for (Object o : members) {
 				tries.add(runtime.newText(o.toString()));
 			}
 
 			condition.setCell("alternatives", runtime.newList(tries));
 
-			List<Object> argsGiven = new ArrayList<Object>();
+			List<Object> argsGiven = new ArrayList<>();
 			for (JavaArgumentDefinition jad : resultArguments) {
 				argsGiven.add(jad.obj);
 			}
@@ -733,7 +736,7 @@ public class JavaArgumentsDefinition {
 
 	public static IokeObject findAbstractMethodNames(Class<?> type,
 			IokeObject context) throws ControlFlow {
-		List<Object> names = new ArrayList<Object>();
+		List<Object> names = new ArrayList<>();
 		for (java.lang.reflect.Method m : type.getMethods()) {
 			if (Modifier.isAbstract(m.getModifiers())) {
 				names.add(context.runtime.newText(m.getName()));

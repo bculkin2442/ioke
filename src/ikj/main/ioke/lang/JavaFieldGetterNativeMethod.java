@@ -48,22 +48,20 @@ public class JavaFieldGetterNativeMethod extends Method
 							: context.runtime._false;
 				}
 				return result;
-			} else {
-				Object obj = on;
-				if (!(nm.declaringClass.isInstance(obj))) {
-					obj = obj.getClass();
-				}
-
-				Object result = nm.field.get(obj);
-				if (result == null) {
-					return context.runtime.nil;
-				} else if (result instanceof Boolean) {
-					return ((Boolean) result).booleanValue()
-							? context.runtime._true
-							: context.runtime._false;
-				}
-				return result;
 			}
+			Object obj = on;
+			if (!(nm.declaringClass.isInstance(obj))) {
+				obj = obj.getClass();
+			}
+
+			Object result = nm.field.get(obj);
+			if (result == null) {
+				return context.runtime.nil;
+			} else if (result instanceof Boolean) {
+				return ((Boolean) result).booleanValue()
+						? context.runtime._true : context.runtime._false;
+			}
+			return result;
 		} catch (Exception e) {
 			context.runtime.reportNativeException(e, message, context);
 			return context.runtime.nil;

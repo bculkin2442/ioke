@@ -34,7 +34,7 @@ public class JavaMethodNativeMethod extends ioke.lang.Method
 	public static Object activateFixed(IokeObject self, IokeObject context,
 			IokeObject message, Object on) throws ControlFlow {
 		JavaMethodNativeMethod nm = (JavaMethodNativeMethod) self.data;
-		List<Object> args = new LinkedList<Object>();
+		List<Object> args = new LinkedList<>();
 		Method method = (Method) nm.arguments.getJavaArguments(context,
 				message, on, args);
 		return nm.activate(self, on, args, method, context, message);
@@ -68,32 +68,29 @@ public class JavaMethodNativeMethod extends ioke.lang.Method
 							: context.runtime._false;
 				}
 				return result;
-			} else {
-				// System.err.println("Invoking " + method.getName() + " on
-				// " + on + "[" + on.getClass().getName() + "]");
-				// System.err.println(" method: " + method);
-				// System.err.println(" class : " + declaringClass);
-				Object obj = on;
-				if (!(declaringClass.isInstance(obj))) {
-					obj = obj.getClass();
-				}
-				Object result = method.invoke(obj, args.toArray());
-				if (result == null) {
-					return context.runtime.nil;
-				} else if (result instanceof Boolean) {
-					return ((Boolean) result).booleanValue()
-							? context.runtime._true
-							: context.runtime._false;
-				}
-				return result;
 			}
+			// System.err.println("Invoking " + method.getName() + " on
+			// " + on + "[" + on.getClass().getName() + "]");
+			// System.err.println(" method: " + method);
+			// System.err.println(" class : " + declaringClass);
+			Object obj = on;
+			if (!(declaringClass.isInstance(obj))) {
+				obj = obj.getClass();
+			}
+			Object result = method.invoke(obj, args.toArray());
+			if (result == null) {
+				return context.runtime.nil;
+			} else if (result instanceof Boolean) {
+				return ((Boolean) result).booleanValue()
+						? context.runtime._true : context.runtime._false;
+			}
+			return result;
 		} catch (Exception e) {
 			if ((Exception) e.getCause() != null) {
 				context.runtime.reportNativeException(
 						(Exception) e.getCause(), message, context);
 			} else {
-				context.runtime.reportNativeException((Exception) e,
-						message, context);
+				context.runtime.reportNativeException(e, message, context);
 			}
 
 			return context.runtime.nil;

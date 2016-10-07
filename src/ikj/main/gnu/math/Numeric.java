@@ -4,14 +4,17 @@
 package gnu.math;
 
 public abstract class Numeric extends java.lang.Number {
+	@Override
 	public float floatValue() {
 		return (float) doubleValue();
 	}
 
+	@Override
 	public int intValue() {
 		return (int) longValue();
 	}
 
+	@Override
 	public long longValue() {
 		return (long) doubleValue();
 	}
@@ -37,6 +40,7 @@ public abstract class Numeric extends java.lang.Number {
 
 	public abstract String toString(int radix);
 
+	@Override
 	public String toString() {
 		return toString(10);
 	}
@@ -65,9 +69,11 @@ public abstract class Numeric extends java.lang.Number {
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Numeric))
+		if (obj == null || !(obj instanceof Numeric)) {
 			return false;
+		}
 		return compare(obj) == 0;
 	}
 
@@ -108,19 +114,22 @@ public abstract class Numeric extends java.lang.Number {
 	 * result.
 	 */
 	public Numeric power(IntNum y) {
-		if (y.isNegative())
+		if (y.isNegative()) {
 			return power(IntNum.neg(y)).div_inv();
+		}
 		Numeric pow2 = this;
 		Numeric r = null;
 		for (;;) // for (i = 0; ; i++)
 		{
 			// pow2 == x**(2**i)
 			// prod = x**(sum(j=0..i-1, (y>>j)&1))
-			if (y.isOdd())
+			if (y.isOdd()) {
 				r = r == null ? pow2 : r.mul(pow2); // r *= pow2
+			}
 			y = IntNum.shift(y, -1);
-			if (y.isZero())
+			if (y.isZero()) {
 				break;
+			}
 			// pow2 *= pow2;
 			pow2 = pow2.mul(pow2);
 		}

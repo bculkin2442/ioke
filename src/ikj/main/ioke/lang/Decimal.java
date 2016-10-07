@@ -99,7 +99,7 @@ public class Decimal extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime.newNumber(
 								((Decimal) IokeObject.data(on)).value
@@ -115,7 +115,7 @@ public class Decimal extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						BigDecimal value = ((Decimal) IokeObject
@@ -283,29 +283,27 @@ public class Decimal extends IokeData {
 							return context.runtime.newNumber(
 									Decimal.value(on).compareTo(Number
 											.value(arg).asBigDecimal()));
-						} else {
-							if (!(data instanceof Decimal)) {
-								arg = IokeObject.convertToDecimal(arg,
-										message, context, false);
-								if (!(IokeObject
-										.data(arg) instanceof Decimal)) {
-									// Can't compare, so bail out
-									return context.runtime.nil;
-								}
-							}
-
-							if (on == context.runtime.decimal
-									|| arg == context.runtime.decimal) {
-								if (arg == on) {
-									return context.runtime.newNumber(0);
-								}
+						}
+						if (!(data instanceof Decimal)) {
+							arg = IokeObject.convertToDecimal(arg, message,
+									context, false);
+							if (!(IokeObject
+									.data(arg) instanceof Decimal)) {
+								// Can't compare, so bail out
 								return context.runtime.nil;
 							}
-
-							return context.runtime
-									.newNumber(Decimal.value(on).compareTo(
-											Decimal.value(arg)));
 						}
+
+						if (on == context.runtime.decimal
+								|| arg == context.runtime.decimal) {
+							if (arg == on) {
+								return context.runtime.newNumber(0);
+							}
+							return context.runtime.nil;
+						}
+
+						return context.runtime.newNumber(Decimal.value(on)
+								.compareTo(Decimal.value(arg)));
 					}
 				}));
 
@@ -336,16 +334,14 @@ public class Decimal extends IokeData {
 							return context.runtime.newDecimal(
 									Decimal.value(on).subtract(Number
 											.value(arg).asBigDecimal()));
-						} else {
-							if (!(data instanceof Decimal)) {
-								arg = IokeObject.convertToDecimal(arg,
-										message, context, true);
-							}
-
-							return context.runtime
-									.newDecimal(Decimal.value(on)
-											.subtract(Decimal.value(arg)));
 						}
+						if (!(data instanceof Decimal)) {
+							arg = IokeObject.convertToDecimal(arg, message,
+									context, true);
+						}
+
+						return context.runtime.newDecimal(Decimal.value(on)
+								.subtract(Decimal.value(arg)));
 					}
 				}));
 
@@ -376,15 +372,14 @@ public class Decimal extends IokeData {
 							return context.runtime.newDecimal(
 									Decimal.value(on).add(Number.value(arg)
 											.asBigDecimal()));
-						} else {
-							if (!(data instanceof Decimal)) {
-								arg = IokeObject.convertToDecimal(arg,
-										message, context, true);
-							}
-
-							return context.runtime.newDecimal(Decimal
-									.value(on).add(Decimal.value(arg)));
 						}
+						if (!(data instanceof Decimal)) {
+							arg = IokeObject.convertToDecimal(arg, message,
+									context, true);
+						}
+
+						return context.runtime.newDecimal(
+								Decimal.value(on).add(Decimal.value(arg)));
 					}
 				}));
 
@@ -415,16 +410,14 @@ public class Decimal extends IokeData {
 							return context.runtime.newDecimal(
 									Decimal.value(on).multiply(Number
 											.value(arg).asBigDecimal()));
-						} else {
-							if (!(data instanceof Decimal)) {
-								arg = IokeObject.convertToDecimal(arg,
-										message, context, true);
-							}
-
-							return context.runtime
-									.newDecimal(Decimal.value(on)
-											.multiply(Decimal.value(arg)));
 						}
+						if (!(data instanceof Decimal)) {
+							arg = IokeObject.convertToDecimal(arg, message,
+									context, true);
+						}
+
+						return context.runtime.newDecimal(Decimal.value(on)
+								.multiply(Decimal.value(arg)));
 					}
 				}));
 
@@ -490,71 +483,68 @@ public class Decimal extends IokeData {
 											.divide(Number.value(arg)
 													.asBigDecimal())
 											.stripTrailingZeros());
-						} else {
-							if (!(data instanceof Decimal)) {
-								arg = IokeObject.convertToDecimal(arg,
-										message, context, true);
-							}
-
-							while (Decimal.value(arg)
-									.compareTo(BigDecimal.ZERO) == 0) {
-								final IokeObject condition = IokeObject
-										.as(IokeObject.getCellChain(
-												context.runtime.condition,
-												message, context, "Error",
-												"Arithmetic",
-												"DivisionByZero"), context)
-										.mimic(message, context);
-								condition.setCell("message", message);
-								condition.setCell("context", context);
-								condition.setCell("receiver", on);
-
-								final Object[] newCell = new Object[] {
-										arg };
-
-								context.runtime
-										.withRestartReturningArguments(
-												new RunnableWithControlFlow() {
-													public void run()
-															throws ControlFlow {
-														context.runtime
-																.errorCondition(
-																		condition);
-													}
-												}, context,
-												new Restart.ArgumentGivingRestart(
-														"useValue") {
-													public List<String> getArgumentNames() {
-														return new ArrayList<String>(
-																Arrays.asList(
-																		"newValue"));
-													}
-
-													public IokeObject invoke(
-															IokeObject c2,
-															List<Object> arguments)
-															throws ControlFlow {
-														newCell[0] = arguments
-																.get(0);
-														return c2.runtime.nil;
-													}
-												});
-
-								arg = newCell[0];
-							}
-
-							BigDecimal result = null;
-							try {
-								result = Decimal.value(on)
-										.divide(Decimal.value(arg));
-							} catch (ArithmeticException e) {
-								result = Decimal.value(on).divide(
-										Decimal.value(arg),
-										java.math.MathContext.DECIMAL128);
-							}
-							return context.runtime.newDecimal(
-									result.stripTrailingZeros());
 						}
+						if (!(data instanceof Decimal)) {
+							arg = IokeObject.convertToDecimal(arg, message,
+									context, true);
+						}
+
+						while (Decimal.value(arg)
+								.compareTo(BigDecimal.ZERO) == 0) {
+							final IokeObject condition = IokeObject
+									.as(IokeObject.getCellChain(
+											context.runtime.condition,
+											message, context, "Error",
+											"Arithmetic",
+											"DivisionByZero"), context)
+									.mimic(message, context);
+							condition.setCell("message", message);
+							condition.setCell("context", context);
+							condition.setCell("receiver", on);
+
+							final Object[] newCell = new Object[] { arg };
+
+							context.runtime.withRestartReturningArguments(
+									new RunnableWithControlFlow() {
+										@Override
+										public void run()
+												throws ControlFlow {
+											context.runtime.errorCondition(
+													condition);
+										}
+									}, context,
+									new Restart.ArgumentGivingRestart(
+											"useValue") {
+										@Override
+										public List<String> getArgumentNames() {
+											return new ArrayList<>(Arrays
+													.asList("newValue"));
+										}
+
+										@Override
+										public IokeObject invoke(
+												IokeObject c2,
+												List<Object> arguments)
+												throws ControlFlow {
+											newCell[0] = arguments.get(0);
+											return c2.runtime.nil;
+										}
+									});
+
+							arg = newCell[0];
+						}
+
+						BigDecimal result = null;
+						try {
+							result = Decimal.value(on)
+									.divide(Decimal.value(arg));
+						} catch (ArithmeticException e) {
+							result = Decimal.value(on).divide(
+									Decimal.value(arg),
+									java.math.MathContext.DECIMAL128);
+						}
+						return context.runtime
+								.newDecimal(result.stripTrailingZeros());
 					}
 				}));
 	}

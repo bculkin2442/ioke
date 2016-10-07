@@ -42,8 +42,9 @@ public class Optimizer {
 
 	private static Optimizer find(Term term, int dist) {
 		// System.out.println("term="+term+", dist="+dist);
-		if (term == null)
+		if (term == null) {
 			return null;
+		}
 		Term next = term.next;
 		TermType type = term.type;
 		switch (type) {
@@ -53,10 +54,11 @@ public class Optimizer {
 				return new Optimizer(term, dist);
 			case BITSET:
 			case BITSET2:
-				if (term.weight <= THRESHOLD)
+				if (term.weight <= THRESHOLD) {
 					return new Optimizer(term, dist);
-				else
+				} else {
 					return find(term.next, dist + 1);
+				}
 			case ANY_CHAR:
 			case ANY_CHAR_NE:
 				return find(next, dist + 1);
@@ -64,8 +66,9 @@ public class Optimizer {
 			case REPEAT_MIN_MAX:
 				if (term.minCount > 0) {
 					return find(term.target, dist);
-				} else
+				} else {
 					return null;
+				}
 			case BOUNDARY:
 			case DIRECTION:
 			case UBOUNDARY:

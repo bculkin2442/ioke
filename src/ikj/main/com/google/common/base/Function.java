@@ -66,5 +66,6 @@ public interface Function<F, T> {
 	 * Note that it is always safe <em>not</em> to override
 	 * {@link Object#equals}.
 	 */
+	@Override
 	boolean equals(Object obj);
 }

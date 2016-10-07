@@ -113,6 +113,7 @@ public class ConditionsBehavior {
 							runtime.withReturningRestart(
 									"ignoreExtraArguments", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -168,13 +169,13 @@ public class ConditionsBehavior {
 									condition.setCell("context", context);
 									condition.setCell("receiver", on);
 									condition.setCell("expected", runtime
-											.newList(new ArrayList<Object>(
+											.newList(new ArrayList<>(
 													Arrays.<Object> asList(
 															runtime.newText(
 																	"report:"),
 															runtime.newText(
 																	"test:")))));
-									List<Object> extra = new ArrayList<Object>();
+									List<Object> extra = new ArrayList<>();
 									extra.add(runtime.newText(n));
 									condition.setCell("extra",
 											runtime.newList(extra));
@@ -182,6 +183,7 @@ public class ConditionsBehavior {
 									runtime.withReturningRestart(
 											"ignoreExtraKeywords", context,
 											new RunnableWithControlFlow() {
+												@Override
 												public void run()
 														throws ControlFlow {
 													runtime.errorCondition(
@@ -246,7 +248,7 @@ public class ConditionsBehavior {
 						getArguments().checkArgumentCount(context, message,
 								on);
 						int count = message.getArgumentCount();
-						List<Object> conds = new ArrayList<Object>();
+						List<Object> conds = new ArrayList<>();
 						for (int i = 0, j = count - 1; i < j; i++) {
 							conds.add(Interpreter.getEvaluatedArgument(
 									message, i, context));
@@ -291,7 +293,7 @@ public class ConditionsBehavior {
 								on);
 
 						int count = message.getArgumentCount();
-						List<Object> conds = new ArrayList<Object>();
+						List<Object> conds = new ArrayList<>();
 						for (int i = 0, j = count - 1; i < j; i++) {
 							conds.add(Interpreter.getEvaluatedArgument(
 									message, i, context));
@@ -345,9 +347,9 @@ public class ConditionsBehavior {
 
 						IokeObject code = IokeObject
 								.as(args.get(argCount - 1), context);
-						List<Runtime.RestartInfo> restarts = new ArrayList<Runtime.RestartInfo>();
-						List<Runtime.RescueInfo> rescues = new ArrayList<Runtime.RescueInfo>();
-						List<Runtime.HandlerInfo> handlers = new ArrayList<Runtime.HandlerInfo>();
+						List<Runtime.RestartInfo> restarts = new ArrayList<>();
+						List<Runtime.RescueInfo> rescues = new ArrayList<>();
+						List<Runtime.HandlerInfo> handlers = new ArrayList<>();
 
 						Runtime.BindIndex index = context.runtime
 								.getBindIndex();
@@ -435,6 +437,7 @@ public class ConditionsBehavior {
 
 										runtime.withRestartReturningArguments(
 												new RunnableWithControlFlow() {
+													@Override
 													public void run()
 															throws ControlFlow {
 														runtime.errorCondition(
@@ -443,12 +446,14 @@ public class ConditionsBehavior {
 												}, context,
 												new Restart.ArgumentGivingRestart(
 														"useValue") {
+													@Override
 													public List<String> getArgumentNames() {
-														return new ArrayList<String>(
+														return new ArrayList<>(
 																Arrays.asList(
 																		"newValue"));
 													}
 
+													@Override
 													public IokeObject invoke(
 															IokeObject context,
 															List<Object> arguments)
@@ -484,9 +489,8 @@ public class ConditionsBehavior {
 										Interpreter.send(runtime.code,
 												context, ri.restart),
 										e.getArguments());
-							} else {
-								throw e;
 							}
+							throw e;
 						} catch (ControlFlow.Rescue e) {
 							Runtime.RescueInfo ri = null;
 							if ((ri = e.getRescue()).token == rescues) {
@@ -500,9 +504,8 @@ public class ConditionsBehavior {
 												runtime.handlerMessage,
 												context, ri.rescue),
 										e.getCondition());
-							} else {
-								throw e;
 							}
+							throw e;
 						} finally {
 							if (doUnregister) {
 								runtime.unregisterHandlers(handlers);
@@ -530,7 +533,7 @@ public class ConditionsBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> posArgs = new ArrayList<Object>();
+						List<Object> posArgs = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, posArgs,
 								new HashMap<String, Object>());
@@ -540,7 +543,7 @@ public class ConditionsBehavior {
 						IokeObject restart = IokeObject.as(posArgs.get(0),
 								context);
 						Runtime.RestartInfo realRestart = null;
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						if (restart.isSymbol()) {
 							String name = Symbol.getText(restart);
 							realRestart = context.runtime
@@ -561,6 +564,7 @@ public class ConditionsBehavior {
 								runtime.withReturningRestart(
 										"ignoreMissingRestart", context,
 										new RunnableWithControlFlow() {
+											@Override
 											public void run()
 													throws ControlFlow {
 												runtime.errorCondition(
@@ -588,6 +592,7 @@ public class ConditionsBehavior {
 								runtime.withReturningRestart(
 										"ignoreMissingRestart", context,
 										new RunnableWithControlFlow() {
+											@Override
 											public void run()
 													throws ControlFlow {
 												runtime.errorCondition(
@@ -624,7 +629,7 @@ public class ConditionsBehavior {
 					public Object activate(IokeObject method,
 							final IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -653,6 +658,7 @@ public class ConditionsBehavior {
 
 							runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -661,12 +667,13 @@ public class ConditionsBehavior {
 									}, context,
 									new Restart.ArgumentGivingRestart(
 											"useValue") {
+										@Override
 										public List<String> getArgumentNames() {
-											return new ArrayList<String>(
-													Arrays.asList(
-															"newValue"));
+											return new ArrayList<>(Arrays
+													.asList("newValue"));
 										}
 
+										@Override
 										public IokeObject invoke(
 												IokeObject context,
 												List<Object> arguments)
@@ -688,9 +695,8 @@ public class ConditionsBehavior {
 						}
 						if (realRestart == null) {
 							return runtime.nil;
-						} else {
-							return realRestart.restart;
 						}
+						return realRestart.restart;
 					}
 				}));
 
@@ -711,7 +717,7 @@ public class ConditionsBehavior {
 					public Object activate(IokeObject method,
 							final IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -722,7 +728,7 @@ public class ConditionsBehavior {
 							toLookFor = args.get(0);
 						}
 
-						List<Object> result = new ArrayList<Object>();
+						List<Object> result = new ArrayList<>();
 						List<List<Runtime.RestartInfo>> activeRestarts = runtime
 								.getActiveRestarts();
 
@@ -760,8 +766,8 @@ public class ConditionsBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> positionalArgs = new ArrayList<Object>();
-						Map<String, Object> keywordArgs = new HashMap<String, Object>();
+						List<Object> positionalArgs = new ArrayList<>();
+						Map<String, Object> keywordArgs = new HashMap<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, positionalArgs, keywordArgs);
 
@@ -789,8 +795,8 @@ public class ConditionsBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> positionalArgs = new ArrayList<Object>();
-						Map<String, Object> keywordArgs = new HashMap<String, Object>();
+						List<Object> positionalArgs = new ArrayList<>();
+						Map<String, Object> keywordArgs = new HashMap<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, positionalArgs, keywordArgs);
 

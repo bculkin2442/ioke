@@ -21,7 +21,7 @@ public class Dict extends IokeData {
 	private IokeObject			defaultValue;
 
 	public Dict() {
-		this(new HashMap<Object, Object>());
+		this(new HashMap<>());
 	}
 
 	public Dict(Map<Object, Object> d) {
@@ -33,9 +33,8 @@ public class Dict extends IokeData {
 		Dict dict = (Dict) IokeObject.data(on);
 		if (dict.defaultValue == null) {
 			return context.runtime.nil;
-		} else {
-			return dict.defaultValue;
 		}
+		return dict.defaultValue;
 	}
 
 	public static void setDefaultValue(Object on, IokeObject defaultValue)
@@ -61,7 +60,7 @@ public class Dict extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime.newNumber(
 								((Dict) IokeObject.data(on)).dict
@@ -149,7 +148,7 @@ public class Dict extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						Map<Object, Object> newMap = new HashMap<Object, Object>();
+						Map<Object, Object> newMap = new HashMap<>();
 						newMap.putAll(getMap(on));
 
 						for (Object o : args) {
@@ -202,9 +201,8 @@ public class Dict extends IokeData {
 						Object result = Dict.getMap(on).get(args.get(0));
 						if (result == null) {
 							return getDefaultValue(on, context, message);
-						} else {
-							return result;
 						}
+						return result;
 					}
 				}));
 
@@ -466,9 +464,10 @@ public class Dict extends IokeData {
 		return dict;
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
-		return new Dict(new HashMap<Object, Object>(dict));
+		return new Dict(new HashMap<>(dict));
 	}
 
 	@Override

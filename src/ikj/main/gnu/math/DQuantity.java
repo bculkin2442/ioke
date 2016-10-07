@@ -18,18 +18,22 @@ public class DQuantity extends Quantity implements Externalizable {
 	double	factor;
 	Unit	unt;
 
+	@Override
 	public final Unit unit() {
 		return unt;
 	}
 
+	@Override
 	public final Complex number() {
 		return new DFloNum(factor);
 	}
 
+	@Override
 	public final RealNum re() {
 		return new DFloNum(factor);
 	}
 
+	@Override
 	public final double doubleValue() {
 		return factor * unt.factor;
 	}
@@ -39,17 +43,20 @@ public class DQuantity extends Quantity implements Externalizable {
 		this.unt = unit;
 	}
 
+	@Override
 	public boolean isExact() {
 		return false;
 	}
 
+	@Override
 	public boolean isZero() {
 		return factor == 0.0;
 	}
 
 	public static DQuantity add(DQuantity x, DQuantity y, double k) {
-		if (x.dimensions() != y.dimensions())
+		if (x.dimensions() != y.dimensions()) {
 			throw new ArithmeticException("units mis-match");
+		}
 		double unit_ratio = y.unit().factor / x.unit().factor;
 		return new DQuantity(x.factor + k * unit_ratio * y.factor,
 				x.unit());
@@ -67,61 +74,79 @@ public class DQuantity extends Quantity implements Externalizable {
 		return new DQuantity(factor, unit);
 	}
 
+	@Override
 	public Numeric add(Object y, int k) {
-		if (y instanceof DQuantity)
+		if (y instanceof DQuantity) {
 			return add(this, (DQuantity) y, (double) k);
-		if (dimensions() == Dimensions.Empty && y instanceof RealNum)
+		}
+		if (dimensions() == Dimensions.Empty && y instanceof RealNum) {
 			return new DQuantity(factor + k * ((RealNum) y).doubleValue(),
 					unit());
-		if (!(y instanceof Numeric))
+		}
+		if (!(y instanceof Numeric)) {
 			throw new IllegalArgumentException();
+		}
 		return ((Numeric) y).addReversed(this, k);
 	}
 
+	@Override
 	public Numeric addReversed(Numeric x, int k) {
-		if (dimensions() == Dimensions.Empty && x instanceof RealNum)
+		if (dimensions() == Dimensions.Empty && x instanceof RealNum) {
 			return new DFloNum(((RealNum) x).doubleValue() + k * factor);
+		}
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public Numeric mul(Object y) {
-		if (y instanceof DQuantity)
+		if (y instanceof DQuantity) {
 			return times(this, (DQuantity) y);
-		if (y instanceof RealNum)
+		}
+		if (y instanceof RealNum) {
 			return new DQuantity(factor * ((RealNum) y).doubleValue(),
 					unit());
-		if (!(y instanceof Numeric))
+		}
+		if (!(y instanceof Numeric)) {
 			throw new IllegalArgumentException();
+		}
 		return ((Numeric) y).mulReversed(this);
 	}
 
+	@Override
 	public Numeric mulReversed(Numeric x) {
-		if (x instanceof RealNum)
+		if (x instanceof RealNum) {
 			return new DQuantity(((RealNum) x).doubleValue() * factor,
 					unit());
+		}
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public Numeric div(Object y) {
 		if (y instanceof DQuantity) {
 			DQuantity qy = (DQuantity) y;
-			if (dimensions() == qy.dimensions())
+			if (dimensions() == qy.dimensions()) {
 				return new DFloNum((factor * unit().doubleValue())
 						/ (qy.factor * qy.unit().factor));
+			}
 			return divide(this, qy);
 		}
-		if (y instanceof RealNum)
+		if (y instanceof RealNum) {
 			return new DQuantity(factor / ((RealNum) y).doubleValue(),
 					unit());
-		if (!(y instanceof Numeric))
+		}
+		if (!(y instanceof Numeric)) {
 			throw new IllegalArgumentException();
+		}
 		return ((Numeric) y).divReversed(this);
 	}
 
+	@Override
 	public Numeric divReversed(Numeric x) {
-		if (x instanceof RealNum)
+		if (x instanceof RealNum) {
 			return new DQuantity(((RealNum) x).doubleValue() / factor,
 					Unit.divide(Unit.Empty, unit()));
+		}
 		throw new IllegalArgumentException();
 	}
 
@@ -130,11 +155,13 @@ public class DQuantity extends Quantity implements Externalizable {
 	 *             (using writeObject).
 	 */
 
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeDouble(factor);
 		out.writeObject(unt);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		factor = in.readDouble();

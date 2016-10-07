@@ -26,13 +26,14 @@ public class CoverageInterpreter extends Interpreter {
 
 		public int	count	= 0;
 
+		@Override
 		public String toString() {
 			return "CoveragePoint<" + filename + ":" + line + ":" + pos
 					+ " - " + name + "(" + count + ")>";
 		}
 	}
 
-	public final Map<String, Map<String, CoveragePoint>>	covered		= new HashMap<String, Map<String, CoveragePoint>>();
+	public final Map<String, Map<String, CoveragePoint>>	covered		= new HashMap<>();
 
 	private boolean											covering	= true;
 
@@ -52,7 +53,7 @@ public class CoverageInterpreter extends Interpreter {
 			Map<String, CoveragePoint> perLinePos = covered
 					.get(cp.filename);
 			if (perLinePos == null) {
-				perLinePos = new HashMap<String, CoveragePoint>();
+				perLinePos = new HashMap<>();
 				covered.put(cp.filename, perLinePos);
 			}
 

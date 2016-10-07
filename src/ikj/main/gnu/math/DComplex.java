@@ -29,25 +29,31 @@ public class DComplex extends Complex implements Externalizable {
 		this.imag = imag;
 	}
 
+	@Override
 	public RealNum re() {
 		return new DFloNum(real);
 	}
 
+	@Override
 	public double doubleValue() {
 		return real;
 	}
 
+	@Override
 	public RealNum im() {
 		return new DFloNum(imag);
 	}
 
+	@Override
 	public double doubleImagValue() {
 		return imag;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Complex))
+		if (obj == null || !(obj instanceof Complex)) {
 			return false;
+		}
 		Complex y = (Complex) obj;
 		return y.unit() == Unit.Empty
 				&& (Double.doubleToLongBits(real) == Double
@@ -56,6 +62,7 @@ public class DComplex extends Complex implements Externalizable {
 						.doubleToLongBits(y.imValue()));
 	}
 
+	@Override
 	public String toString() {
 		String prefix = "";
 
@@ -69,12 +76,14 @@ public class DComplex extends Complex implements Externalizable {
 		} else if (Double.isNaN(real)) {
 			prefix = "#i";
 			reString = "0/0";
-		} else
+		} else {
 			reString = Double.toString(real);
+		}
 
-		if (Double.doubleToLongBits(imag) == 0) // i.e. imag is 0.0 and not
-												// -0.0
+		if (Double.doubleToLongBits(imag) == 0) {
+			// -0.0
 			return prefix + reString;
+		}
 
 		String imString;
 		if (imag == 1.0 / 0.0) {
@@ -88,37 +97,44 @@ public class DComplex extends Complex implements Externalizable {
 			imString = "+0/0i";
 		} else {
 			imString = Double.toString(imag) + "i";
-			if (imString.charAt(0) != '-')
+			if (imString.charAt(0) != '-') {
 				imString = "+" + imString;
+			}
 		}
 
 		return ((Double.doubleToLongBits(real) == 0 ? prefix
 				: prefix + reString) + imString);
 	}
 
+	@Override
 	public String toString(int radix) {
-		if (radix == 10)
+		if (radix == 10) {
 			return toString();
+		}
 		return "#d" + toString();
 	}
 
 	// All transcendental complex functions return DComplex
 
+	@Override
 	public final Numeric neg() {
 		return new DComplex(-real, -imag);
 	}
 
+	@Override
 	public Numeric add(Object y, int k) {
 		if (y instanceof Complex) {
 			Complex yc = (Complex) y;
-			if (yc.dimensions() != Dimensions.Empty)
+			if (yc.dimensions() != Dimensions.Empty) {
 				throw new ArithmeticException("units mis-match");
+			}
 			return new DComplex(real + k * yc.reValue(),
 					imag + k * yc.imValue());
 		}
 		return ((Numeric) y).addReversed(this, k);
 	}
 
+	@Override
 	public Numeric mul(Object y) {
 		if (y instanceof Complex) {
 			Complex yc = (Complex) y;
@@ -133,6 +149,7 @@ public class DComplex extends Complex implements Externalizable {
 		return ((Numeric) y).mulReversed(this);
 	}
 
+	@Override
 	public Numeric div(Object y) {
 		if (y instanceof Complex) {
 			Complex yc = (Complex) y;
@@ -218,15 +235,16 @@ public class DComplex extends Complex implements Externalizable {
 		double r = DComplex.hypot(x_re, x_im);
 		/* #endif */
 		double nr, ni;
-		if (r == 0.0)
+		if (r == 0.0) {
 			nr = ni = r;
-		else if (x_re > 0) {
+		} else if (x_re > 0) {
 			nr = Math.sqrt(0.5 * (r + x_re));
 			ni = x_im / nr / 2;
 		} else {
 			ni = Math.sqrt(0.5 * (r - x_re));
-			if (x_im < 0)
+			if (x_im < 0) {
 				ni = -ni;
+			}
 			nr = x_im / ni / 2;
 		}
 		return new DComplex(nr, ni);
@@ -292,17 +310,20 @@ public class DComplex extends Complex implements Externalizable {
 		 * and lb are the long bits of a and b; and ha and hb are the high
 		 * order bits of la and lb.
 		 */
-		if ((ha - hb) > 0x3c00000) // x/y > 2**60
+		if ((ha - hb) > 0x3c00000) {
 			return a + b;
+		}
 		int k = 0;
 		j = 0; // scale as high-order of double
 		if (ha > 0x5f300000) { // a>2**500
 			if (ha >= 0x7ff00000) { // Inf or NaN
 				w = a + b; // for sNaN
-				if ((la & 0xfffffffffffffL) == 0)
+				if ((la & 0xfffffffffffffL) == 0) {
 					w = a;
-				if ((lb ^ 0x7ff0000000000000L) == 0)
+				}
+				if ((lb ^ 0x7ff0000000000000L) == 0) {
 					w = b;
+				}
 				return w;
 			}
 			/* scale a and b by 2**-600 */
@@ -311,8 +332,9 @@ public class DComplex extends Complex implements Externalizable {
 		}
 		if (hb < 0x20b00000) { // b < 2**-500
 			if (hb <= 0x000fffff) { // subnormal b or 0
-				if (lb == 0)
+				if (lb == 0) {
 					return a;
+				}
 				t1 = Double.longBitsToDouble(0x7fd0000000000000L); // t1=2^1022
 				b *= t1;
 				a *= t1;
@@ -359,11 +381,13 @@ public class DComplex extends Complex implements Externalizable {
 	 * @serialData Writes the real part, followed by the imaginary part.
 	 *             Both are written as doubles (using writeDouble).
 	 */
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeDouble(real);
 		out.writeDouble(imag);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		real = in.readDouble();

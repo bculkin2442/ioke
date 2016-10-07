@@ -18,6 +18,8 @@ package com.google.common.base;
 
 import java.util.NoSuchElementException;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * Simple static methods to be called at the start of your own methods to
  * verify correct arguments and state. This allows constructs such as

@@ -39,13 +39,16 @@ abstract class Enumerator implements Enumeration {
 
 	protected abstract boolean find();
 
+	@Override
 	public boolean hasMoreElements() {
 		return currObj != null || find();
 	}
 
+	@Override
 	public Object nextElement() {
-		if (currObj == null && !find())
+		if (currObj == null && !find()) {
 			throw new NoSuchElementException();
+		}
 		Object tmp = currObj;
 		currObj = null;
 		return tmp;

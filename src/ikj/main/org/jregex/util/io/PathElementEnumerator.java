@@ -49,21 +49,25 @@ class PathElementEnumerator implements Enumeration {
 	PathElementEnumerator(PathElementMask mask) {
 		this.mask = mask;
 		PathElementMask nextMask = mask.next;
-		if (nextMask != null)
+		if (nextMask != null) {
 			nextPEE = nextMask.newEnumerator();
+		}
 	}
 
 	protected void setDir(File f) {
 		entries = mask.elements(f);
 	}
 
+	@Override
 	public boolean hasMoreElements() {
 		return (nextObj != null || getNext());
 	}
 
+	@Override
 	public Object nextElement() {
-		if (nextObj == null && !getNext())
+		if (nextObj == null && !getNext()) {
 			throw new NoSuchElementException();
+		}
 		Object tmp = nextObj;
 		nextObj = null;
 		return tmp;
@@ -75,8 +79,9 @@ class PathElementEnumerator implements Enumeration {
 		} else {
 			while (!nextPEE.hasMoreElements()) {
 				File f = nextPathEntry();
-				if (f == null)
+				if (f == null) {
 					return false;
+				}
 				nextPEE.setDir(f);
 			}
 			nextObj = nextPEE.nextElement();
@@ -85,8 +90,9 @@ class PathElementEnumerator implements Enumeration {
 	}
 
 	private File nextPathEntry() {
-		if (entries == null || !entries.hasMoreElements())
+		if (entries == null || !entries.hasMoreElements()) {
 			return null;
+		}
 		return (File) entries.nextElement();
 	}
 }

@@ -61,7 +61,7 @@ public class DefinitionsBehavior {
 
 						String doc = null;
 
-						List<String> argNames = new ArrayList<String>(
+						List<String> argNames = new ArrayList<>(
 								args.size() - 1);
 						int start = 0;
 						if (args.size() > 1
@@ -291,7 +291,7 @@ public class DefinitionsBehavior {
 
 						String doc = null;
 
-						List<String> argNames = new ArrayList<String>(
+						List<String> argNames = new ArrayList<>(
 								args.size() - 1);
 						int start = 0;
 						if (args.size() > 1
@@ -333,7 +333,7 @@ public class DefinitionsBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());

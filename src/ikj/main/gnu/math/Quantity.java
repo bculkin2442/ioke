@@ -61,6 +61,7 @@ public abstract class Quantity extends Numeric {
 	 * The value of the real component, as a double. This is relative to
 	 * the unit().dims - i.e. unit()/doubleValue() is factored in.
 	 */
+	@Override
 	public double doubleValue() {
 		return unit().doubleValue() * re().doubleValue();
 	}
@@ -74,26 +75,32 @@ public abstract class Quantity extends Numeric {
 	}
 
 	public static Quantity make(Complex x, Unit u) {
-		if (u == Unit.Empty)
+		if (u == Unit.Empty) {
 			return x;
-		if (x instanceof DFloNum)
+		}
+		if (x instanceof DFloNum) {
 			return new DQuantity(x.doubleValue(), u);
+		}
 		return new CQuantity(x, u);
 	}
 
 	public static Quantity make(RealNum re, RealNum im, Unit unit) {
-		if (unit == Unit.Empty)
+		if (unit == Unit.Empty) {
 			return Complex.make(re, im);
-		if (im.isZero() && (!re.isExact() || !im.isExact()))
+		}
+		if (im.isZero() && (!re.isExact() || !im.isExact())) {
 			return new DQuantity(re.doubleValue(), unit);
+		}
 		return new CQuantity(re, im, unit);
 	}
 
 	public static Quantity make(double re, double im, Unit unit) {
-		if (unit == Unit.Empty)
+		if (unit == Unit.Empty) {
 			return Complex.make(re, im);
-		if (im == 0.0)
+		}
+		if (im == 0.0) {
 			return new DQuantity(re, unit);
+		}
 		return new CQuantity(new DFloNum(re), new DFloNum(im), unit);
 	}
 
@@ -109,40 +116,49 @@ public abstract class Quantity extends Numeric {
 	 * x.unit()); }
 	 */
 
+	@Override
 	public Numeric neg() {
 		return make((Complex) number().neg(), unit());
 	}
 
+	@Override
 	public Numeric abs() {
 		return make((Complex) number().abs(), unit());
 	}
 
 	public static int compare(Quantity x, Quantity y) {
-		if (x.unit() == y.unit())
+		if (x.unit() == y.unit()) {
 			return Complex.compare(x.number(), y.number());
-		if (x.dimensions() != y.dimensions() || x.imValue() != y.imValue())
+		}
+		if (x.dimensions() != y.dimensions()
+				|| x.imValue() != y.imValue()) {
 			return -3;
+		}
 		return DFloNum.compare(x.reValue(), y.reValue());
 	}
 
+	@Override
 	public int compare(Object obj) {
-		if (!(obj instanceof Quantity))
+		if (!(obj instanceof Quantity)) {
 			return ((Numeric) obj).compareReversed(this);
+		}
 		return compare(this, (Quantity) obj);
 	}
 
+	@Override
 	public int compareReversed(Numeric x) {
-		if (x instanceof Quantity)
+		if (x instanceof Quantity) {
 			return compare((Quantity) x, this);
+		}
 		throw new IllegalArgumentException();
 	}
 
 	public static Quantity add(Quantity x, Quantity y, int k) {
-		if (x.unit() == y.unit())
+		if (x.unit() == y.unit()) {
 			return make(Complex.add(x.number(), y.number(), k), x.unit());
-		else if (x.dimensions() != y.dimensions())
+		} else if (x.dimensions() != y.dimensions()) {
 			throw new ArithmeticException("units mis-match");
-		else {
+		} else {
 			double x_factor = x.unit().doubleValue();
 			double re = (x.reValue() + k * y.reValue()) / x_factor;
 			double im = (x.imValue() + k * y.imValue()) / x_factor;
@@ -150,15 +166,19 @@ public abstract class Quantity extends Numeric {
 		}
 	}
 
+	@Override
 	public Numeric add(Object y, int k) {
-		if (y instanceof Quantity)
+		if (y instanceof Quantity) {
 			return add(this, (Quantity) y, k);
+		}
 		return ((Numeric) y).addReversed(this, k);
 	}
 
+	@Override
 	public Numeric addReversed(Numeric x, int k) {
-		if (x instanceof Quantity)
+		if (x instanceof Quantity) {
 			return add((Quantity) x, this, k);
+		}
 		throw new IllegalArgumentException();
 	}
 
@@ -170,15 +190,19 @@ public abstract class Quantity extends Numeric {
 		return Quantity.make((Complex) num, unit);
 	}
 
+	@Override
 	public Numeric mul(Object y) {
-		if (y instanceof Quantity)
+		if (y instanceof Quantity) {
 			return times(this, (Quantity) y);
+		}
 		return ((Numeric) y).mulReversed(this);
 	}
 
+	@Override
 	public Numeric mulReversed(Numeric x) {
-		if (x instanceof Quantity)
+		if (x instanceof Quantity) {
 			return times((Quantity) x, this);
+		}
 		throw new IllegalArgumentException();
 	}
 
@@ -188,22 +212,28 @@ public abstract class Quantity extends Numeric {
 		return Quantity.make((Complex) num, unit);
 	}
 
+	@Override
 	public Numeric div(Object y) {
-		if (y instanceof Quantity)
+		if (y instanceof Quantity) {
 			return divide(this, (Quantity) y);
+		}
 		return ((Numeric) y).divReversed(this);
 	}
 
+	@Override
 	public Numeric divReversed(Numeric x) {
-		if (x instanceof Quantity)
+		if (x instanceof Quantity) {
 			return divide((Quantity) x, this);
+		}
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public String toString(int radix) {
 		String str = number().toString(radix);
-		if (unit() == Unit.Empty)
+		if (unit() == Unit.Empty) {
 			return str;
+		}
 		return str + unit().toString();
 	}
 }

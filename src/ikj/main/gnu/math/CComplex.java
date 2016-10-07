@@ -27,10 +27,12 @@ public class CComplex extends Complex implements Externalizable {
 		this.imag = imag;
 	}
 
+	@Override
 	public RealNum re() {
 		return real;
 	}
 
+	@Override
 	public RealNum im() {
 		return imag;
 	}
@@ -38,11 +40,13 @@ public class CComplex extends Complex implements Externalizable {
 	/**
 	 * @serialData Write the real and imaginary parts, as Objects.
 	 */
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeObject(real);
 		out.writeObject(imag);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		real = (RealNum) in.readObject();

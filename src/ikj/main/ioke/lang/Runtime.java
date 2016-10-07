@@ -534,6 +534,7 @@ public class Runtime extends IokeData {
 		afterInitRuntime(runtime);
 
 		addBuiltinScript("benchmark", new Builtin() {
+			@Override
 			public IokeObject load(Runtime runtime, IokeObject context,
 					IokeObject message) throws ControlFlow {
 				return ioke.lang.extensions.benchmark.Benchmark
@@ -542,6 +543,7 @@ public class Runtime extends IokeData {
 		});
 
 		addBuiltinScript("readline", new Builtin() {
+			@Override
 			public IokeObject load(Runtime runtime, IokeObject context,
 					IokeObject message) throws ControlFlow {
 				return ioke.lang.extensions.readline.Readline
@@ -728,7 +730,7 @@ public class Runtime extends IokeData {
 		return this.io;
 	}
 
-	private Map<String, Builtin> builtins = new HashMap<String, Builtin>();
+	private Map<String, Builtin> builtins = new HashMap<>();
 
 	public void addBuiltinScript(String name, Builtin builtin) {
 		builtins.put(name, builtin);
@@ -787,6 +789,7 @@ public class Runtime extends IokeData {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	public Object evaluateFile(File f, IokeObject message,
 			IokeObject context) throws ControlFlow {
 		try {
@@ -803,6 +806,7 @@ public class Runtime extends IokeData {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	public Object evaluateFile(String filename, IokeObject message,
 			IokeObject context) throws ControlFlow {
 		try {
@@ -812,14 +816,14 @@ public class Runtime extends IokeData {
 				return evaluateStream(new InputStreamReader(
 						new FileInputStream(new File(filename)), "UTF-8"),
 						message, context);
-			} else {
-				return evaluateStream(
-						new InputStreamReader(new FileInputStream(new File(
-								((IokeSystem) IokeObject.data(system))
-										.getCurrentWorkingDirectory(),
-								filename)), "UTF-8"),
-						message, context);
 			}
+
+			return evaluateStream(
+					new InputStreamReader(new FileInputStream(new File(
+							((IokeSystem) IokeObject.data(system))
+									.getCurrentWorkingDirectory(),
+							filename)), "UTF-8"),
+					message, context);
 		} catch (Exception e) {
 			reportNativeException(e, message, context);
 			return null;
@@ -847,7 +851,7 @@ public class Runtime extends IokeData {
 			condition.setCell("exceptionMessage", nil);
 		}
 
-		List<Object> ob = new ArrayList<Object>();
+		List<Object> ob = new ArrayList<>();
 		for (StackTraceElement ste : e.getStackTrace()) {
 			ob.add(newText(ste.toString()));
 		}
@@ -996,7 +1000,7 @@ public class Runtime extends IokeData {
 		return newNumber(Number.getFrom(number));
 	}
 
-	private Map<IntNum, IokeObject> numCache = new HashMap<IntNum, IokeObject>();
+	private Map<IntNum, IokeObject> numCache = new HashMap<>();
 
 	public IokeObject newNumber(IntNum number) {
 		IokeObject obj = null;
@@ -1086,7 +1090,7 @@ public class Runtime extends IokeData {
 	public IokeObject newSet(Collection<Object> objs) {
 		IokeObject obj = this.set.allocateCopy(null, null);
 		obj.singleMimicsWithoutCheck(this.set);
-		obj.setData(new IokeSet(new HashSet<Object>(objs)));
+		obj.setData(new IokeSet(new HashSet<>(objs)));
 		return obj;
 	}
 
@@ -1158,7 +1162,7 @@ public class Runtime extends IokeData {
 		return obj;
 	}
 
-	private Map<String, IokeObject> symbolTable = new HashMap<String, IokeObject>();
+	private Map<String, IokeObject> symbolTable = new HashMap<>();
 
 	public IokeObject getSymbol(String name) {
 		synchronized (symbolTable) {
@@ -1175,7 +1179,7 @@ public class Runtime extends IokeData {
 	public Object withRestartReturningArguments(
 			RunnableWithControlFlow code, IokeObject context,
 			Restart.JavaRestart... restarts) throws ControlFlow {
-		List<RestartInfo> rrs = new ArrayList<RestartInfo>();
+		List<RestartInfo> rrs = new ArrayList<>();
 		BindIndex index = getBindIndex();
 
 		for (Restart.JavaRestart rjr : restarts) {
@@ -1184,7 +1188,7 @@ public class Runtime extends IokeData {
 			IokeObject.setCell(rr, "name", getSymbol(rjr.getName()),
 					context);
 
-			List<Object> args = new ArrayList<Object>();
+			List<Object> args = new ArrayList<>();
 			for (String argName : rjr.getArgumentNames()) {
 				args.add(getSymbol(argName));
 			}
@@ -1210,7 +1214,7 @@ public class Runtime extends IokeData {
 
 		try {
 			code.run();
-			return new ArrayList<Object>();
+			return new ArrayList<>();
 		} catch (ControlFlow.Restart e) {
 			RestartInfo ri = null;
 			if ((ri = e.getRestart()).token == rrs) {
@@ -1231,10 +1235,10 @@ public class Runtime extends IokeData {
 		IokeObject rr = IokeObject
 				.as(Interpreter.send(mimic, context, restart), context);
 		IokeObject.setCell(rr, "name", getSymbol(name), context);
-		IokeObject.setCell(rr, "argumentNames",
-				newList(new ArrayList<Object>()), context);
+		IokeObject.setCell(rr, "argumentNames", newList(new ArrayList<>()),
+				context);
 
-		List<RestartInfo> rrs = new ArrayList<RestartInfo>();
+		List<RestartInfo> rrs = new ArrayList<>();
 		BindIndex index = getBindIndex();
 		rrs.add(0, new RestartInfo(name, rr, rrs, index, null));
 		index = index.nextCol();
@@ -1292,6 +1296,7 @@ public class Runtime extends IokeData {
 			this.index = index;
 		}
 
+		@Override
 		public String toString() {
 			return "rescueInfo(" + index + ")";
 		}
@@ -1333,21 +1338,21 @@ public class Runtime extends IokeData {
 	private ThreadLocal<List<List<RestartInfo>>>	restarts	= new ThreadLocal<List<List<RestartInfo>>>() {
 																	@Override
 																	protected List<List<RestartInfo>> initialValue() {
-																		return new ArrayList<List<RestartInfo>>();
+																		return new ArrayList<>();
 																	}
 																};
 
 	private ThreadLocal<List<List<RescueInfo>>>		rescues		= new ThreadLocal<List<List<RescueInfo>>>() {
 																	@Override
 																	protected List<List<RescueInfo>> initialValue() {
-																		return new ArrayList<List<RescueInfo>>();
+																		return new ArrayList<>();
 																	}
 																};
 
 	private ThreadLocal<List<List<HandlerInfo>>>	handlers	= new ThreadLocal<List<List<HandlerInfo>>>() {
 																	@Override
 																	protected List<List<HandlerInfo>> initialValue() {
-																		return new ArrayList<List<HandlerInfo>>();
+																		return new ArrayList<>();
 																	}
 																};
 
@@ -1402,6 +1407,7 @@ public class Runtime extends IokeData {
 					|| (this.row == other.row && this.col > other.col);
 		}
 
+		@Override
 		public String toString() {
 			return "ix[" + row + "," + col + "]";
 		}
@@ -1413,7 +1419,7 @@ public class Runtime extends IokeData {
 
 	public List<HandlerInfo> findActiveHandlersFor(IokeObject condition,
 			BindIndex stopIndex) {
-		List<HandlerInfo> result = new ArrayList<HandlerInfo>();
+		List<HandlerInfo> result = new ArrayList<>();
 
 		for (List<HandlerInfo> lrp : handlers.get()) {
 			for (HandlerInfo rp : lrp) {
@@ -1519,7 +1525,7 @@ public class Runtime extends IokeData {
 			IokeObject versionObj = newFromOrigin();
 
 			versionObj.setCell("machine", newText("ikj"));
-			List<Object> versionParts = new ArrayList<Object>();
+			List<Object> versionParts = new ArrayList<>();
 			for (String s : runtimeVersion.split("[\\.-]")) {
 				try {
 					versionParts.add(newNumber(s));

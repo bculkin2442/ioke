@@ -165,8 +165,9 @@ public class Matcher implements MatchResult {
 			this.memregs = memregs;
 		}
 
-		if ((counterCount = regex.counters) > 0)
+		if ((counterCount = regex.counters) > 0) {
 			counters = new int[counterCount];
+		}
 
 		if ((lookaheadCount = regex.lookaheads) > 0) {
 			LAEntry[] lookaheads = new LAEntry[lookaheadCount];
@@ -212,9 +213,10 @@ public class Matcher implements MatchResult {
 		// System.out.println("setTarget("+m+","+groupId+")");
 		// System.out.println(" in="+mr.in);
 		// System.out.println(" out="+mr.out);
-		if (mr == null)
+		if (mr == null) {
 			throw new IllegalArgumentException(
 					"group #" + groupId + " is not assigned");
+		}
 		data = m.data;
 		offset = mr.in;
 		end = mr.out;
@@ -365,8 +367,9 @@ public class Matcher implements MatchResult {
 		while ((c = in.read(mychars, count, len)) >= 0) {
 			len -= c;
 			count += c;
-			if (len == 0)
+			if (len == 0) {
 				break;
+			}
 		}
 		setTarget(mychars, 0, count, shared);
 	}
@@ -378,8 +381,9 @@ public class Matcher implements MatchResult {
 		if (mychars == null || shared) {
 			mychars = new char[free = 1024];
 			shared = false;
-		} else
+		} else {
 			free = mychars.length;
+		}
 		int count = 0;
 		int c;
 		while ((c = in.read(mychars, count, free)) >= 0) {
@@ -458,6 +462,7 @@ public class Matcher implements MatchResult {
 	 * 
 	 * @deprecated Replaced by isPrefix()
 	 */
+	@Deprecated
 	public final boolean isStart() {
 		return matchesPrefix();
 	}
@@ -485,8 +490,9 @@ public class Matcher implements MatchResult {
 	 * @return whether a current target matches the whole pattern.
 	 */
 	public final boolean matches() {
-		if (called)
+		if (called) {
 			setPosition(0);
+		}
 		return search(ANCHOR_START | ANCHOR_END);
 	}
 
@@ -534,8 +540,9 @@ public class Matcher implements MatchResult {
 	 * @return <code>true</code> if a match found.
 	 */
 	public final boolean find() {
-		if (called)
+		if (called) {
 			skip();
+		}
 		return search(0);
 	}
 
@@ -550,8 +557,9 @@ public class Matcher implements MatchResult {
 	 * @return <code>true</code> if a match found.
 	 */
 	public final boolean find(int anchors) {
-		if (called)
+		if (called) {
 			skip();
+		}
 		return search(anchors);
 	}
 
@@ -572,17 +580,22 @@ public class Matcher implements MatchResult {
 			private boolean	checked	= false;
 			private boolean	hasMore	= false;
 
+			@Override
 			public boolean hasMore() {
-				if (!checked)
+				if (!checked) {
 					check();
+				}
 				return hasMore;
 			}
 
+			@Override
 			public MatchResult nextMatch() {
-				if (!checked)
+				if (!checked) {
 					check();
-				if (!hasMore)
+				}
+				if (!hasMore) {
 					throw new NoSuchElementException();
+				}
 				checked = false;
 				return Matcher.this;
 			}
@@ -592,14 +605,18 @@ public class Matcher implements MatchResult {
 				checked = true;
 			}
 
+			@Override
 			public int count() {
-				if (!checked)
+				if (!checked) {
 					check();
-				if (!hasMore)
+				}
+				if (!hasMore) {
 					return 0;
+				}
 				int c = 1;
-				while (find(options))
+				while (find(options)) {
 					c++;
+				}
 				checked = false;
 				return c;
 			}
@@ -694,10 +711,11 @@ public class Matcher implements MatchResult {
 			// don't clear(), i.e. allow it to match
 			return;
 		} else {
-			if (we < 0)
+			if (we < 0) {
 				wOffset = 0;
-			else
+			} else {
 				wOffset = we;
+			}
 		}
 		// rflush(); //rflush() works faster on simple regexes (with a
 		// small group/branch number)
@@ -757,20 +775,24 @@ public class Matcher implements MatchResult {
 
 	/**
 	 */
+	@Override
 	public String toString() {
 		return getString(wOffset, wEnd);
 	}
 
+	@Override
 	public Pattern pattern() {
 		return re;
 	}
 
+	@Override
 	public String target() {
 		return getString(offset, end);
 	}
 
 	/**
 	 */
+	@Override
 	public char[] targetChars() {
 		shared = true;
 		return data;
@@ -778,94 +800,113 @@ public class Matcher implements MatchResult {
 
 	/**
 	 */
+	@Override
 	public int targetStart() {
 		return offset;
 	}
 
 	/**
 	 */
+	@Override
 	public int targetEnd() {
 		return end;
 	}
 
+	@Override
 	public char charAt(int i) {
 		int in = this.wOffset;
 		int out = this.wEnd;
-		if (in < 0 || out < in)
+		if (in < 0 || out < in) {
 			throw new IllegalStateException("unassigned");
+		}
 		return data[in + i];
 	}
 
+	@Override
 	public char charAt(int i, int groupId) {
 		MemReg mr = bounds(groupId);
-		if (mr == null)
+		if (mr == null) {
 			throw new IllegalStateException(
 					"group #" + groupId + " is not assigned");
+		}
 		int in = mr.in;
-		if (i < 0 || i > (mr.out - in))
+		if (i < 0 || i > (mr.out - in)) {
 			throw new StringIndexOutOfBoundsException("" + i);
+		}
 		return data[in + i];
 	}
 
+	@Override
 	public final int length() {
 		return wEnd - wOffset;
 	}
 
 	/**
 	 */
+	@Override
 	public final int start() {
 		return wOffset - offset;
 	}
 
 	/**
 	 */
+	@Override
 	public final int end() {
 		return wEnd - offset;
 	}
 
 	/**
 	 */
+	@Override
 	public String prefix() {
 		return getString(offset, wOffset);
 	}
 
 	/**
 	 */
+	@Override
 	public String suffix() {
 		return getString(wEnd, end);
 	}
 
 	/**
 	 */
+	@Override
 	public int groupCount() {
 		return memregs.length;
 	}
 
 	/**
 	 */
+	@Override
 	public String group(int n) {
 		MemReg mr = bounds(n);
-		if (mr == null)
+		if (mr == null) {
 			return null;
+		}
 		return getString(mr.in, mr.out);
 	}
 
 	/**
 	 */
+	@Override
 	public String group(String name) {
 		Integer id = re.groupId(name);
-		if (id == null)
+		if (id == null) {
 			throw new IllegalArgumentException(
 					"<" + name + "> isn't defined");
+		}
 		return group(id.intValue());
 	}
 
 	/**
 	 */
+	@Override
 	public boolean getGroup(int n, TextBuffer tb) {
 		MemReg mr = bounds(n);
-		if (mr == null)
+		if (mr == null) {
 			return false;
+		}
 		int in;
 		tb.append(data, in = mr.in, mr.out - in);
 		return true;
@@ -873,20 +914,24 @@ public class Matcher implements MatchResult {
 
 	/**
 	 */
+	@Override
 	public boolean getGroup(String name, TextBuffer tb) {
 		Integer id = re.groupId(name);
-		if (id == null)
+		if (id == null) {
 			throw new IllegalArgumentException(
 					"unknown group: \"" + name + "\"");
+		}
 		return getGroup(id.intValue(), tb);
 	}
 
 	/**
 	 */
+	@Override
 	public boolean getGroup(int n, StringBuffer sb) {
 		MemReg mr = bounds(n);
-		if (mr == null)
+		if (mr == null) {
 			return false;
+		}
 		int in;
 		sb.append(data, in = mr.in, mr.out - in);
 		return true;
@@ -894,11 +939,13 @@ public class Matcher implements MatchResult {
 
 	/**
 	 */
+	@Override
 	public boolean getGroup(String name, StringBuffer sb) {
 		Integer id = re.groupId(name);
-		if (id == null)
+		if (id == null) {
 			throw new IllegalArgumentException(
 					"unknown group: \"" + name + "\"");
+		}
 		return getGroup(id.intValue(), sb);
 	}
 
@@ -912,8 +959,9 @@ public class Matcher implements MatchResult {
 		for (int i = 0; i < memregs.length; i++) {
 			in = (mr = memregs[i]).in;
 			out = mr.out;
-			if ((in = mr.in) < 0 || mr.out < in)
+			if ((in = mr.in) < 0 || mr.out < in) {
 				continue;
+			}
 			groups[i] = getString(in, out);
 		}
 		return groups;
@@ -943,26 +991,29 @@ public class Matcher implements MatchResult {
 		MemReg mr;
 		if (id >= 0) {
 			mr = memregs[id];
-		} else
+		} else {
 			switch (id) {
 				case PREFIX:
 					mr = prefixBounds;
-					if (mr == null)
+					if (mr == null) {
 						prefixBounds = mr = new MemReg(PREFIX);
+					}
 					mr.in = offset;
 					mr.out = wOffset;
 					break;
 				case SUFFIX:
 					mr = suffixBounds;
-					if (mr == null)
+					if (mr == null) {
 						suffixBounds = mr = new MemReg(SUFFIX);
+					}
 					mr.in = wEnd;
 					mr.out = end;
 					break;
 				case TARGET:
 					mr = targetBounds;
-					if (mr == null)
+					if (mr == null) {
 						targetBounds = mr = new MemReg(TARGET);
+					}
 					mr.in = offset;
 					mr.out = end;
 					break;
@@ -971,37 +1022,44 @@ public class Matcher implements MatchResult {
 							+ id
 							+ "; must either nonnegative int, or MatchResult.PREFIX, or MatchResult.SUFFIX");
 			}
+		}
 		// System.out.println(" mr=["+mr.in+","+mr.out+"]");
 		int in;
-		if ((in = mr.in) < 0 || mr.out < in)
+		if ((in = mr.in) < 0 || mr.out < in) {
 			return null;
+		}
 		return mr;
 	}
 
 	/**
 	 */
+	@Override
 	public final boolean isCaptured() {
 		return wOffset >= 0 && wEnd >= wOffset;
 	}
 
 	/**
 	 */
+	@Override
 	public final boolean isCaptured(int id) {
 		return bounds(id) != null;
 	}
 
 	/**
 	 */
+	@Override
 	public final boolean isCaptured(String groupName) {
 		Integer id = re.groupId(groupName);
-		if (id == null)
+		if (id == null) {
 			throw new IllegalArgumentException(
 					"unknown group: \"" + groupName + "\"");
+		}
 		return isCaptured(id.intValue());
 	}
 
 	/**
 	 */
+	@Override
 	public final int length(int id) {
 		MemReg mr = bounds(id);
 		return mr.out - mr.in;
@@ -1009,12 +1067,14 @@ public class Matcher implements MatchResult {
 
 	/**
 	 */
+	@Override
 	public final int start(int id) {
 		return bounds(id).in - offset;
 	}
 
 	/**
 	 */
+	@Override
 	public final int end(int id) {
 		return bounds(id).out - offset;
 	}
@@ -1095,13 +1155,15 @@ public class Matcher implements MatchResult {
 					case FIND: {
 						int jump = find(data, i + term.distance, end,
 								term.target); // don't eat the last match
-						if (jump < 0)
+						if (jump < 0) {
 							break main; // return false
+						}
 						i += jump;
 						wOffset = i; // force window to move
 						if (term.eat) {
-							if (i == end)
+							if (i == end) {
 								break;
+							}
 							i++;
 						}
 						term = term.next;
@@ -1127,14 +1189,16 @@ public class Matcher implements MatchResult {
 																			// the
 																			// last
 																			// match
-						if (jump < 0)
+						if (jump < 0) {
 							break main; // return false
+						}
 						i += jump;
 						wOffset = i; // force window to move
 						if (term.eat) {
 							i += sampleLen;
-							if (i > end)
+							if (i > end) {
 								break;
+							}
 						}
 						term = term.next;
 						continue matchHere;
@@ -1146,8 +1210,9 @@ public class Matcher implements MatchResult {
 					case CHAR:
 						// can only be 1-char-wide
 						// \/
-						if (i >= end || data[i] != term.c)
+						if (i >= end || data[i] != term.c) {
 							break;
+						}
 						// System.out.println("CHAR: "+data[i]+", i="+i);
 						i++;
 						term = term.next;
@@ -1156,8 +1221,9 @@ public class Matcher implements MatchResult {
 					case ANY_CHAR:
 						// can only be 1-char-wide
 						// \/
-						if (i >= end)
+						if (i >= end) {
 							break;
+						}
 						i++;
 						term = term.next;
 						continue matchHere;
@@ -1165,8 +1231,9 @@ public class Matcher implements MatchResult {
 					case ANY_CHAR_NE:
 						// can only be 1-char-wide
 						// \/
-						if (i >= end || data[i] == '\n')
+						if (i >= end || data[i] == '\n') {
 							break;
+						}
 						i++;
 						term = term.next;
 						continue matchHere;
@@ -1189,8 +1256,9 @@ public class Matcher implements MatchResult {
 							if (matches) {
 								term = term.next;
 								continue matchHere;
-							} else
+							} else {
 								break;
+							}
 						}
 
 					case LINE_END:
@@ -1237,12 +1305,14 @@ public class Matcher implements MatchResult {
 						// couldn't match too;
 						// otherwise we could have the following problem:
 						// "c|^a" against "abc" finds only "a"
-						if (top != null)
+						if (top != null) {
 							break;
-						if (term != startAnchor)
+						}
+						if (term != startAnchor) {
 							break;
-						else
+						} else {
 							break main;
+						}
 
 					case LAST_MATCH_END:
 						if (i == wEnd || wEnd == -1) { // meets
@@ -1273,11 +1343,13 @@ public class Matcher implements MatchResult {
 					case BITSET: {
 						// can only be 1-char-wide
 						// \/
-						if (i >= end)
+						if (i >= end) {
 							break;
+						}
 						c = data[i];
-						if (!(c <= 255 && term.bitset[c]) ^ term.inverse)
+						if (!(c <= 255 && term.bitset[c]) ^ term.inverse) {
 							break;
+						}
 						i++;
 						term = term.next;
 						continue matchHere;
@@ -1285,12 +1357,14 @@ public class Matcher implements MatchResult {
 					case BITSET2: {
 						// can only be 1-char-wide
 						// \/
-						if (i >= end)
+						if (i >= end) {
 							break;
+						}
 						c = data[i];
 						boolean[] arr = term.bitset2[c >> 8];
-						if (arr == null || !arr[c & 255] ^ term.inverse)
+						if (arr == null || !arr[c & 255] ^ term.inverse) {
 							break;
+						}
 						i++;
 						term = term.next;
 						continue matchHere;
@@ -1301,23 +1375,26 @@ public class Matcher implements MatchResult {
 						test1: {
 							int j = i - 1;
 							// if(j<offset || j>=end) break test1;
-							if (j < offset)
+							if (j < offset) {
 								break test1;
+							}
 							c = data[j];
 							ch1Meets = (c < 256 && bitset[c]);
 						}
 						test2: {
 							// if(i<offset || i>=end) break test2;
-							if (i >= end)
+							if (i >= end) {
 								break test2;
+							}
 							c = data[i];
 							ch2Meets = (c < 256 && bitset[c]);
 						}
 						if (ch1Meets ^ ch2Meets ^ term.inverse) { // meets
 							term = term.next;
 							continue matchHere;
-						} else
+						} else {
 							break;
+						}
 					}
 					case UBOUNDARY: {
 						boolean ch1Meets = false, ch2Meets = false;
@@ -1325,16 +1402,18 @@ public class Matcher implements MatchResult {
 						test1: {
 							int j = i - 1;
 							// if(j<offset || j>=end) break test1;
-							if (j < offset)
+							if (j < offset) {
 								break test1;
+							}
 							c = data[j];
 							boolean[] bits = bitset2[c >> 8];
 							ch1Meets = bits != null && bits[c & 0xff];
 						}
 						test2: {
 							// if(i<offset || i>=end) break test2;
-							if (i >= end)
+							if (i >= end) {
 								break test2;
+							}
 							c = data[i];
 							boolean[] bits = bitset2[c >> 8];
 							ch2Meets = bits != null && bits[c & 0xff];
@@ -1345,8 +1424,9 @@ public class Matcher implements MatchResult {
 																	// inv
 							term = term.next;
 							continue matchHere;
-						} else
+						} else {
 							break;
+						}
 					}
 					case DIRECTION: {
 						boolean ch1Meets = false, ch2Meets = false;
@@ -1361,8 +1441,9 @@ public class Matcher implements MatchResult {
 							ch1Meets = c < 256 && bitset[c];
 							// System.out.println(" ch1Meets="+ch1Meets);
 						}
-						if (ch1Meets ^ inv)
+						if (ch1Meets ^ inv) {
 							break;
+						}
 
 						// if(i>=offset && i<end){
 						if (i < end) {
@@ -1370,8 +1451,9 @@ public class Matcher implements MatchResult {
 							ch2Meets = c < 256 && bitset[c];
 							// System.out.println(" ch2Meets="+ch2Meets);
 						}
-						if (!ch2Meets ^ inv)
+						if (!ch2Meets ^ inv) {
 							break;
+						}
 
 						// System.out.println(" Ok");
 
@@ -1390,8 +1472,9 @@ public class Matcher implements MatchResult {
 							boolean[] bits = bitset2[c >> 8];
 							ch1Meets = bits != null && bits[c & 0xff];
 						}
-						if (ch1Meets ^ inv)
+						if (ch1Meets ^ inv) {
 							break;
+						}
 
 						// if(i>=offset && i<end){
 						if (i < end) {
@@ -1399,8 +1482,9 @@ public class Matcher implements MatchResult {
 							boolean[] bits = bitset2[c >> 8];
 							ch2Meets = bits != null && bits[c & 0xff];
 						}
-						if (!ch2Meets ^ inv)
+						if (!ch2Meets ^ inv) {
 							break;
+						}
 
 						term = term.next;
 						continue matchHere;
@@ -1419,8 +1503,9 @@ public class Matcher implements MatchResult {
 						}
 
 						// don't prevent us from reaching the 'end'
-						if ((i + rLen) > end)
+						if ((i + rLen) > end) {
 							break;
+						}
 
 						if (compareRegions(data, sampleOffset, i, rLen,
 								end)) {
@@ -1444,8 +1529,9 @@ public class Matcher implements MatchResult {
 						}
 
 						// don't prevent us from reaching the 'end'
-						if ((i + rLen) > end)
+						if ((i + rLen) > end) {
 							break;
+						}
 
 						if (compareRegionsI(data, sampleOffset, i, rLen,
 								end)) {
@@ -1486,8 +1572,9 @@ public class Matcher implements MatchResult {
 						// term.minCount="+term.minCount+",
 						// term.maxCount="+term.maxCount);
 						cnt = repeat(data, i, end, term.target);
-						if (cnt < term.minCount)
+						if (cnt < term.minCount) {
 							break;
+						}
 						i += cnt;
 
 						// branch out the backtracker (that is
@@ -1512,8 +1599,9 @@ public class Matcher implements MatchResult {
 						int out2 = i + term.maxCount;
 						cnt = repeat(data, i, out1 < out2 ? out1 : out2,
 								term.target);
-						if (cnt < term.minCount)
+						if (cnt < term.minCount) {
 							break;
+						}
 						i += cnt;
 
 						// branch out the backtracker (that is
@@ -1558,8 +1646,9 @@ public class Matcher implements MatchResult {
 							i += bitset;
 						}
 
-						if (cnt < term.minCount)
+						if (cnt < term.minCount) {
 							break;
+						}
 
 						actual.cnt = cnt;
 						actual.term = term.failNext;
@@ -1603,8 +1692,9 @@ public class Matcher implements MatchResult {
 							countBack--;
 						}
 
-						if (cnt < term.minCount)
+						if (cnt < term.minCount) {
 							break;
+						}
 
 						actual.cnt = cnt;
 						actual.term = term.failNext;
@@ -1636,8 +1726,9 @@ public class Matcher implements MatchResult {
 							}
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					case BACKTRACK_MIN:
 						// System.out.println("<<");
@@ -1656,8 +1747,9 @@ public class Matcher implements MatchResult {
 							}
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					case BACKTRACK_FIND_MIN: {
 						// System.out.print("<<<[cnt=");
@@ -1671,23 +1763,26 @@ public class Matcher implements MatchResult {
 							if (start > end) {
 								int exceed = start - end;
 								cnt -= exceed;
-								if (cnt <= minCnt)
+								if (cnt <= minCnt) {
 									break;
+								}
 								i -= exceed;
 								start = end;
 							}
 							int back = findBack(data, i + term.distance,
 									cnt - minCnt, term.target);
 							// System.out.print("[back="+back+"]");
-							if (back < 0)
+							if (back < 0) {
 								break;
+							}
 
 							// cnt-=back;
 							// i-=back;
 							if ((cnt -= back) <= minCnt) {
 								i -= back;
-								if (term.eat)
+								if (term.eat) {
 									i++;
+								}
 								term = term.next;
 								continue;
 							}
@@ -1696,8 +1791,9 @@ public class Matcher implements MatchResult {
 							actual.cnt = cnt;
 							actual.index = i;
 
-							if (term.eat)
+							if (term.eat) {
 								i++;
+							}
 
 							actual.term = term;
 							actual = (top = actual).on;
@@ -1708,8 +1804,9 @@ public class Matcher implements MatchResult {
 							}
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 					}
 
 					case BACKTRACK_FINDREG_MIN: {
@@ -1725,8 +1822,9 @@ public class Matcher implements MatchResult {
 							if (start > end) {
 								int exceed = start - end;
 								cnt -= exceed;
-								if (cnt <= minCnt)
+								if (cnt <= minCnt) {
 									break;
+								}
 								i -= exceed;
 								start = end;
 							}
@@ -1765,16 +1863,18 @@ public class Matcher implements MatchResult {
 										sampleOff, sampleLen, cnt - minCnt,
 										term.target, end);
 								// System.out.print("[back="+back+"]");
-								if (back < 0)
+								if (back < 0) {
 									break;
+								}
 							}
 							cnt -= back;
 							i -= back;
 							actual.cnt = cnt;
 							actual.index = i;
 
-							if (term.eat)
+							if (term.eat) {
 								i += sampleLen;
+							}
 
 							actual.term = term;
 							actual = (top = actual).on;
@@ -1785,8 +1885,9 @@ public class Matcher implements MatchResult {
 							}
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 					}
 
 					case BACKTRACK_REG_MIN:
@@ -1808,8 +1909,9 @@ public class Matcher implements MatchResult {
 							}
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					case GROUP_IN: {
 						memreg = term.memreg;
@@ -1847,8 +1949,9 @@ public class Matcher implements MatchResult {
 
 					case PLOOKBEHIND_IN: {
 						int tmp = i - term.distance;
-						if (tmp < offset)
+						if (tmp < offset) {
 							break;
+						}
 						// System.out.println("term="+term+",
 						// next="+term.next);
 						LAEntry le = lookaheads[term.lookaheadId];
@@ -2011,8 +2114,9 @@ public class Matcher implements MatchResult {
 							this.wEnd = memregs[0].out = i;
 							this.top = top;
 							return true;
-						} else
+						} else {
 							break;
+						}
 
 					case CNT_SET_0:
 						cnt = 0;
@@ -2028,16 +2132,18 @@ public class Matcher implements MatchResult {
 						if (cnt >= term.maxCount) {
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					case READ_CNT_LT:
 						cnt = actual.cnt;
 						if (cnt < term.maxCount) {
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					case CRSTORE_CRINC: {
 						int cntvalue = counters[cntreg = term.cntreg];
@@ -2058,15 +2164,17 @@ public class Matcher implements MatchResult {
 						if (counters[term.cntreg] < term.maxCount) {
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					case CR_GT_EQ:
 						if (counters[term.cntreg] >= term.maxCount) {
 							term = term.next;
 							continue;
-						} else
+						} else {
 							break;
+						}
 
 					default:
 						throw new Error("unknown term type: " + term.type);
@@ -2096,8 +2204,9 @@ public class Matcher implements MatchResult {
 				}
 			}
 
-			if (defaultEntry.isState)
+			if (defaultEntry.isState) {
 				SearchEntry.popState(defaultEntry, memregs, counters);
+			}
 
 			term = root;
 			// wOffset++;
@@ -2142,8 +2251,9 @@ public class Matcher implements MatchResult {
 		for (int c = len; c > 0; c--, p1--, p2--) {
 			if ((c1 = arr[p1]) != Character.toLowerCase(c2 = arr[p2])
 					&& c1 != Character.toUpperCase(c2)
-					&& c1 != Character.toTitleCase(c2))
+					&& c1 != Character.toTitleCase(c2)) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -2157,8 +2267,9 @@ public class Matcher implements MatchResult {
 				char c = term.c;
 				int i = off;
 				while (i < out) {
-					if (data[i] != c)
+					if (data[i] != c) {
 						break;
+					}
 					i++;
 				}
 				// System.out.println(", returning "+(i-off));
@@ -2170,8 +2281,9 @@ public class Matcher implements MatchResult {
 			case ANY_CHAR_NE: {
 				int i = off;
 				while (i < out) {
-					if (data[i] == '\n')
+					if (data[i] == '\n') {
 						break;
+					}
 					i++;
 				}
 				return i - off;
@@ -2180,42 +2292,48 @@ public class Matcher implements MatchResult {
 				boolean[] arr = term.bitset;
 				int i = off;
 				char c;
-				if (term.inverse)
+				if (term.inverse) {
 					while (i < out) {
-						if ((c = data[i]) <= 255 && arr[c])
+						if ((c = data[i]) <= 255 && arr[c]) {
 							break;
-						else
+						} else {
 							i++;
+						}
 					}
-				else
+				} else {
 					while (i < out) {
-						if ((c = data[i]) <= 255 && arr[c])
+						if ((c = data[i]) <= 255 && arr[c]) {
 							i++;
-						else
+						} else {
 							break;
+						}
 					}
+				}
 				return i - off;
 			}
 			case BITSET2: {
 				int i = off;
 				boolean[][] bitset2 = term.bitset2;
 				char c;
-				if (term.inverse)
+				if (term.inverse) {
 					while (i < out) {
 						boolean[] arr = bitset2[(c = data[i]) >> 8];
-						if (arr != null && arr[c & 0xff])
+						if (arr != null && arr[c & 0xff]) {
 							break;
-						else
+						} else {
 							i++;
+						}
 					}
-				else
+				} else {
 					while (i < out) {
 						boolean[] arr = bitset2[(c = data[i]) >> 8];
-						if (arr != null && arr[c & 0xff])
+						if (arr != null && arr[c & 0xff]) {
 							i++;
-						else
+						} else {
 							break;
+						}
 					}
+				}
 				return i - off;
 			}
 		}
@@ -2227,15 +2345,17 @@ public class Matcher implements MatchResult {
 	private static final int find(char[] data, int off, int out,
 			Term term) {
 		// System.out.print("off="+off+", out="+out+", term="+term);
-		if (off >= out)
+		if (off >= out) {
 			return -1;
+		}
 		switch (term.type) {
 			case CHAR: {
 				char c = term.c;
 				int i = off;
 				while (i < out) {
-					if (data[i] == c)
+					if (data[i] == c) {
 						break;
+					}
 					i++;
 				}
 				// System.out.println(", returning "+(i-off));
@@ -2245,42 +2365,48 @@ public class Matcher implements MatchResult {
 				boolean[] arr = term.bitset;
 				int i = off;
 				char c;
-				if (!term.inverse)
+				if (!term.inverse) {
 					while (i < out) {
-						if ((c = data[i]) <= 255 && arr[c])
+						if ((c = data[i]) <= 255 && arr[c]) {
 							break;
-						else
+						} else {
 							i++;
+						}
 					}
-				else
+				} else {
 					while (i < out) {
-						if ((c = data[i]) <= 255 && arr[c])
+						if ((c = data[i]) <= 255 && arr[c]) {
 							i++;
-						else
+						} else {
 							break;
+						}
 					}
+				}
 				return i - off;
 			}
 			case BITSET2: {
 				int i = off;
 				boolean[][] bitset2 = term.bitset2;
 				char c;
-				if (!term.inverse)
+				if (!term.inverse) {
 					while (i < out) {
 						boolean[] arr = bitset2[(c = data[i]) >> 8];
-						if (arr != null && arr[c & 0xff])
+						if (arr != null && arr[c & 0xff]) {
 							break;
-						else
+						} else {
 							i++;
+						}
 					}
-				else
+				} else {
 					while (i < out) {
 						boolean[] arr = bitset2[(c = data[i]) >> 8];
-						if (arr != null && arr[c & 0xff])
+						if (arr != null && arr[c & 0xff]) {
 							i++;
-						else
+						} else {
 							break;
+						}
 					}
+				}
 				return i - off;
 			}
 		}
@@ -2291,24 +2417,28 @@ public class Matcher implements MatchResult {
 	private static final int findReg(char[] data, int off, int regOff,
 			int regLen, Term term, int out) {
 		// System.out.print("off="+off+", out="+out+", term="+term);
-		if (off >= out)
+		if (off >= out) {
 			return -1;
+		}
 		int i = off;
 		if (term.type == TermType.REG) {
 			while (i < out) {
-				if (compareRegions(data, i, regOff, regLen, out))
+				if (compareRegions(data, i, regOff, regLen, out)) {
 					break;
+				}
 				i++;
 			}
 		} else if (term.type == TermType.REG_I) {
 			while (i < out) {
-				if (compareRegionsI(data, i, regOff, regLen, out))
+				if (compareRegionsI(data, i, regOff, regLen, out)) {
 					break;
+				}
 				i++;
 			}
-		} else
+		} else {
 			throw new IllegalArgumentException(
 					"wrong findReg() target:" + term.type);
+		}
 		return off - i;
 	}
 
@@ -2322,10 +2452,12 @@ public class Matcher implements MatchResult {
 				int i = off;
 				int iMin = off - maxCount;
 				for (;;) {
-					if (data[--i] == c)
+					if (data[--i] == c) {
 						break;
-					if (i <= iMin)
+					}
+					if (i <= iMin) {
 						return -1;
+					}
 				}
 				// System.out.println(", returning "+(off-i));
 				return off - i;
@@ -2335,20 +2467,25 @@ public class Matcher implements MatchResult {
 				int i = off;
 				char c;
 				int iMin = off - maxCount;
-				if (!term.inverse)
+				if (!term.inverse) {
 					for (;;) {
-						if ((c = data[--i]) <= 255 && arr[c])
+						if ((c = data[--i]) <= 255 && arr[c]) {
 							break;
-						if (i <= iMin)
+						}
+						if (i <= iMin) {
 							return -1;
+						}
 					}
-				else
+				} else {
 					for (;;) {
-						if ((c = data[--i]) > 255 || !arr[c])
+						if ((c = data[--i]) > 255 || !arr[c]) {
 							break;
-						if (i <= iMin)
+						}
+						if (i <= iMin) {
 							return -1;
+						}
 					}
+				}
 				return off - i;
 			}
 			case BITSET2: {
@@ -2356,22 +2493,27 @@ public class Matcher implements MatchResult {
 				int i = off;
 				char c;
 				int iMin = off - maxCount;
-				if (!term.inverse)
+				if (!term.inverse) {
 					for (;;) {
 						boolean[] arr = bitset2[(c = data[--i]) >> 8];
-						if (arr != null && arr[c & 0xff])
+						if (arr != null && arr[c & 0xff]) {
 							break;
-						if (i <= iMin)
+						}
+						if (i <= iMin) {
 							return -1;
+						}
 					}
-				else
+				} else {
 					for (;;) {
 						boolean[] arr = bitset2[(c = data[--i]) >> 8];
-						if (arr == null || arr[c & 0xff])
+						if (arr == null || arr[c & 0xff]) {
 							break;
-						if (i <= iMin)
+						}
+						if (i <= iMin) {
 							return -1;
+						}
 					}
+				}
 				return off - i;
 			}
 		}
@@ -2393,10 +2535,12 @@ public class Matcher implements MatchResult {
 			for (;;) {
 				i--;
 				if (data[i] == first && compareRegions(data, i + 1, regOff,
-						regLen, out))
+						regLen, out)) {
 					break;
-				if (i <= iMin)
+				}
+				if (i <= iMin) {
 					return -1;
+				}
 			}
 		} else if (term.type == TermType.REG_I) {
 			/* @since 1.2 */
@@ -2411,15 +2555,18 @@ public class Matcher implements MatchResult {
 				if (((c = data[i]) == firstLower || c == firstUpper
 						|| c == firstTitle)
 						&& compareRegionsI(data, i + 1, regOff, regLen,
-								out))
+								out)) {
 					break;
-				if (i <= iMin)
+				}
+				if (i <= iMin) {
 					return -1;
+				}
 			}
 			return off - i;
-		} else
+		} else {
 			throw new IllegalArgumentException(
 					"wrong findBackReg() target type :" + term.type);
+		}
 		return off - i;
 	}
 
@@ -2430,16 +2577,18 @@ public class Matcher implements MatchResult {
 
 		s.append("\r\nmemregs: ");
 		s.append(memregs.length);
-		for (int i = 0; i < memregs.length; i++)
+		for (int i = 0; i < memregs.length; i++) {
 			s.append("\r\n #" + i + ": [" + memregs[i].in + ","
 					+ memregs[i].out + "](\""
 					+ getString(memregs[i].in, memregs[i].out) + "\")");
+		}
 
 		s.append("\r\ndata: ");
-		if (data != null)
+		if (data != null) {
 			s.append(data.length);
-		else
+		} else {
 			s.append("[none]");
+		}
 
 		s.append("\r\noffset: ");
 		s.append(offset);
@@ -2489,10 +2638,11 @@ class SearchEntry {
 		MState current = entry.mCurrent;
 		if (current == null) {
 			MState head = entry.mHead;
-			if (head == null)
+			if (head == null) {
 				entry.mHead = entry.mCurrent = current = new MState();
-			else
+			} else {
 				current = head;
+			}
 		} else {
 			MState next = current.next;
 			if (next == null) {
@@ -2513,10 +2663,11 @@ class SearchEntry {
 		CState current = entry.cCurrent;
 		if (current == null) {
 			CState head = entry.cHead;
-			if (head == null)
+			if (head == null) {
 				entry.cHead = entry.cCurrent = current = new CState();
-			else
+			} else {
 				current = head;
+			}
 		} else {
 			CState next = current.next;
 			if (next == null) {
@@ -2560,9 +2711,9 @@ class SearchEntry {
 
 		SearchEntry on = this.on;
 		if (on != null) {
-			if (restQueue > 0)
+			if (restQueue > 0) {
 				on.reset(restQueue - 1);
-			else {
+			} else {
 				this.on = null;
 				on.sub = null;
 			}

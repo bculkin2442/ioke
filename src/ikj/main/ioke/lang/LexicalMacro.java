@@ -30,6 +30,7 @@ public class LexicalMacro extends IokeData
 		this.name = name;
 	}
 
+	@Override
 	public IokeObject getCode() {
 		return code;
 	}
@@ -42,6 +43,7 @@ public class LexicalMacro extends IokeData
 		}
 	}
 
+	@Override
 	public String getFormattedCode(Object self) throws ControlFlow {
 		if (IokeObject.as(self, (IokeObject) self).isActivatable()) {
 			return "lecro(\n  "
@@ -67,7 +69,7 @@ public class LexicalMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime.newText(
@@ -103,7 +105,7 @@ public class LexicalMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return ((AssociatedCode) IokeObject.data(on))
@@ -119,7 +121,7 @@ public class LexicalMacro extends IokeData
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(
 								dynamicContext, message, on,
-								new ArrayList<Object>(),
+								new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return dynamicContext.runtime.newText(
@@ -135,7 +137,7 @@ public class LexicalMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime
@@ -150,7 +152,7 @@ public class LexicalMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime
@@ -165,7 +167,7 @@ public class LexicalMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						IokeData data = IokeObject.data(on);
@@ -187,7 +189,7 @@ public class LexicalMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime.newText(
@@ -197,14 +199,17 @@ public class LexicalMacro extends IokeData
 				}));
 	}
 
+	@Override
 	public String getArgumentsCode() {
 		return "...";
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -217,6 +222,7 @@ public class LexicalMacro extends IokeData
 		return ((Inspectable) (IokeObject.data(on))).notice(on);
 	}
 
+	@Override
 	public String inspect(Object self) {
 		String type = "lecro";
 		if (!IokeObject.as(self, null).isActivatable()) {
@@ -230,6 +236,7 @@ public class LexicalMacro extends IokeData
 		}
 	}
 
+	@Override
 	public String notice(Object self) {
 		String type = "lecro";
 		if (!IokeObject.as(self, null).isActivatable()) {

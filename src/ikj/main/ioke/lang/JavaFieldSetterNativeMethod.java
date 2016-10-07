@@ -34,7 +34,7 @@ public class JavaFieldSetterNativeMethod extends Method
 	public static Object activateFixed(IokeObject self, IokeObject context,
 			IokeObject message, Object on) throws ControlFlow {
 		JavaFieldSetterNativeMethod nm = (JavaFieldSetterNativeMethod) self.data;
-		List<Object> args = new LinkedList<Object>();
+		List<Object> args = new LinkedList<>();
 		nm.arguments.getJavaArguments(context, message, on, args);
 		return nm.activate(self, on, args.get(0), context, message);
 	}
@@ -61,24 +61,22 @@ public class JavaFieldSetterNativeMethod extends Method
 							: context.runtime._false;
 				}
 				return result;
-			} else {
-				Object obj = on;
-				if (!(declaringClass.isInstance(obj))) {
-					obj = obj.getClass();
-				}
-
-				field.set(obj, arg);
-
-				Object result = arg;
-				if (result == null) {
-					return context.runtime.nil;
-				} else if (result instanceof Boolean) {
-					return ((Boolean) result).booleanValue()
-							? context.runtime._true
-							: context.runtime._false;
-				}
-				return result;
 			}
+			Object obj = on;
+			if (!(declaringClass.isInstance(obj))) {
+				obj = obj.getClass();
+			}
+
+			field.set(obj, arg);
+
+			Object result = arg;
+			if (result == null) {
+				return context.runtime.nil;
+			} else if (result instanceof Boolean) {
+				return ((Boolean) result).booleanValue()
+						? context.runtime._true : context.runtime._false;
+			}
+			return result;
 		} catch (Exception e) {
 			context.runtime.reportNativeException(e, message, context);
 			return context.runtime.nil;

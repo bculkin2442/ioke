@@ -30,6 +30,7 @@ public class DefaultArgumentsDefinitionArgs4
 		this.name3 = name3;
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on, final Call call) throws ControlFlow {
@@ -50,6 +51,7 @@ public class DefaultArgumentsDefinitionArgs4
 		}
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on) throws ControlFlow {
@@ -61,23 +63,26 @@ public class DefaultArgumentsDefinitionArgs4
 		locals.setCell(name3, result.get(3));
 	}
 
+	@Override
 	public String getCode() {
 		return getCode(true);
 	}
 
+	@Override
 	public String getCode(boolean lastComma) {
 		if (lastComma) {
 			return name0 + ", " + name1 + ", " + name2 + ", " + name3
 					+ ", ";
-		} else {
-			return name0 + ", " + name1 + ", " + name2 + ", " + name3;
 		}
+		return name0 + ", " + name1 + ", " + name2 + ", " + name3;
 	}
 
+	@Override
 	public Collection<String> getKeywords() {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
+	@Override
 	public List<DefaultArgumentsDefinition.Argument> getArguments() {
 		return Arrays.asList(
 				new DefaultArgumentsDefinition.Argument(name0),
@@ -86,14 +91,17 @@ public class DefaultArgumentsDefinitionArgs4
 				new DefaultArgumentsDefinition.Argument(name3));
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return false;
 	}
 
+	@Override
 	public String getRestName() {
 		return null;
 	}
 
+	@Override
 	public String getKrestName() {
 		return null;
 	}

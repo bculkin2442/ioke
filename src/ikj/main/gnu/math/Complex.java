@@ -4,10 +4,12 @@
 package gnu.math;
 
 public abstract class Complex extends Quantity {
+	@Override
 	public Complex number() {
 		return this;
 	}
 
+	@Override
 	public boolean isExact() {
 		// Should we return false if unit() != unit.Empty ?
 		return re().isExact() && im().isExact();
@@ -17,21 +19,25 @@ public abstract class Complex extends Quantity {
 	private static CComplex	imMinusOne;
 
 	public static CComplex imOne() {
-		if (imOne == null)
+		if (imOne == null) {
 			imOne = new CComplex(IntNum.zero(), IntNum.one());
+		}
 		return imOne;
 	}
 
 	public static CComplex imMinusOne() {
-		if (imMinusOne == null)
+		if (imMinusOne == null) {
 			imMinusOne = new CComplex(IntNum.zero(), IntNum.minusOne());
+		}
 		return imMinusOne;
 	}
 
+	@Override
 	public double doubleValue() {
 		return re().doubleValue();
 	}
 
+	@Override
 	public double doubleImagValue() {
 		return im().doubleValue();
 	}
@@ -40,21 +46,25 @@ public abstract class Complex extends Quantity {
 		return doubleValue();
 	}
 
+	@Override
 	public long longValue() {
 		return re().longValue();
 	}
 
 	public static Complex make(RealNum re, RealNum im) {
-		if (im.isZero())
+		if (im.isZero()) {
 			return re;
-		if (!re.isExact() || !im.isExact())
+		}
+		if (!re.isExact() || !im.isExact()) {
 			return new DComplex(re.doubleValue(), im.doubleValue());
+		}
 		return new CComplex(re, im);
 	}
 
 	public static Complex make(double re, double im) {
-		if (im == 0.0)
+		if (im == 0.0) {
 			return new DFloNum(re);
+		}
 		return new DComplex(re, im);
 	}
 
@@ -67,18 +77,21 @@ public abstract class Complex extends Quantity {
 	}
 
 	public static Complex power(Complex x, Complex y) {
-		if (y instanceof IntNum)
+		if (y instanceof IntNum) {
 			return (Complex) x.power((IntNum) y);
+		}
 		double x_re = x.doubleRealValue();
 		double x_im = x.doubleImagValue();
 		double y_re = y.doubleRealValue();
 		double y_im = y.doubleImagValue();
 		if (x_im == 0.0 && y_im == 0 && (x_re >= 0
-				|| Double.isInfinite(x_re) || Double.isNaN(x_re)))
+				|| Double.isInfinite(x_re) || Double.isNaN(x_re))) {
 			return new DFloNum(Math.pow(x_re, y_re));
+		}
 		return DComplex.power(x_re, x_im, y_re, y_im);
 	}
 
+	@Override
 	public Numeric abs() {
 		/* #ifdef JAVA5 */
 		// return new DFloNum(Math.hypot(doubleRealValue(),
@@ -98,25 +111,31 @@ public abstract class Complex extends Quantity {
 		return x.re().equals(y.re()) && x.im().equals(x.im());
 	}
 
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Complex))
+		if (obj == null || !(obj instanceof Complex)) {
 			return false;
+		}
 		return Complex.equals(this, (Complex) obj);
 	}
 
 	public static int compare(Complex x, Complex y) {
 		int code = x.im().compare(y.im());
-		if (code != 0)
+		if (code != 0) {
 			return code;
+		}
 		return x.re().compare(y.re());
 	}
 
+	@Override
 	public int compare(Object obj) {
-		if (!(obj instanceof Complex))
+		if (!(obj instanceof Complex)) {
 			return ((Numeric) obj).compareReversed(this);
+		}
 		return compare(this, (Complex) obj);
 	}
 
+	@Override
 	public boolean isZero() {
 		return re().isZero() && im().isZero();
 	}
@@ -128,18 +147,22 @@ public abstract class Complex extends Quantity {
 	 * unit().dims; }
 	 */
 
+	@Override
 	public String toString(int radix) {
 		// Note: The r4rs read syntax does not allow unsigned pure
 		// imaginary numbers, i.e. you must use +5i, not 5i.
 		// Although our reader allows the sign to be dropped, we always
 		// print it so that the number may be read by any r4rs system.
-		if (im().isZero())
+		if (im().isZero()) {
 			return re().toString(radix);
+		}
 		String imString = im().toString(radix) + "i";
-		if (imString.charAt(0) != '-')
+		if (imString.charAt(0) != '-') {
 			imString = "+" + imString;
-		if (re().isZero())
+		}
+		if (re().isZero()) {
 			return imString;
+		}
 		return re().toString(radix) + imString;
 	}
 
@@ -147,6 +170,7 @@ public abstract class Complex extends Quantity {
 		return Complex.make(x.re().rneg(), x.im().rneg());
 	}
 
+	@Override
 	public Numeric neg() {
 		return neg(this);
 	}
@@ -156,15 +180,19 @@ public abstract class Complex extends Quantity {
 				RealNum.add(x.im(), y.im(), k));
 	}
 
+	@Override
 	public Numeric add(Object y, int k) {
-		if (y instanceof Complex)
+		if (y instanceof Complex) {
 			return add(this, (Complex) y, k);
+		}
 		return ((Numeric) y).addReversed(this, k);
 	}
 
+	@Override
 	public Numeric addReversed(Numeric x, int k) {
-		if (x instanceof Complex)
+		if (x instanceof Complex) {
 			return add((Complex) x, this, k);
+		}
 		throw new IllegalArgumentException();
 	}
 
@@ -180,22 +208,27 @@ public abstract class Complex extends Quantity {
 						RealNum.times(x_im, y_re), 1));
 	}
 
+	@Override
 	public Numeric mul(Object y) {
-		if (y instanceof Complex)
+		if (y instanceof Complex) {
 			return times(this, (Complex) y);
+		}
 		return ((Numeric) y).mulReversed(this);
 	}
 
+	@Override
 	public Numeric mulReversed(Numeric x) {
-		if (x instanceof Complex)
+		if (x instanceof Complex) {
 			return times((Complex) x, this);
+		}
 		throw new IllegalArgumentException();
 	}
 
 	public static Complex divide(Complex x, Complex y) {
-		if (!x.isExact() || !y.isExact())
+		if (!x.isExact() || !y.isExact()) {
 			return DComplex.div(x.doubleRealValue(), x.doubleImagValue(),
 					y.doubleRealValue(), y.doubleImagValue());
+		}
 
 		RealNum x_re = x.re();
 		RealNum x_im = x.im();
@@ -211,15 +244,19 @@ public abstract class Complex extends Quantity {
 		return Complex.make(RealNum.divide(n, q), RealNum.divide(d, q));
 	}
 
+	@Override
 	public Numeric div(Object y) {
-		if (y instanceof Complex)
+		if (y instanceof Complex) {
 			return divide(this, (Complex) y);
+		}
 		return ((Numeric) y).divReversed(this);
 	}
 
+	@Override
 	public Numeric divReversed(Numeric x) {
-		if (x instanceof Complex)
+		if (x instanceof Complex) {
 			return divide((Complex) x, this);
+		}
 		throw new IllegalArgumentException();
 	}
 

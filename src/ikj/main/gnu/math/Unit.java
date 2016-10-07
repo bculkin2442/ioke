@@ -24,14 +24,17 @@ public abstract class Unit extends Quantity {
 	/** A hash table of named Units. */
 	static NamedUnit[]	table	= new NamedUnit[100];
 
+	@Override
 	public final Dimensions dimensions() {
 		return dims;
 	}
 
+	@Override
 	public final double doubleValue() {
 		return factor;
 	}
 
+	@Override
 	public int hashCode() {
 		return dims.hashCode();
 	}
@@ -54,45 +57,53 @@ public abstract class Unit extends Quantity {
 			power2 = 0;
 		}
 		if (power2 == 0 || unit2 == Unit.Empty) {
-			if (power1 == 1)
+			if (power1 == 1) {
 				return unit1;
-			if (power1 == 0)
+			}
+			if (power1 == 0) {
 				return Unit.Empty;
+			}
 		}
 		if (unit1 instanceof MulUnit) {
 			MulUnit munit1 = (MulUnit) unit1;
-			if (munit1.unit1 == unit2)
+			if (munit1.unit1 == unit2) {
 				return times(unit2, munit1.power1 * power1 + power2,
 						munit1.unit2, munit1.power2 * power1);
-			if (munit1.unit2 == unit2)
+			}
+			if (munit1.unit2 == unit2) {
 				return times(munit1.unit1, munit1.power1 * power1, unit2,
 						munit1.power2 * power1 + power2);
+			}
 			if (unit2 instanceof MulUnit) {
 				MulUnit munit2 = (MulUnit) unit2;
 				if (munit1.unit1 == munit2.unit1
-						&& munit1.unit2 == munit2.unit2)
+						&& munit1.unit2 == munit2.unit2) {
 					return times(munit1.unit1,
 							munit1.power1 * power1
 									+ munit2.power1 * power2,
 							munit1.unit2, munit1.power2 * power1
 									+ munit2.power2 * power2);
+				}
 				if (munit1.unit1 == munit2.unit2
-						&& munit1.unit2 == munit2.unit1)
+						&& munit1.unit2 == munit2.unit1) {
 					return times(munit1.unit1,
 							munit1.power1 * power1
 									+ munit2.power2 * power2,
 							munit1.unit2, munit1.power2 * power1
 									+ munit2.power1 * power2);
+				}
 			}
 		}
 		if (unit2 instanceof MulUnit) {
 			MulUnit munit2 = (MulUnit) unit2;
-			if (munit2.unit1 == unit1)
+			if (munit2.unit1 == unit1) {
 				return times(unit1, power1 + munit2.power1 * power2,
 						munit2.unit2, munit2.power2 * power2);
-			if (munit2.unit2 == unit1)
+			}
+			if (munit2.unit2 == unit1) {
 				return times(munit2.unit1, munit2.power1 * power2, unit1,
 						power1 + munit2.power2 * power2);
+			}
 		}
 
 		return MulUnit.make(unit1, power1, unit2, power2);
@@ -126,27 +137,33 @@ public abstract class Unit extends Quantity {
 		return new NamedUnit(name, factor, base);
 	}
 
+	@Override
 	public Complex number() {
 		return DFloNum.one();
 	}
 
+	@Override
 	public boolean isExact() {
 		return false;
 	}
 
+	@Override
 	public final boolean isZero() {
 		return false;
 	}
 
+	@Override
 	public Numeric power(IntNum y) {
-		if (y.words != null)
+		if (y.words != null) {
 			throw new ArithmeticException("Unit raised to bignum power");
+		}
 		return pow(this, y.ival);
 	}
 
 	public Unit sqrt() {
-		if (this == Unit.Empty)
+		if (this == Unit.Empty) {
 			return this;
+		}
 		throw new RuntimeException("unimplemented Unit.sqrt");
 	}
 
@@ -161,10 +178,11 @@ public abstract class Unit extends Quantity {
 
 	public String toString(double val) {
 		String str = Double.toString(val);
-		if (this == Unit.Empty)
+		if (this == Unit.Empty) {
 			return str;
-		else
+		} else {
 			return str + this.toString();
+		}
 	}
 
 	public String toString(RealNum val) {
@@ -178,16 +196,19 @@ public abstract class Unit extends Quantity {
 	 * + "@" + toString(im); }
 	 */
 
+	@Override
 	public String toString() {
 		String name = getName();
-		if (name != null)
+		if (name != null) {
 			return name;
-		else if (this == Unit.Empty)
+		} else if (this == Unit.Empty) {
 			return "unit";
-		else
+		} else {
 			return Double.toString(factor) + "<unnamed unit>";
+		}
 	}
 
+	@Override
 	public Unit unit() {
 		return this;
 	}

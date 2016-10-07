@@ -122,7 +122,7 @@ public class Pattern implements Serializable, REFlags {
 	/**
 	 * Compiles an expression with default flags.
 	 * 
-	 * @param <code>regex</code>
+	 * @param regex
 	 *            the Perl5-compatible regular expression string.
 	 * @exception PatternSyntaxException
 	 *                if the argument doesn't correspond to perl5 regex
@@ -158,9 +158,9 @@ public class Pattern implements Serializable, REFlags {
 	 * REFLlags.XML_SCHEMA.
 	 * </ul>
 	 * 
-	 * @param <code>regex</code>
+	 * @param regex
 	 *            the Perl5-compatible regular expression string.
-	 * @param <code>flags</code>
+	 * @param flags
 	 *            the Perl5-compatible flags.
 	 * @exception PatternSyntaxException
 	 *                if the argument doesn't correspond to perl5 regex
@@ -350,9 +350,10 @@ public class Pattern implements Serializable, REFlags {
 	 */
 	public Matcher matcher(MatchResult res, String groupName) {
 		Integer id = res.pattern().groupId(groupName);
-		if (id == null)
+		if (id == null) {
 			throw new IllegalArgumentException(
 					"group not found:" + groupName);
+		}
 		int group = id.intValue();
 		return matcher(res, group);
 	}
@@ -459,6 +460,7 @@ public class Pattern implements Serializable, REFlags {
 		return new RETokenizer(this, in, length);
 	}
 
+	@Override
 	public String toString() {
 		return stringRepr;
 	}
@@ -486,10 +488,11 @@ public class Pattern implements Serializable, REFlags {
 					break;
 				default:
 					int flag = getFlag(c);
-					if (enable)
+					if (enable) {
 						result |= flag;
-					else
+					} else {
 						result &= (~flag);
+					}
 			}
 		}
 		return result;
@@ -510,10 +513,11 @@ public class Pattern implements Serializable, REFlags {
 					break;
 				default:
 					int flag = getFlag(c);
-					if (enable)
+					if (enable) {
 						result |= flag;
-					else
+					} else {
 						result &= (~flag);
+					}
 			}
 		}
 		return result;

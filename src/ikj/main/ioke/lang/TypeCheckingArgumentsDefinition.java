@@ -83,7 +83,7 @@ public class TypeCheckingArgumentsDefinition
 			}
 		}
 
-		private List<TypeChecker>	mustMimic			= new ArrayList<TypeChecker>();
+		private List<TypeChecker>	mustMimic			= new ArrayList<>();
 		private TypeChecker			receiverMustMimic	= TypeChecker.None;
 
 		private boolean				setMimic			= true;

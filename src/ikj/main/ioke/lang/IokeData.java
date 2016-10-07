@@ -43,6 +43,7 @@ public abstract class IokeData {
 											};
 
 	public final static IokeData	Nil		= new IokeData() {
+												@Override
 												public void init(
 														IokeObject obj) {
 													obj.setKind("nil");
@@ -88,6 +89,7 @@ public abstract class IokeData {
 											};
 
 	public final static IokeData	False	= new IokeData() {
+												@Override
 												public void init(
 														IokeObject obj) {
 													obj.setKind("false");
@@ -132,6 +134,7 @@ public abstract class IokeData {
 											};
 
 	public final static IokeData	True	= new IokeData() {
+												@Override
 												public void init(
 														IokeObject obj) {
 													obj.setKind("true");
@@ -201,13 +204,12 @@ public abstract class IokeData {
 			boolean result = (other instanceof IokeObject)
 					&& (self.body == IokeObject.as(other, self).body);
 			return result;
-		} else {
-			boolean result = IokeObject.isTrue(Interpreter.send(
-					self.runtime.eqMessage, self.runtime.ground, self,
-					self.runtime.createMessage(
-							Message.wrap(IokeObject.as(other, self)))));
-			return result;
 		}
+		boolean result = IokeObject.isTrue(Interpreter.send(
+				self.runtime.eqMessage, self.runtime.ground, self,
+				self.runtime.createMessage(
+						Message.wrap(IokeObject.as(other, self)))));
+		return result;
 	}
 
 	public final int hashCode(IokeObject self) throws ControlFlow {
@@ -215,12 +217,11 @@ public abstract class IokeData {
 
 		if (cell == self.runtime.nul) {
 			return System.identityHashCode(self.body);
-		} else {
-			return Number.extractInt(
-					Interpreter.send(self.runtime.hashMessage,
-							self.runtime.ground, self),
-					self.runtime.hashMessage, self.runtime.ground);
 		}
+		return Number.extractInt(
+				Interpreter.send(self.runtime.hashMessage,
+						self.runtime.ground, self),
+				self.runtime.hashMessage, self.runtime.ground);
 	}
 
 	public IokeData cloneData(IokeObject obj, IokeObject m,
@@ -251,16 +252,19 @@ public abstract class IokeData {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -298,16 +302,19 @@ public abstract class IokeData {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -340,16 +347,19 @@ public abstract class IokeData {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -382,16 +392,19 @@ public abstract class IokeData {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -422,15 +435,17 @@ public abstract class IokeData {
 
 		context.runtime.withRestartReturningArguments(
 				new RunnableWithControlFlow() {
+					@Override
 					public void run() throws ControlFlow {
 						context.runtime.errorCondition(condition);
 					}
 				}, context, new Restart.ArgumentGivingRestart("useValue") {
+					@Override
 					public List<String> getArgumentNames() {
-						return new ArrayList<String>(
-								Arrays.asList("newValue"));
+						return new ArrayList<>(Arrays.asList("newValue"));
 					}
 
+					@Override
 					public IokeObject invoke(IokeObject context,
 							List<Object> arguments) throws ControlFlow {
 						newCell[0] = arguments.get(0);
@@ -464,16 +479,19 @@ public abstract class IokeData {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -506,16 +524,19 @@ public abstract class IokeData {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -546,15 +567,17 @@ public abstract class IokeData {
 
 		context.runtime.withRestartReturningArguments(
 				new RunnableWithControlFlow() {
+					@Override
 					public void run() throws ControlFlow {
 						context.runtime.errorCondition(condition);
 					}
 				}, context, new Restart.ArgumentGivingRestart("useValue") {
+					@Override
 					public List<String> getArgumentNames() {
-						return new ArrayList<String>(
-								Arrays.asList("newValue"));
+						return new ArrayList<>(Arrays.asList("newValue"));
 					}
 
+					@Override
 					public IokeObject invoke(IokeObject context,
 							List<Object> arguments) throws ControlFlow {
 						newCell[0] = arguments.get(0);
@@ -584,18 +607,16 @@ public abstract class IokeData {
 		if (cell == context.runtime.nul) {
 			report(self, context, message, "activate");
 			return context.runtime.nil;
-		} else {
-			IokeObject newMessage = Message.deepCopy(message);
-			newMessage.getArguments().clear();
-			newMessage.getArguments().add(
-					context.runtime.createMessage(Message.wrap(context)));
-			newMessage.getArguments().add(
-					context.runtime.createMessage(Message.wrap(message)));
-			newMessage.getArguments().add(context.runtime.createMessage(
-					Message.wrap(IokeObject.as(on, context))));
-			return Interpreter.getOrActivate(cell, context, newMessage,
-					self);
 		}
+		IokeObject newMessage = Message.deepCopy(message);
+		newMessage.getArguments().clear();
+		newMessage.getArguments()
+				.add(context.runtime.createMessage(Message.wrap(context)));
+		newMessage.getArguments()
+				.add(context.runtime.createMessage(Message.wrap(message)));
+		newMessage.getArguments().add(context.runtime
+				.createMessage(Message.wrap(IokeObject.as(on, context))));
+		return Interpreter.getOrActivate(cell, context, newMessage, self);
 	}
 
 	public List<Object> getArguments(IokeObject self) throws ControlFlow {

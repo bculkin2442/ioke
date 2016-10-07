@@ -214,7 +214,7 @@ public class Number extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								return context.runtime
 										.newNumber(((Number) IokeObject
@@ -231,7 +231,7 @@ public class Number extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						RatNum value = ((Number) IokeObject
@@ -383,7 +383,7 @@ public class Number extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -626,6 +626,7 @@ public class Number extends IokeData {
 								context.runtime
 										.withRestartReturningArguments(
 												new RunnableWithControlFlow() {
+													@Override
 													public void run()
 															throws ControlFlow {
 														context.runtime
@@ -635,12 +636,14 @@ public class Number extends IokeData {
 												}, context,
 												new Restart.ArgumentGivingRestart(
 														"useValue") {
+													@Override
 													public List<String> getArgumentNames() {
-														return new ArrayList<String>(
+														return new ArrayList<>(
 																Arrays.asList(
 																		"newValue"));
 													}
 
+													@Override
 													public IokeObject invoke(
 															IokeObject c2,
 															List<Object> arguments)
@@ -731,6 +734,7 @@ public class Number extends IokeData {
 
 							context.runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											context.runtime.errorCondition(
@@ -739,12 +743,13 @@ public class Number extends IokeData {
 									}, context,
 									new Restart.ArgumentGivingRestart(
 											"useValue") {
+										@Override
 										public List<String> getArgumentNames() {
-											return new ArrayList<String>(
-													Arrays.asList(
-															"newValue"));
+											return new ArrayList<>(Arrays
+													.asList("newValue"));
 										}
 
+										@Override
 										public IokeObject invoke(
 												IokeObject c2,
 												List<Object> arguments)
@@ -801,6 +806,7 @@ public class Number extends IokeData {
 
 							context.runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											context.runtime.errorCondition(
@@ -809,12 +815,13 @@ public class Number extends IokeData {
 									}, context,
 									new Restart.ArgumentGivingRestart(
 											"useValue") {
+										@Override
 										public List<String> getArgumentNames() {
-											return new ArrayList<String>(
-													Arrays.asList(
-															"newValue"));
+											return new ArrayList<>(Arrays
+													.asList("newValue"));
 										}
 
+										@Override
 										public IokeObject invoke(
 												IokeObject c2,
 												List<Object> arguments)

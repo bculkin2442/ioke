@@ -36,7 +36,7 @@ public class JavaConstructorNativeMethod extends ioke.lang.Method
 	public static Object activateFixed(IokeObject self, IokeObject context,
 			IokeObject message, Object on) throws ControlFlow {
 		JavaConstructorNativeMethod nm = (JavaConstructorNativeMethod) self.data;
-		List<Object> args = new LinkedList<Object>();
+		List<Object> args = new LinkedList<>();
 		Constructor ctor = (Constructor) nm.arguments
 				.getJavaArguments(context, message, on, args);
 		return nm.activate(self, on, args, ctor, context, message);
@@ -48,15 +48,14 @@ public class JavaConstructorNativeMethod extends ioke.lang.Method
 		try {
 			if (!special) {
 				return ctor.newInstance(args.toArray());
-			} else {
-				IokeObject other = IokeObject.mimic(on, message, context);
-				Object[] aa = args.toArray();
-				aa[0] = other;
-				Object ret = ctor.newInstance(aa);
-				JavaWrapper.setObject(other, ret);
-				IokeRegistry.makeWrapped(ret, other, context);
-				return other;
 			}
+			IokeObject other = IokeObject.mimic(on, message, context);
+			Object[] aa = args.toArray();
+			aa[0] = other;
+			Object ret = ctor.newInstance(aa);
+			JavaWrapper.setObject(other, ret);
+			IokeRegistry.makeWrapped(ret, other, context);
+			return other;
 		} catch (Exception e) {
 			System.err.print("woops: ");
 			e.printStackTrace();

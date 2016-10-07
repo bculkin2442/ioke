@@ -51,9 +51,10 @@ public class Duration extends Quantity implements Externalizable {
 
 	public static Duration parse(String str, Unit unit) {
 		Duration d = Duration.valueOf(str, unit);
-		if (d == null)
+		if (d == null) {
 			throw new IllegalArgumentException("not a valid "
 					+ unit.getName() + " duration: '" + str + "'");
+		}
 		return d;
 	}
 
@@ -81,18 +82,21 @@ public class Duration extends Quantity implements Externalizable {
 		if (pos < len && str.charAt(pos) == '-') {
 			negative = true;
 			pos++;
-		} else
+		} else {
 			negative = false;
-		if (pos + 1 >= len || str.charAt(pos) != 'P')
+		}
+		if (pos + 1 >= len || str.charAt(pos) != 'P') {
 			return null;
+		}
 		pos++;
 		int months = 0, nanos = 0;
 		long seconds = 0;
 		long part = scanPart(str, pos);
 		pos = ((int) part) >> 16;
 		char ch = (char) part;
-		if (unit == Unit.second && (ch == 'Y' || ch == 'M'))
+		if (unit == Unit.second && (ch == 'Y' || ch == 'M')) {
 			return null;
+		}
 		if (ch == 'Y') {
 			months = 12 * (int) (part >> 32);
 			pos = ((int) part) >> 16;
@@ -105,25 +109,29 @@ public class Duration extends Quantity implements Externalizable {
 			part = scanPart(str, pos);
 			ch = (char) part;
 		}
-		if (unit == Unit.month && pos != len)
+		if (unit == Unit.month && pos != len) {
 			return null;
+		}
 		if (ch == 'D') {
-			if (unit == Unit.month)
+			if (unit == Unit.month) {
 				return null;
+			}
 			seconds = (long) (24 * 60 * 60) * (int) (part >> 32);
 			pos = ((int) part) >> 16;
 			part = scanPart(str, pos);
 		}
-		if (part != (pos << 16))
+		if (part != (pos << 16)) {
 			return null;
+		}
 		if (pos == len) {
 			// No time part
-		} else if (str.charAt(pos) != 'T' || ++pos == len)
+		} else if (str.charAt(pos) != 'T' || ++pos == len) {
 			return null;
-		else // saw 'T'
+		} else // saw 'T'
 		{
-			if (unit == Unit.month)
+			if (unit == Unit.month) {
 				return null;
+			}
 			part = scanPart(str, pos);
 			ch = (char) part;
 			if (ch == 'H') {
@@ -148,21 +156,26 @@ public class Duration extends Quantity implements Externalizable {
 				for (; pos < len; nfrac++) {
 					ch = str.charAt(pos++);
 					int dig = Character.digit(ch, 10);
-					if (dig < 0)
+					if (dig < 0) {
 						break;
-					if (nfrac < 9)
+					}
+					if (nfrac < 9) {
 						nanos = 10 * nanos + dig;
-					else if (nfrac == 9 && dig >= 5)
+					} else if (nfrac == 9 && dig >= 5) {
 						nanos++;
+					}
 				}
-				while (nfrac++ < 9)
+				while (nfrac++ < 9) {
 					nanos = 10 * nanos;
-				if (ch != 'S')
+				}
+				if (ch != 'S') {
 					return null;
+				}
 			}
 		}
-		if (pos != len)
+		if (pos != len) {
 			return null;
+		}
 		Duration d = new Duration();
 		if (negative) {
 			months = -months;
@@ -176,61 +189,74 @@ public class Duration extends Quantity implements Externalizable {
 		return d;
 	}
 
+	@Override
 	public Numeric add(Object y, int k) {
-		if (y instanceof Duration)
+		if (y instanceof Duration) {
 			return Duration.add(this, (Duration) y, k);
-		if (y instanceof DateTime && k == 1)
+		}
+		if (y instanceof DateTime && k == 1) {
 			return DateTime.add((DateTime) y, this, 1);
+		}
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public Numeric mul(Object y) {
-		if (y instanceof RealNum)
+		if (y instanceof RealNum) {
 			return Duration.times(this, ((RealNum) y).doubleValue());
+		}
 		return ((Numeric) y).mulReversed(this);
 	}
 
+	@Override
 	public Numeric mulReversed(Numeric x) {
-		if (!(x instanceof RealNum))
+		if (!(x instanceof RealNum)) {
 			throw new IllegalArgumentException();
+		}
 		return Duration.times(this, ((RealNum) x).doubleValue());
 	}
 
 	public static double div(Duration dur1, Duration dur2) {
 		int months1 = dur1.months;
 		int months2 = dur2.months;
-		double sec1 = (double) dur1.seconds + dur1.nanos * 0.000000001;
-		double sec2 = (double) dur2.seconds + dur1.nanos * 0.000000001;
-		if (months2 == 0 && sec2 == 0)
+		double sec1 = dur1.seconds + dur1.nanos * 0.000000001;
+		double sec2 = dur2.seconds + dur1.nanos * 0.000000001;
+		if (months2 == 0 && sec2 == 0) {
 			throw new ArithmeticException("divide duration by zero");
+		}
 		if (months2 == 0) {
-			if (months1 == 0)
+			if (months1 == 0) {
 				return sec1 / sec2;
+			}
 		} else if (sec2 == 0) {
-			if (sec1 == 0)
+			if (sec1 == 0) {
 				return (double) months1 / (double) months2;
+			}
 		}
 		throw new ArithmeticException("divide of incompatible durations");
 	}
 
+	@Override
 	public Numeric div(Object y) {
 		if (y instanceof RealNum) {
 			double dy = ((RealNum) y).doubleValue();
-			if (dy == 0 || Double.isNaN(dy))
+			if (dy == 0 || Double.isNaN(dy)) {
 				throw new ArithmeticException(
 						"divide of duration by 0 or NaN");
+			}
 			return Duration.times(this, 1.0 / dy);
 		}
-		if (y instanceof Duration)
+		if (y instanceof Duration) {
 			return new DFloNum(div(this, (Duration) y));
+		}
 		return ((Numeric) y).divReversed(this);
 	}
 
 	public static Duration add(Duration x, Duration y, int k) {
-		long months = (long) x.months + k * (long) y.months;
+		long months = x.months + k * (long) y.months;
 		// FIXME does not handle leap-seconds represented as multiples of
 		// 10^9 in the nanos field.
-		long nanos = x.seconds * 1000000000L + (long) x.nanos
+		long nanos = x.seconds * 1000000000L + x.nanos
 				+ k * (y.seconds * 1000000000L + y.nanos);
 		// FIXME check for overflow
 		// FIXME handle inconsistent signs.
@@ -238,21 +264,24 @@ public class Duration extends Quantity implements Externalizable {
 		d.months = (int) months;
 		d.seconds = (int) (nanos / 1000000000L);
 		d.nanos = (int) (nanos % 1000000000L);
-		if (x.unit != y.unit || x.unit == Unit.duration)
+		if (x.unit != y.unit || x.unit == Unit.duration) {
 			throw new ArithmeticException(
 					"cannot add these duration types");
+		}
 		d.unit = x.unit;
 		return d;
 	}
 
 	public static Duration times(Duration x, double y) {
-		if (x.unit == Unit.duration)
+		if (x.unit == Unit.duration) {
 			throw new IllegalArgumentException(
 					"cannot multiply general duration");
+		}
 		double months = x.months * y;
-		if (Double.isInfinite(months) || Double.isNaN(months))
+		if (Double.isInfinite(months) || Double.isNaN(months)) {
 			throw new ArithmeticException(
 					"overflow/NaN when multiplying a duration");
+		}
 		double nanos = (x.seconds * 1000000000L + x.nanos) * y;
 		Duration d = new Duration();
 		d.months = (int) Math.floor(months + 0.5);
@@ -264,25 +293,31 @@ public class Duration extends Quantity implements Externalizable {
 
 	public static int compare(Duration x, Duration y) {
 		long months = (long) x.months - (long) y.months;
-		long nanos = x.seconds * 1000000000L + (long) x.nanos
+		long nanos = x.seconds * 1000000000L + x.nanos
 				- (y.seconds * 1000000000L + y.nanos);
-		if (months < 0 && nanos <= 0)
+		if (months < 0 && nanos <= 0) {
 			return -1;
-		if (months > 0 && nanos >= 0)
+		}
+		if (months > 0 && nanos >= 0) {
 			return 1;
-		if (months == 0)
+		}
+		if (months == 0) {
 			return nanos < 0 ? -1 : nanos > 0 ? 1 : 0;
+		}
 		return -2;
 	}
 
+	@Override
 	public int compare(Object obj) {
-		if (obj instanceof Duration)
+		if (obj instanceof Duration) {
 			return compare(this, (Duration) obj);
+		}
 		// Could also compare other Quanties if units match appropriately.
 		// FIXME.
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer sbuf = new StringBuffer();
 		int m = months;
@@ -331,21 +366,24 @@ public class Duration extends Quantity implements Externalizable {
 				appendNanoSeconds(n, sbuf);
 				sbuf.append('S');
 			}
-		} else if (sbuf.length() == 1)
+		} else if (sbuf.length() == 1) {
 			sbuf.append(unit == Unit.month ? "0M" : "T0S");
+		}
 		return sbuf.toString();
 	}
 
 	static void appendNanoSeconds(int nanoSeconds, StringBuffer sbuf) {
-		if (nanoSeconds == 0)
+		if (nanoSeconds == 0) {
 			return;
+		}
 		sbuf.append('.');
 		int pos = sbuf.length();
 		sbuf.append(nanoSeconds);
 		int len = sbuf.length();
 		int pad = pos + 9 - len;
-		while (--pad >= 0)
+		while (--pad >= 0) {
 			sbuf.insert(pos, '0');
+		}
 		len = pos + 9;
 		do {
 			--len;
@@ -369,13 +407,15 @@ public class Duration extends Quantity implements Externalizable {
 			i++;
 			int dig = Character.digit(ch, 10);
 			if (dig < 0) {
-				if (val < 0)
+				if (val < 0) {
 					return start << 16;
-				return (val << 32) | (i << 16) | ((int) ch);
+				}
+				return (val << 32) | (i << 16) | (ch);
 			}
 			val = val < 0 ? dig : 10 * val + dig;
-			if (val > Integer.MAX_VALUE)
+			if (val > Integer.MAX_VALUE) {
 				return -1; // overflow
+			}
 		}
 		return val < 0 ? (start << 16) : -1;
 	}
@@ -425,14 +465,17 @@ public class Duration extends Quantity implements Externalizable {
 		return seconds * 1000000000L + nanos;
 	}
 
+	@Override
 	public boolean isZero() {
 		return months == 0 && seconds == 0 && nanos == 0;
 	}
 
+	@Override
 	public boolean isExact() {
 		return false;
 	}
 
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeInt(months);
 		out.writeLong(seconds);
@@ -440,6 +483,7 @@ public class Duration extends Quantity implements Externalizable {
 		out.writeObject(unit);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		months = in.readInt();
@@ -448,14 +492,17 @@ public class Duration extends Quantity implements Externalizable {
 		unit = (Unit) in.readObject();
 	}
 
+	@Override
 	public Unit unit() {
 		return unit;
 	}
 
+	@Override
 	public Complex number() {
 		throw new Error("number needs to be implemented!");
 	}
 
+	@Override
 	public int hashCode() {
 		return months ^ (int) seconds ^ nanos;
 	}
@@ -471,9 +518,11 @@ public class Duration extends Quantity implements Externalizable {
 	/**
 	 * Compare for equality. Ignores unit.
 	 */
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof Duration))
+		if (obj == null || !(obj instanceof Duration)) {
 			return false;
+		}
 		return Duration.equals(this, (Duration) obj);
 	}
 }

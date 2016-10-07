@@ -16,17 +16,15 @@ public class InstanceMethods {
 	public String overloaded(String s) {
 		if (s == null) {
 			return "overloaded(null: String)";
-		} else {
-			return "overloaded(String)";
 		}
+		return "overloaded(String)";
 	}
 
 	public String overloaded(Object s) {
 		if (s == null) {
 			return "overloaded(null: Object)";
-		} else {
-			return "overloaded(Object)";
 		}
+		return "overloaded(Object)";
 	}
 
 	public IokeObject simpleTry(IokeObject obj) {

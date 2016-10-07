@@ -22,7 +22,7 @@ public class IokeSet extends IokeData {
 	private Set<Object> set;
 
 	public IokeSet() {
-		this(new HashSet<Object>());
+		this(new HashSet<>());
 	}
 
 	public IokeSet(Set<Object> s) {
@@ -47,7 +47,7 @@ public class IokeSet extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								return context.runtime.newNumber(
 										((IokeSet) IokeObject.data(on)).set
@@ -115,7 +115,7 @@ public class IokeSet extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						IokeSet set = (IokeSet) IokeObject.data(on);
-						set.set = new IdentitySet<Object>(set.set);
+						set.set = new IdentitySet<>(set.set);
 						return on;
 					}
 				}));
@@ -220,7 +220,7 @@ public class IokeSet extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						Set<Object> newSet = new HashSet<Object>();
+						Set<Object> newSet = new HashSet<>();
 						newSet.addAll(
 								((IokeSet) IokeObject.data(on)).getSet());
 						newSet.addAll(
@@ -249,7 +249,7 @@ public class IokeSet extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						Set<Object> newSet = new HashSet<Object>();
+						Set<Object> newSet = new HashSet<>();
 						newSet.addAll(
 								((IokeSet) IokeObject.data(on)).getSet());
 						newSet.retainAll(
@@ -526,9 +526,10 @@ public class IokeSet extends IokeData {
 		return set;
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
-		return new IokeSet(new HashSet<Object>(set));
+		return new IokeSet(new HashSet<>(set));
 	}
 
 	@Override

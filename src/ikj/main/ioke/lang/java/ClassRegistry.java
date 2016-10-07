@@ -16,7 +16,7 @@ import ioke.lang.Runtime;
 public class ClassRegistry {
 	final Runtime						runtime;
 	final IokeClassLoader				classLoader;
-	private final Map<String, String>	NAMES	= new ConcurrentHashMap<String, String>();
+	private final Map<String, String>	NAMES	= new ConcurrentHashMap<>();
 
 	public ClassRegistry(Runtime runtime) {
 		this.runtime = runtime;

@@ -28,8 +28,10 @@ import com.google.common.base.Objects;
  */
 abstract class AbstractMapEntry<K, V> implements Entry<K, V> {
 
+	@Override
 	public abstract K getKey();
 
+	@Override
 	public abstract V getValue();
 
 	/**
@@ -39,6 +41,7 @@ abstract class AbstractMapEntry<K, V> implements Entry<K, V> {
 	 * This implementation throws an {@link UnsupportedOperationException}.
 	 * Override this method to support mutable map entries.
 	 */
+	@Override
 	public V setValue(V value) {
 		throw new UnsupportedOperationException();
 	}

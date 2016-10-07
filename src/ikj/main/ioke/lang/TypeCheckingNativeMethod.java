@@ -35,6 +35,7 @@ public abstract class TypeCheckingNativeMethod extends NativeMethod {
 	@Override
 	public abstract TypeCheckingArgumentsDefinition getArguments();
 
+	@Override
 	public Object activate(IokeObject self, Object on, List<Object> args,
 			Map<String, Object> keywords, IokeObject context,
 			IokeObject message) throws ControlFlow {
@@ -44,8 +45,8 @@ public abstract class TypeCheckingNativeMethod extends NativeMethod {
 	@Override
 	public Object activate(IokeObject self, IokeObject context,
 			IokeObject message, Object on) throws ControlFlow {
-		List<Object> args = new ArrayList<Object>();
-		Map<String, Object> keywords = new HashMap<String, Object>();
+		List<Object> args = new ArrayList<>();
+		Map<String, Object> keywords = new HashMap<>();
 		Object receiver = getArguments().getValidatedArgumentsAndReceiver(
 				context, message, on, args, keywords);
 

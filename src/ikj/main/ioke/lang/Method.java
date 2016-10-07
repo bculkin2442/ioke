@@ -38,7 +38,7 @@ public class Method extends IokeData implements Named, Inspectable {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime.newText(
@@ -53,7 +53,7 @@ public class Method extends IokeData implements Named, Inspectable {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime
@@ -68,7 +68,7 @@ public class Method extends IokeData implements Named, Inspectable {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return context.runtime
@@ -106,7 +106,7 @@ public class Method extends IokeData implements Named, Inspectable {
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(
 								dynamicContext, message, on,
-								new ArrayList<Object>(),
+								new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						IokeData data = IokeObject.data(on);
@@ -121,6 +121,7 @@ public class Method extends IokeData implements Named, Inspectable {
 				}));
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -129,6 +130,7 @@ public class Method extends IokeData implements Named, Inspectable {
 		return "method(nil)";
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -160,10 +162,12 @@ public class Method extends IokeData implements Named, Inspectable {
 		return ((Inspectable) (IokeObject.data(on))).notice(on);
 	}
 
+	@Override
 	public String inspect(Object self) {
 		return getCodeString();
 	}
 
+	@Override
 	public String notice(Object self) {
 		if (name == null) {
 			return "method(...)";

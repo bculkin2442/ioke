@@ -20,60 +20,66 @@ public class BitOps {
 		int i = x.ival;
 		if (x.words == null) {
 			return bitno >= 32 ? i < 0 : ((i >> bitno) & 1) != 0;
-		} else {
-			int wordno = bitno >> 5;
-			return wordno >= i ? x.words[i - 1] < 0
-					: (((x.words[wordno]) >> bitno) & 1) != 0;
 		}
+		int wordno = bitno >> 5;
+		return wordno >= i ? x.words[i - 1] < 0
+				: (((x.words[wordno]) >> bitno) & 1) != 0;
 	}
 
 	/**
 	 * Return true iff an IntNum and an int have any true bits in common.
 	 */
 	public static boolean test(IntNum x, int y) {
-		if (x.words == null)
+		if (x.words == null) {
 			return (x.ival & y) != 0;
+		}
 		return (y < 0) || (x.words[0] & y) != 0;
 	}
 
 	/** Return true iff two IntNums have any true bits in common. */
 	public static boolean test(IntNum x, IntNum y) {
-		if (y.words == null)
+		if (y.words == null) {
 			return test(x, y.ival);
-		else if (x.words == null)
+		} else if (x.words == null) {
 			return test(y, x.ival);
+		}
 		if (x.ival < y.ival) {
 			IntNum temp = x;
 			x = y;
 			y = temp;
 		}
 		for (int i = 0; i < y.ival; i++) {
-			if ((x.words[i] & y.words[i]) != 0)
+			if ((x.words[i] & y.words[i]) != 0) {
 				return true;
+			}
 		}
 		return y.isNegative();
 	}
 
 	/** Return the logical (bit-wise) "and" of an IntNum and an int. */
 	public static IntNum and(IntNum x, int y) {
-		if (x.words == null)
+		if (x.words == null) {
 			return IntNum.make(x.ival & y);
-		if (y >= 0)
+		}
+		if (y >= 0) {
 			return IntNum.make(x.words[0] & y);
+		}
 		int len = x.ival;
 		int[] words = new int[len];
 		words[0] = x.words[0] & y;
-		while (--len > 0)
+		while (--len > 0) {
 			words[len] = x.words[len];
+		}
 		return IntNum.make(words, x.ival);
 	}
 
 	/** Return the logical (bit-wise) "and" of two IntNums. */
 	public static IntNum and(IntNum x, IntNum y) {
-		if (y.words == null)
+		if (y.words == null) {
 			return and(x, y.ival);
-		else if (x.words == null)
+		} else if (x.words == null) {
 			return and(y, x.ival);
+		}
 		if (x.ival < y.ival) {
 			IntNum temp = x;
 			x = y;
@@ -82,10 +88,12 @@ public class BitOps {
 		int i;
 		int len = y.isNegative() ? x.ival : y.ival;
 		int[] words = new int[len];
-		for (i = 0; i < y.ival; i++)
+		for (i = 0; i < y.ival; i++) {
 			words[i] = x.words[i] & y.words[i];
-		for (; i < len; i++)
+		}
+		for (; i < len; i++) {
 			words[i] = x.words[i];
+		}
 		return IntNum.make(words, len);
 	}
 
@@ -135,9 +143,9 @@ public class BitOps {
 	/** Do one the the 16 possible bit-wise operations of two IntNums. */
 	public static void setBitOp(IntNum result, int op, IntNum x,
 			IntNum y) {
-		if (y.words == null)
+		if (y.words == null) {
 			;
-		else if (x.words == null || x.ival < y.ival) {
+		} else if (x.words == null || x.ival < y.ival) {
 			IntNum temp = x;
 			x = y;
 			y = temp;
@@ -160,8 +168,9 @@ public class BitOps {
 			xi = x.words[0];
 			xlen = x.ival;
 		}
-		if (xlen > 1)
+		if (xlen > 1) {
 			result.realloc(xlen);
+		}
 		int[] w = result.words;
 		int i = 0;
 		// Code for how to handle the remainder of x.
@@ -177,26 +186,30 @@ public class BitOps {
 			case 1: // and
 				for (;;) {
 					ni = xi & yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi < 0)
+				if (yi < 0) {
 					finish = 1;
+				}
 				break;
 			case 2: // andc2
 				for (;;) {
 					ni = xi & ~yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi >= 0)
+				if (yi >= 0) {
 					finish = 1;
+				}
 				break;
 			case 3: // copy x
 				ni = xi;
@@ -205,20 +218,23 @@ public class BitOps {
 			case 4: // andc1
 				for (;;) {
 					ni = ~xi & yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi < 0)
+				if (yi < 0) {
 					finish = 2;
+				}
 				break;
 			case 5: // copy y
 				for (;;) {
 					ni = yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
@@ -227,8 +243,9 @@ public class BitOps {
 			case 6: // xor
 				for (;;) {
 					ni = xi ^ yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
@@ -238,32 +255,37 @@ public class BitOps {
 			case 7: // ior
 				for (;;) {
 					ni = xi | yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi >= 0)
+				if (yi >= 0) {
 					finish = 1;
+				}
 				break;
 			case 8: // nor
 				for (;;) {
 					ni = ~(xi | yi);
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi >= 0)
+				if (yi >= 0) {
 					finish = 2;
+				}
 				break;
 			case 9: // eqv [exclusive nor]
 				for (;;) {
 					ni = ~(xi ^ yi);
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
@@ -273,8 +295,9 @@ public class BitOps {
 			case 10: // c2
 				for (;;) {
 					ni = ~yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
@@ -283,14 +306,16 @@ public class BitOps {
 			case 11: // orc2
 				for (;;) {
 					ni = xi | ~yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi < 0)
+				if (yi < 0) {
 					finish = 1;
+				}
 				break;
 			case 12: // c1
 				ni = ~xi;
@@ -299,26 +324,30 @@ public class BitOps {
 			case 13: // orc1
 				for (;;) {
 					ni = ~xi | yi;
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi >= 0)
+				if (yi >= 0) {
 					finish = 2;
+				}
 				break;
 			case 14: // nand
 				for (;;) {
 					ni = ~(xi & yi);
-					if (i + 1 >= ylen)
+					if (i + 1 >= ylen) {
 						break;
+					}
 					w[i++] = ni;
 					xi = x.words[i];
 					yi = y.words[i];
 				}
-				if (yi < 0)
+				if (yi < 0) {
 					finish = 2;
+				}
 				break;
 			default:
 			case 15: // set
@@ -327,8 +356,9 @@ public class BitOps {
 		}
 		// Here i==ylen-1; w[0]..w[i-1] have the correct result;
 		// and ni contains the correct result for w[i+1].
-		if (i + 1 == xlen)
+		if (i + 1 == xlen) {
 			finish = 0;
+		}
 		switch (finish) {
 			case 0:
 				if (i == 0 && w == null) {
@@ -339,13 +369,15 @@ public class BitOps {
 				break;
 			case 1:
 				w[i] = ni;
-				while (++i < xlen)
+				while (++i < xlen) {
 					w[i] = x.words[i];
+				}
 				break;
 			case 2:
 				w[i] = ni;
-				while (++i < xlen)
+				while (++i < xlen) {
 					w[i] = ~x.words[i];
+				}
 				break;
 		}
 		result.ival = i;
@@ -363,26 +395,31 @@ public class BitOps {
 		}
 		int x_len;
 		if (x.words == null) {
-			if (x.ival >= 0)
+			if (x.ival >= 0) {
 				return IntNum
 						.make(startBit >= 31 ? 0 : (x.ival >> startBit));
+			}
 			x_len = 1;
-		} else
+		} else {
 			x_len = x.ival;
+		}
 		boolean neg = x.isNegative();
 		if (endBit > 32 * x_len) {
 			endBit = 32 * x_len;
-			if (!neg && startBit == 0)
+			if (!neg && startBit == 0) {
 				return x;
-		} else
+			}
+		} else {
 			x_len = (endBit + 31) >> 5;
+		}
 		int length = endBit - startBit;
 		if (length < 64) {
 			long l;
-			if (x.words == null)
+			if (x.words == null) {
 				l = x.ival >> (startBit >= 32 ? 31 : startBit);
-			else
+			} else {
 				l = MPN.rshift_long(x.words, x_len, startBit);
+			}
 			return IntNum.make(l & ~((-1L) << length));
 		}
 		int startWord = startBit >> 5;
@@ -392,9 +429,9 @@ public class BitOps {
 		// partial words at both ends).
 		int buf_len = (endBit >> 5) + 1 - startWord;
 		int[] buf = new int[buf_len];
-		if (x.words == null) // x < 0.
+		if (x.words == null) {
 			buf[0] = startBit >= 32 ? -1 : (x.ival >> startBit);
-		else {
+		} else {
 			x_len -= startWord;
 			startBit &= 31;
 			MPN.rshift0(buf, x.words, startWord, x_len, startBit);
@@ -419,8 +456,9 @@ public class BitOps {
 
 	public static int bitCount(int[] x, int len) {
 		int count = 0;
-		while (--len >= 0)
+		while (--len >= 0) {
 			count += bitCount(x[len]);
+		}
 		return count;
 	}
 

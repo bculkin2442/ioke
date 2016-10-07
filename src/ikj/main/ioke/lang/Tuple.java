@@ -48,7 +48,7 @@ public class Tuple extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -77,7 +77,7 @@ public class Tuple extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -98,7 +98,7 @@ public class Tuple extends IokeData {
 												.getEvaluatedArguments(
 														context, message,
 														on,
-														new ArrayList<Object>(),
+														new ArrayList<>(),
 														new HashMap<String, Object>());
 										return ((Tuple) IokeObject
 												.data(on)).elements[index];
@@ -194,10 +194,12 @@ public class Tuple extends IokeData {
 
 						len = one.length - two.length;
 
-						if (len == 0)
+						if (len == 0) {
 							return context.runtime.newNumber(0);
-						if (len > 0)
+						}
+						if (len > 0) {
 							return context.runtime.newNumber(1);
+						}
 						return context.runtime.newNumber(-1);
 					}
 				}));
@@ -257,10 +259,9 @@ public class Tuple extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						return method.runtime.newList(
-								new ArrayList<Object>(java.util.Arrays
-										.asList(((Tuple) IokeObject
-												.data(on)).elements)));
+						return method.runtime.newList(new ArrayList<>(
+								java.util.Arrays.asList(((Tuple) IokeObject
+										.data(on)).elements)));
 					}
 				}));
 	}

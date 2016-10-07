@@ -12,8 +12,9 @@ public abstract class RatNum extends RealNum {
 
 	public static RatNum make(IntNum num, IntNum den) {
 		IntNum g = IntNum.gcd(num, den);
-		if (den.isNegative())
+		if (den.isNegative()) {
 			g = IntNum.neg(g);
+		}
 		if (!g.isOne()) {
 			num = IntNum.quotient(num, g);
 			den = IntNum.quotient(den, g);
@@ -22,10 +23,12 @@ public abstract class RatNum extends RealNum {
 				: (RatNum) (new IntFraction(num, den));
 	}
 
+	@Override
 	public boolean isExact() {
 		return true;
 	}
 
+	@Override
 	public boolean isZero() {
 		return numerator().isZero();
 	}
@@ -52,9 +55,11 @@ public abstract class RatNum extends RealNum {
 	}
 
 	/* Assumes this and obj are both canonicalized. */
+	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof RatNum))
+		if (obj == null || !(obj instanceof RatNum)) {
 			return false;
+		}
 		return RatNum.equals(this, (RatNum) obj);
 	}
 
@@ -63,8 +68,9 @@ public abstract class RatNum extends RealNum {
 		IntNum x_den = x.denominator();
 		IntNum y_num = y.numerator();
 		IntNum y_den = y.denominator();
-		if (IntNum.equals(x_den, y_den))
+		if (IntNum.equals(x_den, y_den)) {
 			return RatNum.make(IntNum.add(x_num, y_num, k), x_den);
+		}
 		return RatNum.make(
 				IntNum.add(IntNum.times(y_den, x_num),
 						IntNum.times(y_num, x_den), k),
@@ -81,13 +87,15 @@ public abstract class RatNum extends RealNum {
 				IntNum.times(x.denominator(), y.numerator()));
 	}
 
+	@Override
 	public Numeric power(IntNum y) {
 		boolean inv;
 		if (y.isNegative()) {
 			inv = true;
 			y = IntNum.neg(y);
-		} else
+		} else {
 			inv = false;
+		}
 		if (y.words == null) {
 			IntNum num = IntNum.power(numerator(), y.ival);
 			IntNum den = IntNum.power(denominator(), y.ival);
@@ -96,19 +104,23 @@ public abstract class RatNum extends RealNum {
 		double d = doubleValue();
 		boolean neg = d < 0.0 && y.isOdd();
 		d = Math.pow(d, y.doubleValue());
-		if (inv)
+		if (inv) {
 			d = 1.0 / d;
+		}
 		return new DFloNum(neg ? -d : d);
 	}
 
+	@Override
 	public final RatNum toExact() {
 		return this;
 	}
 
+	@Override
 	public RealNum toInt(int rounding_mode) {
 		return IntNum.quotient(numerator(), denominator(), rounding_mode);
 	}
 
+	@Override
 	public IntNum toExactInt(int rounding_mode) {
 		return IntNum.quotient(numerator(), denominator(), rounding_mode);
 	}
@@ -117,30 +129,32 @@ public abstract class RatNum extends RealNum {
 	public static RealNum rationalize(RealNum x, RealNum y) {
 		// This algorithm is by Alan Bawden. It has been transcribed
 		// with permission from C-Gambit, copyright Marc Feeley.
-		if (x.grt(y))
+		if (x.grt(y)) {
 			return simplest_rational2(y, x);
-		else if (!(y.grt(x)))
+		} else if (!(y.grt(x))) {
 			return x;
-		else if (x.sign() > 0)
+		} else if (x.sign() > 0) {
 			return simplest_rational2(x, y);
-		else if (y.isNegative())
+		} else if (y.isNegative()) {
 			return (RealNum) (simplest_rational2((RealNum) y.neg(),
 					(RealNum) x.neg())).neg();
-		else
+		} else {
 			return IntNum.zero();
+		}
 	}
 
 	private static RealNum simplest_rational2(RealNum x, RealNum y) {
 		RealNum fx = x.toInt(FLOOR);
 		RealNum fy = y.toInt(FLOOR);
-		if (!x.grt(fx))
+		if (!x.grt(fx)) {
 			return fx;
-		else if (fx.equals(fy)) {
+		} else if (fx.equals(fy)) {
 			RealNum n = (RealNum) IntNum.one().div(y.sub(fy));
 			RealNum d = (RealNum) IntNum.one().div(x.sub(fx));
 			return (RealNum) fx
 					.add(IntNum.one().div(simplest_rational2(n, d)), 1);
-		} else
+		} else {
 			return (RealNum) fx.add(IntNum.one(), 1);
+		}
 	}
 }

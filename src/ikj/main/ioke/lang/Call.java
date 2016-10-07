@@ -68,7 +68,7 @@ public class Call extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return ((Call) IokeObject
@@ -88,7 +88,7 @@ public class Call extends IokeData {
 									throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 
 								return ((Call) IokeObject.data(on)).on;
@@ -106,7 +106,7 @@ public class Call extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return ((Call) IokeObject.data(on)).ctx;
@@ -124,7 +124,7 @@ public class Call extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						return ((Call) IokeObject.data(on)).message;
@@ -142,7 +142,7 @@ public class Call extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						IokeObject msg = ((Call) IokeObject
@@ -312,6 +312,7 @@ public class Call extends IokeData {
 
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
 		return new Call(this.ctx, this.message, this.surroundingContext,

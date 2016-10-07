@@ -105,10 +105,9 @@ public class JavaGround {
 							throws ControlFlow {
 						if (on instanceof String) {
 							return runtime.newText((String) on);
-						} else {
-							return runtime.newText(
-									(String) JavaWrapper.getObject(on));
 						}
+						return runtime.newText(
+								(String) JavaWrapper.getObject(on));
 					}
 				}));
 
@@ -125,11 +124,10 @@ public class JavaGround {
 						if (on instanceof Integer) {
 							return runtime
 									.newNumber(((Integer) on).longValue());
-						} else {
-							return runtime.newNumber(
-									((Integer) JavaWrapper.getObject(on))
-											.longValue());
 						}
+						return runtime.newNumber(
+								((Integer) JavaWrapper.getObject(on))
+										.longValue());
 					}
 				}));
 
@@ -146,11 +144,10 @@ public class JavaGround {
 						if (on instanceof Byte) {
 							return runtime
 									.newNumber(((Byte) on).longValue());
-						} else {
-							return runtime.newNumber(
-									((Byte) JavaWrapper.getObject(on))
-											.longValue());
 						}
+						return runtime.newNumber(
+								((Byte) JavaWrapper.getObject(on))
+										.longValue());
 					}
 				}));
 
@@ -167,11 +164,10 @@ public class JavaGround {
 						if (on instanceof Short) {
 							return runtime
 									.newNumber(((Short) on).longValue());
-						} else {
-							return runtime.newNumber(
-									((Short) JavaWrapper.getObject(on))
-											.longValue());
 						}
+						return runtime.newNumber(
+								((Short) JavaWrapper.getObject(on))
+										.longValue());
 					}
 				}));
 
@@ -188,11 +184,10 @@ public class JavaGround {
 						if (on instanceof Long) {
 							return runtime
 									.newNumber(((Long) on).longValue());
-						} else {
-							return runtime.newNumber(
-									((Long) JavaWrapper.getObject(on))
-											.longValue());
 						}
+						return runtime.newNumber(
+								((Long) JavaWrapper.getObject(on))
+										.longValue());
 					}
 				}));
 
@@ -209,11 +204,10 @@ public class JavaGround {
 						if (on instanceof Character) {
 							return runtime.newNumber(
 									((Character) on).charValue());
-						} else {
-							return runtime.newNumber(
-									((Character) JavaWrapper.getObject(on))
-											.charValue());
 						}
+						return runtime.newNumber(
+								((Character) JavaWrapper.getObject(on))
+										.charValue());
 					}
 				}));
 
@@ -230,11 +224,10 @@ public class JavaGround {
 						if (on instanceof Float) {
 							return runtime.newDecimal(BigDecimal
 									.valueOf(((Float) on).doubleValue()));
-						} else {
-							return runtime.newDecimal(BigDecimal.valueOf(
-									((Float) JavaWrapper.getObject(on))
-											.doubleValue()));
 						}
+						return runtime.newDecimal(BigDecimal.valueOf(
+								((Float) JavaWrapper.getObject(on))
+										.doubleValue()));
 					}
 				}));
 
@@ -251,11 +244,10 @@ public class JavaGround {
 						if (on instanceof Double) {
 							return runtime.newDecimal(BigDecimal
 									.valueOf(((Double) on).doubleValue()));
-						} else {
-							return runtime.newDecimal(BigDecimal.valueOf(
-									((Double) JavaWrapper.getObject(on))
-											.doubleValue()));
 						}
+						return runtime.newDecimal(BigDecimal.valueOf(
+								((Double) JavaWrapper.getObject(on))
+										.doubleValue()));
 					}
 				}));
 
@@ -275,7 +267,7 @@ public class JavaGround {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());

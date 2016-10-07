@@ -47,14 +47,14 @@ public class AssignmentBehavior {
 				return Interpreter.send(context.runtime.setValue, context,
 						on, m1, context.runtime.createMessage(Message
 								.wrap(IokeObject.as(result, context))));
-			} else {
-				Object val = Interpreter.send(m1, context, on);
-				Object result = Interpreter.send(opmsg, context, val,
-						Message.getArg2(message));
-				return Interpreter.send(context.runtime.setValue, context,
-						on, m1, context.runtime.createMessage(Message
-								.wrap(IokeObject.as(result, context))));
 			}
+
+			Object val = Interpreter.send(m1, context, on);
+			Object result = Interpreter.send(opmsg, context, val,
+					Message.getArg2(message));
+			return Interpreter.send(context.runtime.setValue, context, on,
+					m1, context.runtime.createMessage(
+							Message.wrap(IokeObject.as(result, context))));
 		}
 	}
 
@@ -101,20 +101,19 @@ public class AssignmentBehavior {
 								return Interpreter.send(
 										context.runtime.setValue, context,
 										on, m1, Message.getArg2(message));
-							} else {
-								return val;
 							}
-						} else {
-							Object val = Interpreter.send(m1, context, on);
-							if (val == context.runtime.nul
-									|| !IokeObject.isTrue(val)) {
-								return Interpreter.send(
-										context.runtime.setValue, context,
-										on, m1, Message.getArg2(message));
-							} else {
-								return val;
-							}
+							return val;
 						}
+
+						Object val = Interpreter.send(m1, context, on);
+						if (val == context.runtime.nul
+								|| !IokeObject.isTrue(val)) {
+							return Interpreter.send(
+									context.runtime.setValue, context, on,
+									m1, Message.getArg2(message));
+						}
+
+						return val;
 					}
 				}));
 
@@ -148,22 +147,19 @@ public class AssignmentBehavior {
 							if (val == context.runtime.nul
 									|| !IokeObject.isTrue(val)) {
 								return context.runtime.nil;
-							} else {
-								return Interpreter.send(
-										context.runtime.setValue, context,
-										on, m1, Message.getArg2(message));
 							}
-						} else {
-							Object val = Interpreter.send(m1, context, on);
-							if (val == context.runtime.nul
-									|| !IokeObject.isTrue(val)) {
-								return context.runtime.nil;
-							} else {
-								return Interpreter.send(
-										context.runtime.setValue, context,
-										on, m1, Message.getArg2(message));
-							}
+							return Interpreter.send(
+									context.runtime.setValue, context, on,
+									m1, Message.getArg2(message));
 						}
+
+						Object val = Interpreter.send(m1, context, on);
+						if (val == context.runtime.nul
+								|| !IokeObject.isTrue(val)) {
+							return context.runtime.nil;
+						}
+						return Interpreter.send(context.runtime.setValue,
+								context, on, m1, Message.getArg2(message));
 					}
 				}));
 

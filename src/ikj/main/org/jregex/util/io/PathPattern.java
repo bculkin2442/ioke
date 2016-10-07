@@ -100,6 +100,7 @@ public class PathPattern extends Pattern {
 
 	private static final Replacer	spCharProcessor	= new Replacer(
 			spCharPattern, new Substitution() {
+																@Override
 																public void appendSubstitution(
 																		MatchResult mr,
 																		TextBuffer dest) {
@@ -195,33 +196,37 @@ public class PathPattern extends Pattern {
 	}
 
 	public PathPattern(File dir, String path, int flags) {
-		if (path == null || path.length() == 0)
+		if (path == null || path.length() == 0) {
 			throw new IllegalArgumentException("empty path not allowed");
+		}
 
 		str = path;
 		RETokenizer tok = new RETokenizer(fs.matcher(path), true);
 		String s = tok.nextToken();
 		if (s.equals("")) {
-			if (dir != null)
+			if (dir != null) {
 				rootf = dir;
-			else
+			} else {
 				root = "/";
+			}
 		} else {
-			if (dir != null)
+			if (dir != null) {
 				rootf = dir;
-			else
+			} else {
 				root = ".";
+			}
 			addElement(newMask(s, flags, tok.hasMore()));
 		}
 		while (tok.hasMore()) {
 			s = tok.nextToken();
 			boolean hasMore = tok.hasMore();
 			if (s.equals("")) {
-				if (hasMore)
+				if (hasMore) {
 					throw new IllegalArgumentException(
 							"\"//\" not allowed");
-				else
+				} else {
 					break;
+				}
 			}
 			addElement(newMask(s, flags, hasMore));
 		}
@@ -246,8 +251,9 @@ public class PathPattern extends Pattern {
 	public File[] files() {
 		Enumeration e = enumerateFiles();
 		Vector v = new Vector();
-		while (e.hasMoreElements())
+		while (e.hasMoreElements()) {
 			v.addElement(e.nextElement());
+		}
 		File[] files = new File[v.size()];
 		v.copyInto(files);
 		return files;
@@ -257,6 +263,7 @@ public class PathPattern extends Pattern {
 	 * @deprecated Is meaningless with regard to variable paths (since
 	 *             v.1.2)
 	 */
+	@Deprecated
 	public String[] names() {
 		return null;
 	}
@@ -265,33 +272,38 @@ public class PathPattern extends Pattern {
 	 * @deprecated Is meaningless with regard to variable paths (since
 	 *             v.1.2)
 	 */
+	@Deprecated
 	public File directory() {
 		return null;
 	}
 
 	private static PathElementMask newMask(String s, int flags,
 			boolean dirsOnly) {
-		if (s == null || s.length() == 0)
+		if (s == null || s.length() == 0) {
 			throw new IllegalArgumentException(
 					"Error: empty path element not allowed");
+		}
 		if (s.indexOf('*') < 0 && s.indexOf('?') < 0) {
 			// if((flags&IGNORE_CASE)==0) return
 			// PathElementMask.fixedMask(s,dirsOnly);
 			// just a dirty trick,
 			// on windows this could be a disk name ("D:"),
 			// and so won't be listed, so the RegularMask won't help
-			if ((flags & IGNORE_CASE) == 0 || s.indexOf(':') >= 0)
+			if ((flags & IGNORE_CASE) == 0 || s.indexOf(':') >= 0) {
 				return PathElementMask.fixedMask(s, dirsOnly);
-			else
+			} else {
 				return PathElementMask.regularMask(s, flags, dirsOnly);
-		} else if (s.equals("*"))
+			}
+		} else if (s.equals("*")) {
 			return PathElementMask.anyFile(dirsOnly);
-		else if (s.equals("**"))
+		} else if (s.equals("**")) {
 			return PathElementMask.anyPath(dirsOnly);
-		else
+		} else {
 			return PathElementMask.regularMask(s, flags, dirsOnly);
+		}
 	}
 
+	@Override
 	public String toString() {
 		return str;
 	}

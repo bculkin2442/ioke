@@ -81,9 +81,8 @@ public final class IokeObject implements TypeChecker {
 	public static boolean same(Object one, Object two) throws ControlFlow {
 		if ((one instanceof IokeObject) && (two instanceof IokeObject)) {
 			return as(one, null).body == as(two, null).body;
-		} else {
-			return one == two;
 		}
+		return one == two;
 	}
 
 	private void checkFrozen(String modification, IokeObject message,
@@ -252,9 +251,8 @@ public final class IokeObject implements TypeChecker {
 	public final Object getRealContext() {
 		if (isLexical()) {
 			return ((LexicalContext) this.data).ground;
-		} else {
-			return this;
 		}
+		return this;
 	}
 
 	public IokeObject allocateCopy(IokeObject m, IokeObject context) {
@@ -286,16 +284,15 @@ public final class IokeObject implements TypeChecker {
 
 		if (body.mimicCount == 1) {
 			return body.mimic.markingFindSuperCell(early, name, found);
-		} else {
-			for (int i = 0; i < body.mimicCount; i++) {
-				Object cell = body.mimics[i].markingFindSuperCell(early,
-						name, found);
-				if (cell != runtime.nul) {
-					return cell;
-				}
-			}
-			return runtime.nul;
 		}
+		for (int i = 0; i < body.mimicCount; i++) {
+			Object cell = body.mimics[i].markingFindSuperCell(early, name,
+					found);
+			if (cell != runtime.nul) {
+				return cell;
+			}
+		}
+		return runtime.nul;
 	}
 
 	protected final Object markingFindSuperCell(IokeObject early,
@@ -328,6 +325,7 @@ public final class IokeObject implements TypeChecker {
 
 			m.runtime.withReturningRestart("ignore", context,
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							condition.runtime.errorCondition(condition);
 						}
@@ -358,28 +356,26 @@ public final class IokeObject implements TypeChecker {
 				return runtime.nul;
 			}
 			return this;
+		}
+		if (body.mimic != null) {
+			Object place = body.mimic.markingFindPlace(name);
+			if (place != runtime.nul) {
+				return place;
+			}
 		} else {
-			if (body.mimic != null) {
-				Object place = body.mimic.markingFindPlace(name);
+			for (int i = 0; i < body.mimicCount; i++) {
+				Object place = body.mimics[i].markingFindPlace(name);
 				if (place != runtime.nul) {
 					return place;
 				}
-			} else {
-				for (int i = 0; i < body.mimicCount; i++) {
-					Object place = body.mimics[i].markingFindPlace(name);
-					if (place != runtime.nul) {
-						return place;
-					}
-				}
 			}
-
-			if (isLexical()) {
-				return IokeObject.findPlace(
-						((LexicalContext) this.data).surroundingContext,
-						name);
-			}
-			return runtime.nul;
 		}
+
+		if (isLexical()) {
+			return IokeObject.findPlace(
+					((LexicalContext) this.data).surroundingContext, name);
+		}
+		return runtime.nul;
 	}
 
 	public static final Object findCell(IokeObject on, String name) {
@@ -469,11 +465,10 @@ public final class IokeObject implements TypeChecker {
 
 		if (body.mimic != null) {
 			return body.mimic.isKind(kind);
-		} else {
-			for (int i = 0; i < body.mimicCount; i++) {
-				if (body.mimics[i].isKind(kind)) {
-					return true;
-				}
+		}
+		for (int i = 0; i < body.mimicCount; i++) {
+			if (body.mimics[i].isKind(kind)) {
+				return true;
 			}
 		}
 		return false;
@@ -486,11 +481,10 @@ public final class IokeObject implements TypeChecker {
 
 		if (body.mimic != null) {
 			return body.mimic == obj;
-		} else {
-			for (int i = 0; i < body.mimicCount; i++) {
-				if (body.mimics[i] == obj) {
-					return true;
-				}
+		}
+		for (int i = 0; i < body.mimicCount; i++) {
+			if (body.mimics[i] == obj) {
+				return true;
 			}
 		}
 		return false;
@@ -503,11 +497,10 @@ public final class IokeObject implements TypeChecker {
 
 		if (body.mimic != null) {
 			return body.mimic.isMimic(pot);
-		} else {
-			for (int i = 0; i < body.mimicCount; i++) {
-				if (body.mimics[i].isMimic(pot)) {
-					return true;
-				}
+		}
+		for (int i = 0; i < body.mimicCount; i++) {
+			if (body.mimics[i].isMimic(pot)) {
+				return true;
 			}
 		}
 		return false;
@@ -561,20 +554,24 @@ public final class IokeObject implements TypeChecker {
 
 			runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public String report() {
 							return "Use value for: " + outerName;
 						}
 
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -582,15 +579,18 @@ public final class IokeObject implements TypeChecker {
 							return context.runtime.nil;
 						}
 					}, new Restart.ArgumentGivingRestart("storeValue") {
+						@Override
 						public String report() {
 							return "Store value for: " + outerName;
 						}
 
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -626,6 +626,7 @@ public final class IokeObject implements TypeChecker {
 
 			runtime.withReturningRestart("ignore", context,
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							runtime.errorCondition(condition);
 						}
@@ -652,19 +653,18 @@ public final class IokeObject implements TypeChecker {
 		Object obj = findCell(this, "kind");
 		if (IokeObject.data(obj) instanceof Text) {
 			return ((Text) IokeObject.data(obj)).getText();
-		} else {
-			return ((Text) IokeObject.data(Interpreter.getOrActivate(obj,
-					context, message, this))).getText();
 		}
+		return ((Text) IokeObject.data(
+				Interpreter.getOrActivate(obj, context, message, this)))
+						.getText();
 	}
 
 	public String getKind() {
 		Object obj = findCell(this, "kind");
 		if (obj != null && IokeObject.data(obj) instanceof Text) {
 			return ((Text) IokeObject.data(obj)).getText();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public boolean hasKind() {
@@ -931,18 +931,16 @@ public final class IokeObject implements TypeChecker {
 	public static IokeObject as(Object on, IokeObject context) {
 		if (on instanceof IokeObject) {
 			return ((IokeObject) on);
-		} else {
-			return IokeRegistry.wrap(on, context);
 		}
+		return IokeRegistry.wrap(on, context);
 	}
 
 	public final Object getSelf() {
 		if (isLexical()) {
 			return ((LexicalContext) this.data).surroundingContext
 					.getSelf();
-		} else {
-			return this.body.get("self");
 		}
+		return this.body.get("self");
 	}
 
 	public static IokeObject convertToNumber(Object on, IokeObject m,
@@ -1035,19 +1033,15 @@ public final class IokeObject implements TypeChecker {
 		if (on instanceof IokeObject) {
 			if (IokeObject.data(on).getClass().equals(data.getClass())) {
 				return on;
-			} else {
-				return IokeObject.convertTo(this, on, signalCondition,
-						IokeObject.data(on).getConvertMethod(), message,
-						context);
 			}
-		} else {
-			if (signalCondition) {
-				throw new RuntimeException(
-						"oh no. -(: " + message.getName());
-			} else {
-				return context.runtime.nul;
-			}
+			return IokeObject.convertTo(this, on, signalCondition,
+					IokeObject.data(on).getConvertMethod(), message,
+					context);
 		}
+		if (signalCondition) {
+			throw new RuntimeException("oh no. -(: " + message.getName());
+		}
+		return context.runtime.nul;
 	}
 
 	public static Object ensureTypeIs(Class<?> clazz, IokeObject self,
@@ -1066,16 +1060,19 @@ public final class IokeObject implements TypeChecker {
 
 			context.runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							context.runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -1152,9 +1149,8 @@ public final class IokeObject implements TypeChecker {
 			Runtime runtime = ion.runtime;
 			return Text.getText(
 					Interpreter.send(runtime.inspectMessage, ion, ion));
-		} else {
-			return on.toString();
 		}
+		return on.toString();
 	}
 
 	public static String notice(Object on) throws ControlFlow {
@@ -1163,9 +1159,8 @@ public final class IokeObject implements TypeChecker {
 			Runtime runtime = ion.runtime;
 			return Text.getText(
 					Interpreter.send(runtime.noticeMessage, ion, ion));
-		} else {
-			return on.toString();
 		}
+		return on.toString();
 	}
 
 	public IokeObject convertToText(IokeObject m, IokeObject context,
@@ -1210,6 +1205,7 @@ public final class IokeObject implements TypeChecker {
 		return data.convertToRegexp(this, m, context);
 	}
 
+	@Override
 	public String toString() {
 		return data.toString(this);
 	}
@@ -1274,6 +1270,7 @@ public final class IokeObject implements TypeChecker {
 	}
 
 	// TypeChecker
+	@Override
 	public Object convertToMimic(Object on, IokeObject message,
 			IokeObject context, boolean signal) throws ControlFlow {
 		return convertToThis(on, signal, message, context);

@@ -84,7 +84,7 @@ public abstract class Readline {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -119,7 +119,7 @@ public abstract class Readline {
 							condition.setCell("receiver", on);
 							condition.setCell("exceptionMessage",
 									runtime.newText(e.getMessage()));
-							List<Object> ob = new ArrayList<Object>();
+							List<Object> ob = new ArrayList<>();
 							for (StackTraceElement ste : e
 									.getStackTrace()) {
 								ob.add(runtime.newText(ste.toString()));
@@ -130,6 +130,7 @@ public abstract class Readline {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -157,7 +158,7 @@ public abstract class Readline {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());

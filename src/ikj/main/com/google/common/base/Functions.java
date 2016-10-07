@@ -49,6 +49,7 @@ public final class Functions {
 	private enum ToStringFunction implements Function<Object, String> {
 		INSTANCE;
 
+		@Override
 		public String apply(Object o) {
 			return o.toString();
 		}
@@ -71,6 +72,7 @@ public final class Functions {
 	private enum IdentityFunction implements Function<Object, Object> {
 		INSTANCE;
 
+		@Override
 		public Object apply(Object o) {
 			return o;
 		}
@@ -95,7 +97,7 @@ public final class Functions {
 	 * @return function that returns {@code map.get(a)} for each {@code a}
 	 */
 	public static <K, V> Function<K, V> forMap(Map<K, V> map) {
-		return new FunctionForMapNoDefault<K, V>(map);
+		return new FunctionForMapNoDefault<>(map);
 	}
 
 	private static class FunctionForMapNoDefault<K, V>
@@ -106,6 +108,7 @@ public final class Functions {
 			this.map = checkNotNull(map);
 		}
 
+		@Override
 		public V apply(K a) {
 			return map.get(a);
 		}
@@ -146,7 +149,7 @@ public final class Functions {
 	 */
 	public static <K, V> Function<K, V> forMap(Map<K, ? extends V> map,
 			V defaultValue) {
-		return new ForMapWithDefault<K, V>(map, defaultValue);
+		return new ForMapWithDefault<>(map, defaultValue);
 	}
 
 	private static class ForMapWithDefault<K, V>
@@ -159,6 +162,7 @@ public final class Functions {
 			this.defaultValue = defaultValue;
 		}
 
+		@Override
 		public V apply(K a) {
 			return map.containsKey(a) ? map.get(a) : defaultValue;
 		}
@@ -203,7 +207,7 @@ public final class Functions {
 	 */
 	public static <A, B, C> Function<A, C> compose(Function<B, C> g,
 			Function<A, ? extends B> f) {
-		return new FunctionComposition<A, B, C>(g, f);
+		return new FunctionComposition<>(g, f);
 	}
 
 	private static class FunctionComposition<A, B, C>
@@ -217,6 +221,7 @@ public final class Functions {
 			this.f = checkNotNull(f);
 		}
 
+		@Override
 		public C apply(A a) {
 			return g.apply(f.apply(a));
 		}
@@ -249,7 +254,7 @@ public final class Functions {
 	 */
 	public static <T> Function<T, Boolean> forPredicate(
 			Predicate<T> predicate) {
-		return new PredicateFunction<T>(predicate);
+		return new PredicateFunction<>(predicate);
 	}
 
 	/** @see Functions#forPredicate */
@@ -261,6 +266,7 @@ public final class Functions {
 			this.predicate = checkNotNull(predicate);
 		}
 
+		@Override
 		public Boolean apply(T t) {
 			return predicate.apply(t);
 		}
@@ -295,7 +301,7 @@ public final class Functions {
 	 * @return a function that always returns {@code value}
 	 */
 	public static <E> Function<Object, E> constant(E value) {
-		return new ConstantFunction<E>(value);
+		return new ConstantFunction<>(value);
 	}
 
 	private static class ConstantFunction<E>
@@ -306,6 +312,7 @@ public final class Functions {
 			this.value = value;
 		}
 
+		@Override
 		public E apply(Object from) {
 			return value;
 		}

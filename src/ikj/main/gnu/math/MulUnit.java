@@ -30,16 +30,19 @@ class MulUnit extends Unit implements Externalizable {
 		this.dims = Dimensions.product(unit1.dims, power1, unit2.dims,
 				power2);
 
-		if (power1 == 1)
+		if (power1 == 1) {
 			factor = unit1.factor;
-		else
-			factor = Math.pow(unit1.factor, (double) power1);
-		if (power2 < 0) {
-			for (int i = -power2; --i >= 0;)
-				factor /= unit2.factor;
 		} else {
-			for (int i = power2; --i >= 0;)
+			factor = Math.pow(unit1.factor, power1);
+		}
+		if (power2 < 0) {
+			for (int i = -power2; --i >= 0;) {
+				factor /= unit2.factor;
+			}
+		} else {
+			for (int i = power2; --i >= 0;) {
 				factor *= unit2.factor;
+			}
 		}
 
 		next = unit1.products;
@@ -50,6 +53,7 @@ class MulUnit extends Unit implements Externalizable {
 		this(unit1, 1, unit2, power2);
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer str = new StringBuffer(60);
 		str.append(unit1);
@@ -68,9 +72,11 @@ class MulUnit extends Unit implements Externalizable {
 		return str.toString();
 	}
 
+	@Override
 	public Unit sqrt() {
-		if ((power1 & 1) == 0 && (power2 & 1) == 0)
+		if ((power1 & 1) == 0 && (power2 & 1) == 0) {
 			return times(unit1, power1 >> 1, unit2, power2 >> 1);
+		}
 		return super.sqrt();
 	}
 
@@ -78,8 +84,9 @@ class MulUnit extends Unit implements Externalizable {
 		// Search for an existing matching MulUnit.
 		for (MulUnit u = unit1.products; u != null; u = u.next) {
 			if (u.unit1 == unit1 && u.unit2 == unit2 && u.power1 == power1
-					&& u.power2 == power2)
+					&& u.power2 == power2) {
 				return u;
+			}
 		}
 		return null;
 	}
@@ -87,8 +94,9 @@ class MulUnit extends Unit implements Externalizable {
 	public static MulUnit make(Unit unit1, int power1, Unit unit2,
 			int power2) {
 		MulUnit u = lookup(unit1, power1, unit2, power2);
-		if (u != null)
+		if (u != null) {
 			return u;
+		}
 		return new MulUnit(unit1, power1, unit2, power2);
 	}
 
@@ -96,6 +104,7 @@ class MulUnit extends Unit implements Externalizable {
 	 * @serialData
 	 */
 
+	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeObject(unit1);
 		out.writeInt(power1);
@@ -103,6 +112,7 @@ class MulUnit extends Unit implements Externalizable {
 		out.writeInt(power2);
 	}
 
+	@Override
 	public void readExternal(ObjectInput in)
 			throws IOException, ClassNotFoundException {
 		unit1 = (Unit) in.readObject();
@@ -113,8 +123,9 @@ class MulUnit extends Unit implements Externalizable {
 
 	public Object readResolve() throws ObjectStreamException {
 		MulUnit u = lookup(unit1, power1, unit2, power2);
-		if (u != null)
+		if (u != null) {
 			return u;
+		}
 		return this;
 	}
 }

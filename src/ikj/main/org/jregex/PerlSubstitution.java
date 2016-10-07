@@ -120,9 +120,10 @@ public class PerlSubstitution implements Substitution {
 				} else if (Character.isDigit(c)) {
 					element = new IntRefHandler(refMatcher.prefix(),
 							new Integer(refMatcher.group(NAME_ID)));
-				} else
+				} else {
 					element = new StringRefHandler(refMatcher.prefix(),
 							refMatcher.group(NAME_ID));
+				}
 			} else {
 				// escaped char
 				element = new PlainElement(refMatcher.prefix(),
@@ -131,16 +132,19 @@ public class PerlSubstitution implements Substitution {
 			refMatcher.setTarget(refMatcher, MatchResult.SUFFIX);
 			element.next = makeQueue(refMatcher);
 			return element;
-		} else
+		} else {
 			return new PlainElement(refMatcher.target());
+		}
 	}
 
+	@Override
 	public void appendSubstitution(MatchResult match, TextBuffer dest) {
 		for (Element element = this.queueEntry; element != null; element = element.next) {
 			element.append(match, dest);
 		}
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		for (Element element = this.queueEntry; element != null; element = element.next) {
@@ -168,11 +172,14 @@ public class PerlSubstitution implements Substitution {
 			str = s;
 		}
 
+		@Override
 		void append(MatchResult match, TextBuffer dest) {
-			if (prefix != null)
+			if (prefix != null) {
 				dest.append(prefix);
-			if (str != null)
+			}
+			if (str != null) {
 				dest.append(str);
+			}
 		}
 	}
 
@@ -184,16 +191,21 @@ public class PerlSubstitution implements Substitution {
 			index = ind;
 		}
 
+		@Override
 		void append(MatchResult match, TextBuffer dest) {
-			if (prefix != null)
+			if (prefix != null) {
 				dest.append(prefix);
-			if (index == null)
+			}
+			if (index == null) {
 				return;
+			}
 			int i = index.intValue();
-			if (i >= match.pattern().groupCount())
+			if (i >= match.pattern().groupCount()) {
 				return;
-			if (match.isCaptured(i))
+			}
+			if (match.isCaptured(i)) {
 				match.getGroup(i, dest);
+			}
 		}
 	}
 
@@ -205,16 +217,20 @@ public class PerlSubstitution implements Substitution {
 			index = ind;
 		}
 
+		@Override
 		void append(MatchResult match, TextBuffer dest) {
-			if (prefix != null)
+			if (prefix != null) {
 				dest.append(prefix);
-			if (index == null)
+			}
+			if (index == null) {
 				return;
+			}
 			Integer id = match.pattern().groupId(index);
 			// if(id==null) return; //???
 			int i = id.intValue();
-			if (match.isCaptured(i))
+			if (match.isCaptured(i)) {
 				match.getGroup(i, dest);
+			}
 		}
 	}
 }
@@ -223,9 +239,10 @@ abstract class GReference {
 	public abstract String stringValue(MatchResult match);
 
 	public static GReference createInstance(MatchResult match, int grp) {
-		if (match.length(grp) == 0)
+		if (match.length(grp) == 0) {
 			throw new IllegalArgumentException(
 					"arg name cannot be an empty string");
+		}
 		if (Character.isDigit(match.charAt(0, grp))) {
 			try {
 				return new IntReference(
@@ -246,6 +263,7 @@ class IntReference extends GReference {
 		this.id = id;
 	}
 
+	@Override
 	public String stringValue(MatchResult match) {
 		return match.group(id);
 	}
@@ -258,6 +276,7 @@ class StringReference extends GReference {
 		this.name = name;
 	}
 
+	@Override
 	public String stringValue(MatchResult match) {
 		return match.group(name);
 	}

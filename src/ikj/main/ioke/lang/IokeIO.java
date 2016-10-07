@@ -104,7 +104,7 @@ public class IokeIO extends IokeData {
 							condition.setCell("receiver", on);
 							condition.setCell("exceptionMessage",
 									runtime.newText(e.getMessage()));
-							List<Object> ob = new ArrayList<Object>();
+							List<Object> ob = new ArrayList<>();
 							for (StackTraceElement ste : e
 									.getStackTrace()) {
 								ob.add(runtime.newText(ste.toString()));
@@ -115,6 +115,7 @@ public class IokeIO extends IokeData {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -167,7 +168,7 @@ public class IokeIO extends IokeData {
 							condition.setCell("receiver", on);
 							condition.setCell("exceptionMessage",
 									runtime.newText(e.getMessage()));
-							List<Object> ob = new ArrayList<Object>();
+							List<Object> ob = new ArrayList<>();
 							for (StackTraceElement ste : e
 									.getStackTrace()) {
 								ob.add(runtime.newText(ste.toString()));
@@ -178,6 +179,7 @@ public class IokeIO extends IokeData {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -218,7 +220,7 @@ public class IokeIO extends IokeData {
 							condition.setCell("receiver", on);
 							condition.setCell("exceptionMessage",
 									runtime.newText(e.getMessage()));
-							List<Object> ob = new ArrayList<Object>();
+							List<Object> ob = new ArrayList<>();
 							for (StackTraceElement ste : e
 									.getStackTrace()) {
 								ob.add(runtime.newText(ste.toString()));
@@ -229,6 +231,7 @@ public class IokeIO extends IokeData {
 
 							runtime.withReturningRestart("ignore", context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -242,6 +245,7 @@ public class IokeIO extends IokeData {
 				}));
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
 		return new IokeIO(reader, writer);

@@ -72,7 +72,7 @@ public class RegexpMatch extends IokeData {
 							throws ControlFlow {
 						Set names = Regexp.getRegexp(getRegexp(on))
 								.getGroupNames();
-						List<Object> theNames = new ArrayList<Object>();
+						List<Object> theNames = new ArrayList<>();
 						for (Object name : names) {
 							theNames.add(context.runtime
 									.getSymbol(((String) name)));
@@ -153,7 +153,7 @@ public class RegexpMatch extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						List<Object> groups = new ArrayList<Object>();
+						List<Object> groups = new ArrayList<>();
 						MatchResult mr = getMatchResult(on);
 						int len = mr.groupCount();
 						for (int i = 1; i < len; i++) {
@@ -179,7 +179,7 @@ public class RegexpMatch extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						List<Object> groups = new ArrayList<Object>();
+						List<Object> groups = new ArrayList<>();
 						MatchResult mr = getMatchResult(on);
 						int len = mr.groupCount();
 						for (int i = 0; i < len; i++) {
@@ -398,8 +398,8 @@ public class RegexpMatch extends IokeData {
 										context);
 
 								if (first < 0) {
-									return context.runtime.newList(
-											new ArrayList<Object>());
+									return context.runtime
+											.newList(new ArrayList<>());
 								}
 
 								int last = Number.extractInt(
@@ -412,8 +412,8 @@ public class RegexpMatch extends IokeData {
 								}
 
 								if (last < 0) {
-									return context.runtime.newList(
-											new ArrayList<Object>());
+									return context.runtime
+											.newList(new ArrayList<>());
 								}
 
 								if (last >= size) {
@@ -422,15 +422,15 @@ public class RegexpMatch extends IokeData {
 
 								if (first > last
 										|| (!inclusive && first == last)) {
-									return context.runtime.newList(
-											new ArrayList<Object>());
+									return context.runtime
+											.newList(new ArrayList<>());
 								}
 
 								if (!inclusive) {
 									last--;
 								}
 
-								List<Object> result = new ArrayList<Object>();
+								List<Object> result = new ArrayList<>();
 								for (int i = first; i < last + 1; i++) {
 									if (!mr.isCaptured(i)) {
 										result.add(context.runtime.nil);
@@ -504,6 +504,7 @@ public class RegexpMatch extends IokeData {
 							message.runtime.withReturningRestart("ignore",
 									context,
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											condition.runtime

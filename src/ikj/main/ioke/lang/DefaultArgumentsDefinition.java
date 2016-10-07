@@ -108,10 +108,12 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		}
 	}
 
+	@Override
 	public Collection<String> getKeywords() {
 		return keywords;
 	}
 
+	@Override
 	public List<Argument> getArguments() {
 		return arguments;
 	}
@@ -124,18 +126,22 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		return min;
 	}
 
+	@Override
 	public String getRestName() {
 		return rest;
 	}
 
+	@Override
 	public String getKrestName() {
 		return krest;
 	}
 
+	@Override
 	public String getCode() {
 		return getCode(true);
 	}
 
+	@Override
 	public String getCode(boolean lastComma) {
 		boolean any = false;
 		StringBuilder sb = new StringBuilder();
@@ -228,6 +234,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 			} else {
 				runtime.withReturningRestart("ignoreExtraArguments",
 						context, new RunnableWithControlFlow() {
+							@Override
 							public void run() throws ControlFlow {
 								IokeObject condition = IokeObject
 										.as(IokeObject.getCellChain(
@@ -308,6 +315,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 					List<Object> outp = IokeList
 							.getList(runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -349,22 +357,25 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 				List<Object> newArguments = IokeList
 						.getList(runtime.withRestartReturningArguments(
 								new RunnableWithControlFlow() {
+									@Override
 									public void run() throws ControlFlow {
 										runtime.errorCondition(condition);
 									}
 								}, context,
 								new Restart.ArgumentGivingRestart(
 										"provideExtraArguments") {
+									@Override
 									public List<String> getArgumentNames() {
-										return new ArrayList<String>(Arrays
+										return new ArrayList<>(Arrays
 												.asList("newArgument"));
 									}
 								},
 								new Restart.DefaultValuesGivingRestart(
 										"substituteNilArguments",
 										runtime.nil, min - argCount) {
+									@Override
 									public List<String> getArgumentNames() {
-										return new ArrayList<String>();
+										return new ArrayList<>();
 									}
 								}));
 
@@ -373,6 +384,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 			} else {
 				runtime.withReturningRestart("ignoreExtraArguments",
 						context, new RunnableWithControlFlow() {
+							@Override
 							public void run() throws ControlFlow {
 								IokeObject condition = IokeObject
 										.as(IokeObject.getCellChain(
@@ -396,13 +408,14 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 			}
 		}
 
-		final Set<String> intersection = new LinkedHashSet<String>(
+		final Set<String> intersection = new LinkedHashSet<>(
 				givenKeywords.keySet());
 		intersection.removeAll(keywords);
 
 		if (krest == null && !intersection.isEmpty()) {
 			runtime.withReturningRestart("ignoreExtraKeywords", context,
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							IokeObject condition = IokeObject
 									.as(IokeObject.getCellChain(
@@ -414,7 +427,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 							condition.setCell("context", context);
 							condition.setCell("receiver", on);
 
-							List<Object> expected = new ArrayList<Object>();
+							List<Object> expected = new ArrayList<>();
 							for (String s : keywords) {
 								expected.add(runtime.newText(s));
 							}
@@ -422,7 +435,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 							condition.setCell("expected",
 									runtime.newList(expected));
 
-							List<Object> extra = new ArrayList<Object>();
+							List<Object> extra = new ArrayList<>();
 							for (String s : intersection) {
 								extra.add(runtime.newText(s));
 							}
@@ -437,6 +450,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		return argCount;
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on, final Call call) throws ControlFlow {
@@ -445,8 +459,8 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 					call.cachedPositional, call.cachedKeywords,
 					call.cachedArgCount);
 		} else {
-			final List<Object> argumentsWithoutKeywords = new ArrayList<Object>();
-			final Map<String, Object> givenKeywords = new LinkedHashMap<String, Object>();
+			final List<Object> argumentsWithoutKeywords = new ArrayList<>();
+			final Map<String, Object> givenKeywords = new LinkedHashMap<>();
 			final int argCount = getEvaluatedArguments(context, message,
 					on, argumentsWithoutKeywords, givenKeywords);
 			call.cachedPositional = argumentsWithoutKeywords;
@@ -457,11 +471,12 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		}
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on) throws ControlFlow {
-		final List<Object> argumentsWithoutKeywords = new ArrayList<Object>();
-		final Map<String, Object> givenKeywords = new LinkedHashMap<String, Object>();
+		final List<Object> argumentsWithoutKeywords = new ArrayList<>();
+		final Map<String, Object> givenKeywords = new LinkedHashMap<>();
 		final int argCount = getEvaluatedArguments(context, message, on,
 				argumentsWithoutKeywords, givenKeywords);
 		assignArgumentValues(locals, context, message, on,
@@ -475,7 +490,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 			throws ControlFlow {
 		final Runtime runtime = context.runtime;
 
-		final Set<String> intersection = new LinkedHashSet<String>(
+		final Set<String> intersection = new LinkedHashSet<>(
 				givenKeywords.keySet());
 		intersection.removeAll(keywords);
 
@@ -514,7 +529,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		}
 
 		if (krest != null) {
-			Map<Object, Object> krests = new LinkedHashMap<Object, Object>();
+			Map<Object, Object> krests = new LinkedHashMap<>();
 			for (String s : intersection) {
 				Object given = givenKeywords.get(s);
 				Object result = given;
@@ -527,7 +542,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		}
 
 		if (rest != null) {
-			List<Object> rests = new ArrayList<Object>();
+			List<Object> rests = new ArrayList<>();
 			for (int j = argumentsWithoutKeywords.size(); ix < j; ix++) {
 				rests.add(argumentsWithoutKeywords.get(ix));
 			}
@@ -536,6 +551,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 		}
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return min == 0 && max == 0 && arguments.isEmpty()
 				&& keywords.isEmpty() && rest == null && krest == null;
@@ -560,8 +576,8 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 			int start, int len, final IokeObject message, final Object on,
 			final IokeObject context) throws ControlFlow {
 		final Runtime runtime = context.runtime;
-		List<Argument> arguments = new ArrayList<Argument>();
-		List<String> keywords = new ArrayList<String>();
+		List<Argument> arguments = new ArrayList<>();
+		List<String> keywords = new ArrayList<>();
 
 		int min = 0;
 		int max = 0;
@@ -622,6 +638,7 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 					List<Object> newValue = IokeList
 							.getList(runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -632,10 +649,10 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 									// message...
 									new Restart.ArgumentGivingRestart(
 											"provideDefaultValue") {
+										@Override
 										public List<String> getArgumentNames() {
-											return new ArrayList<String>(
-													Arrays.asList(
-															"defaultValue"));
+											return new ArrayList<>(Arrays
+													.asList("defaultValue"));
 										}
 									},
 									new Restart.DefaultValuesGivingRestart(
@@ -697,8 +714,8 @@ public class DefaultArgumentsDefinition implements ArgumentsDefinition {
 	public static class Builder {
 		protected int					min			= 0;
 		protected int					max			= 0;
-		protected List<Argument>		arguments	= new ArrayList<Argument>();
-		protected Collection<String>	keywords	= new HashSet<String>();
+		protected List<Argument>		arguments	= new ArrayList<>();
+		protected Collection<String>	keywords	= new HashSet<>();
 		protected String				rest		= null;
 		protected String				krest		= null;
 		protected boolean				restUneval	= false;

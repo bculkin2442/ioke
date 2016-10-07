@@ -54,6 +54,7 @@ public class Restart {
 			this.name = name;
 		}
 
+		@Override
 		public IokeObject invoke(IokeObject context,
 				List<Object> arguments) throws ControlFlow {
 			return context.runtime.newList(arguments);
@@ -71,13 +72,15 @@ public class Restart {
 			this.repeat = repeat;
 		}
 
+		@Override
 		public List<String> getArgumentNames() {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 
+		@Override
 		public IokeObject invoke(IokeObject context,
 				List<Object> arguments) throws ControlFlow {
-			List<Object> result = new ArrayList<Object>();
+			List<Object> result = new ArrayList<>();
 			for (int i = 0; i < repeat; i++) {
 				result.add(value);
 			}

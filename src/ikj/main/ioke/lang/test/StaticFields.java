@@ -8,6 +8,7 @@ package ioke.lang.test;
  *
  * @author <a href="mailto:ola.bini@gmail.com">Ola Bini</a>
  */
+@SuppressWarnings("unused")
 public class StaticFields {
 	public static String publicStringField;
 
@@ -70,6 +71,7 @@ public class StaticFields {
 	}
 
 	public static final String	publicStringFieldFinal	= "test1StringFinal";
+	@SuppressWarnings("rawtypes")
 	public static final Object	publicObjectFieldFinal	= new java.util.ArrayList();
 	public static final int		publicIntFieldFinal		= 42;
 	public static final byte	publicByteFieldFinal	= 13;
@@ -141,6 +143,7 @@ public class StaticFields {
 	}
 
 	protected static final String	protectedStringFieldFinal	= "test1StringFinal";
+	@SuppressWarnings("rawtypes")
 	protected static final Object	protectedObjectFieldFinal	= new java.util.ArrayList();
 	protected static final int		protectedIntFieldFinal		= 42;
 	protected static final byte		protectedByteFieldFinal		= 13;
@@ -212,6 +215,7 @@ public class StaticFields {
 	}
 
 	static final String		packagePrivateStringFieldFinal	= "test1StringFinal";
+	@SuppressWarnings("rawtypes")
 	static final Object		packagePrivateObjectFieldFinal	= new java.util.ArrayList();
 	static final int		packagePrivateIntFieldFinal		= 42;
 	static final byte		packagePrivateByteFieldFinal	= 13;
@@ -283,6 +287,7 @@ public class StaticFields {
 	}
 
 	private static final String		privateStringFieldFinal		= "test1StringFinal";
+	@SuppressWarnings("rawtypes")
 	private static final Object		privateObjectFieldFinal		= new java.util.ArrayList();
 	private static final int		privateIntFieldFinal		= 42;
 	private static final byte		privateByteFieldFinal		= 13;

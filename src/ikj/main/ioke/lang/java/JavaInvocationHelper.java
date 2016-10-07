@@ -419,9 +419,8 @@ public class JavaInvocationHelper {
 			// Accept anything
 			if (isWrapper) {
 				return JavaWrapper.getObject(obj);
-			} else {
-				return obj;
 			}
+			return obj;
 		} else {
 			if (!isIokeObject) {
 				return obj;

@@ -24,22 +24,27 @@ public class AliasMethod extends IokeData
 		this.realSelf = realSelf;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Override
 	public String inspect(Object self) {
 		return ((Inspectable) realMethod).inspect(realSelf);
 	}
 
+	@Override
 	public String notice(Object self) {
 		return ((Inspectable) realMethod).notice(realSelf);
 	}
 
+	@Override
 	public IokeObject getCode() {
 		return ((AssociatedCode) realMethod).getCode();
 	}
@@ -54,6 +59,7 @@ public class AliasMethod extends IokeData
 		}
 	}
 
+	@Override
 	public String getArgumentsCode() {
 		if (realMethod instanceof AssociatedCode) {
 			return ((AssociatedCode) realMethod).getArgumentsCode();
@@ -61,6 +67,7 @@ public class AliasMethod extends IokeData
 		return "...";
 	}
 
+	@Override
 	public String getFormattedCode(Object self) throws ControlFlow {
 		if (realMethod instanceof AssociatedCode) {
 			return ((AssociatedCode) realMethod).getFormattedCode(self);

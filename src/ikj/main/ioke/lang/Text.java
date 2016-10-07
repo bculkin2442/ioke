@@ -48,7 +48,7 @@ public class Text extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								return context.runtime.newNumber(
 										((Text) IokeObject.data(on)).text
@@ -101,7 +101,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return on;
 					}
@@ -118,7 +118,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return Text.toRational(on, context, message);
 					}
@@ -135,7 +135,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return Text.toDecimal(on, context, message);
 					}
@@ -149,7 +149,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime.newText(Text.getInspect(on));
 					}
@@ -163,7 +163,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime.newText(new StringUtils()
 								.xmlSafe(Text.getText(on)));
@@ -178,7 +178,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime.newText(Text.getInspect(on));
 					}
@@ -193,8 +193,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getValidatedArgumentsAndReceiver(
-								context, message, on,
-								new ArrayList<Object>(),
+								context, message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime
 								.newText(Text.getText(on).toLowerCase());
@@ -210,8 +209,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getValidatedArgumentsAndReceiver(
-								context, message, on,
-								new ArrayList<Object>(),
+								context, message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime
 								.newText(Text.getText(on).toUpperCase());
@@ -227,8 +225,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getValidatedArgumentsAndReceiver(
-								context, message, on,
-								new ArrayList<Object>(),
+								context, message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return method.runtime
 								.newText(Text.getText(on).trim());
@@ -258,7 +255,7 @@ public class Text extends IokeData {
 								message, on, args,
 								new HashMap<String, Object>());
 						String real = Text.getText(on);
-						List<Object> r = new ArrayList<Object>();
+						List<Object> r = new ArrayList<>();
 						Pattern p = null;
 
 						if (args.size() == 0) {
@@ -381,7 +378,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime
 								.newNumber(getText(on).length());
@@ -564,7 +561,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						String character = getText(on);
 						if (character.length() == 1) {
@@ -601,7 +598,7 @@ public class Text extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return context.runtime.newText(new StringUtils()
 								.replaceEscapes(getText(on)));
@@ -817,20 +814,24 @@ public class Text extends IokeData {
 
 			runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public String report() {
 							return "Use number instead of " + tvalue;
 						}
 
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -838,15 +839,18 @@ public class Text extends IokeData {
 							return context.runtime.nil;
 						}
 					}, new Restart.ArgumentGivingRestart("takeLongest") {
+						@Override
 						public String report() {
 							return "Parse the longest number possible from "
 									+ tvalue;
 						}
 
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>();
+							return new ArrayList<>();
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -909,20 +913,24 @@ public class Text extends IokeData {
 
 			runtime.withRestartReturningArguments(
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							runtime.errorCondition(condition);
 						}
 					}, context,
 					new Restart.ArgumentGivingRestart("useValue") {
+						@Override
 						public String report() {
 							return "Use number instead of " + tvalue;
 						}
 
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>(
+							return new ArrayList<>(
 									Arrays.asList("newValue"));
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {
@@ -930,15 +938,18 @@ public class Text extends IokeData {
 							return context.runtime.nil;
 						}
 					}, new Restart.ArgumentGivingRestart("takeLongest") {
+						@Override
 						public String report() {
 							return "Parse the longest number possible from "
 									+ tvalue;
 						}
 
+						@Override
 						public List<String> getArgumentNames() {
-							return new ArrayList<String>();
+							return new ArrayList<>();
 						}
 
+						@Override
 						public IokeObject invoke(IokeObject context,
 								List<Object> arguments)
 								throws ControlFlow {

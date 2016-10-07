@@ -93,7 +93,7 @@ public class Finalizer extends Thread {
 
 	private final WeakReference<Class<?>>	finalizableReferenceClassReference;
 	private final PhantomReference<Object>	frqReference;
-	private final ReferenceQueue<Object>	queue					= new ReferenceQueue<Object>();
+	private final ReferenceQueue<Object>	queue					= new ReferenceQueue<>();
 
 	private static final Field				inheritableThreadLocals	= getInheritableThreadLocalsField();
 
@@ -105,7 +105,7 @@ public class Finalizer extends Thread {
 				finalizableReferenceClass);
 
 		// Keep track of the FRQ that started us so we know when to stop.
-		this.frqReference = new PhantomReference<Object>(frq, queue);
+		this.frqReference = new PhantomReference<>(frq, queue);
 
 		setDaemon(true);
 

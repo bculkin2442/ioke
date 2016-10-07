@@ -31,6 +31,7 @@ public class DefaultMacro extends IokeData
 		this.code = code;
 	}
 
+	@Override
 	public IokeObject getCode() {
 		return code;
 	}
@@ -40,6 +41,7 @@ public class DefaultMacro extends IokeData
 
 	}
 
+	@Override
 	public String getFormattedCode(Object self) throws ControlFlow {
 		return "macro(\n  "
 				+ Message.formattedCode(code, 2, (IokeObject) self) + ")";
@@ -163,10 +165,9 @@ public class DefaultMacro extends IokeData
 						if (data instanceof DefaultMacro) {
 							return context.runtime.newText(
 									((DefaultMacro) data).getCodeString());
-						} else {
-							return context.runtime.newText(
-									((AliasMethod) data).getCodeString());
 						}
+						return context.runtime.newText(
+								((AliasMethod) data).getCodeString());
 					}
 				}));
 
@@ -187,14 +188,17 @@ public class DefaultMacro extends IokeData
 				}));
 	}
 
+	@Override
 	public String getArgumentsCode() {
 		return "...";
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -207,20 +211,20 @@ public class DefaultMacro extends IokeData
 		return ((Inspectable) (IokeObject.data(on))).notice(on);
 	}
 
+	@Override
 	public String inspect(Object self) {
 		if (name == null) {
 			return "macro(" + Message.code(code) + ")";
-		} else {
-			return name + ":macro(" + Message.code(code) + ")";
 		}
+		return name + ":macro(" + Message.code(code) + ")";
 	}
 
+	@Override
 	public String notice(Object self) {
 		if (name == null) {
 			return "macro(...)";
-		} else {
-			return name + ":macro(...)";
 		}
+		return name + ":macro(...)";
 	}
 
 	public static Object activateWithCallAndDataFixed(
@@ -255,7 +259,7 @@ public class DefaultMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return self;
 					}
@@ -273,9 +277,8 @@ public class DefaultMacro extends IokeData
 		} catch (ControlFlow.Return e) {
 			if (e.context == c) {
 				return e.getValue();
-			} else {
-				throw e;
 			}
+			throw e;
 		}
 	}
 
@@ -310,7 +313,7 @@ public class DefaultMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return self;
 					}
@@ -325,9 +328,8 @@ public class DefaultMacro extends IokeData
 		} catch (ControlFlow.Return e) {
 			if (e.context == c) {
 				return e.getValue();
-			} else {
-				throw e;
 			}
+			throw e;
 		}
 	}
 
@@ -362,7 +364,7 @@ public class DefaultMacro extends IokeData
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 						return self;
 					}
@@ -381,9 +383,8 @@ public class DefaultMacro extends IokeData
 		} catch (ControlFlow.Return e) {
 			if (e.context == c) {
 				return e.getValue();
-			} else {
-				throw e;
 			}
+			throw e;
 		}
 	}
 }// DefaultMacro

@@ -39,6 +39,7 @@ public class Coverage {
 
 		File configFile = new File("ikover_config.ik");
 		if (configFile.exists()) {
+			@SuppressWarnings("resource")
 			IokeObject config = (IokeObject) runtime
 					.evaluateStream(new FileReader(configFile));
 			IokeObject dir = (IokeObject) IokeObject.findCell(config,
@@ -150,6 +151,7 @@ public class Coverage {
 			if (new File(realFile).exists()) {
 				FileWriter fw = new FileWriter(
 						new File(dir, filenameInFilesystem + ".html"));
+				@SuppressWarnings("resource")
 				CoverageParser unparser = new CoverageParser(runtime,
 						new InputStreamReader(
 								new FileInputStream(realFile), "UTF-8"),

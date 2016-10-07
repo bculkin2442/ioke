@@ -307,10 +307,12 @@ public class Replacer {
 		boolean firstPass = true;
 		int c = 0;
 		while (m.find()) {
-			if (m.end() == 0 && !firstPass)
+			if (m.end() == 0 && !firstPass) {
 				continue; // allow to replace at "^"
-			if (m.start() > 0)
+			}
+			if (m.start() > 0) {
 				m.getGroup(MatchResult.PREFIX, dest);
+			}
 			substitution.appendSubstitution(m, dest);
 			c++;
 			m.setTarget(m, MatchResult.SUFFIX);
@@ -330,8 +332,9 @@ public class Replacer {
 			TextBuffer dest) {
 		int c = 0;
 		if (m.find()) {
-			if (m.start() > 0)
+			if (m.start() > 0) {
 				m.getGroup(MatchResult.PREFIX, dest);
+			}
 			substitution.appendSubstitution(m, dest);
 			c++;
 			m.setTarget(m, MatchResult.SUFFIX);
@@ -429,26 +432,32 @@ public class Replacer {
 			str = s;
 		}
 
+		@Override
 		public void appendSubstitution(MatchResult match, TextBuffer res) {
-			if (str != null)
+			if (str != null) {
 				res.append(str);
+			}
 		}
 	}
 
 	public static TextBuffer wrap(final StringBuffer sb) {
 		return new TextBuffer() {
+			@Override
 			public void append(char c) {
 				sb.append(c);
 			}
 
+			@Override
 			public void append(char[] chars, int start, int len) {
 				sb.append(chars, start, len);
 			}
 
+			@Override
 			public void append(String s) {
 				sb.append(s);
 			}
 
+			@Override
 			public String toString() {
 				return sb.toString();
 			}
@@ -457,6 +466,7 @@ public class Replacer {
 
 	public static TextBuffer wrap(final Writer writer) {
 		return new TextBuffer() {
+			@Override
 			public void append(char c) {
 				try {
 					writer.write(c);
@@ -465,6 +475,7 @@ public class Replacer {
 				}
 			}
 
+			@Override
 			public void append(char[] chars, int off, int len) {
 				try {
 					writer.write(chars, off, len);
@@ -473,6 +484,7 @@ public class Replacer {
 				}
 			}
 
+			@Override
 			public void append(String s) {
 				try {
 					writer.write(s);

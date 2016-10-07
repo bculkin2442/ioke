@@ -22,7 +22,7 @@ public class IokeList extends IokeData {
 	private List<Object> list;
 
 	public IokeList() {
-		this(new ArrayList<Object>());
+		this(new ArrayList<>());
 	}
 
 	public IokeList(List<Object> l) {
@@ -55,7 +55,7 @@ public class IokeList extends IokeData {
 									Object on) throws ControlFlow {
 								getArguments().getEvaluatedArguments(
 										context, message, on,
-										new ArrayList<Object>(),
+										new ArrayList<>(),
 										new HashMap<String, Object>());
 								return context.runtime
 										.newNumber(((IokeList) IokeObject
@@ -188,10 +188,12 @@ public class IokeList extends IokeData {
 
 						len = one.size() - two.size();
 
-						if (len == 0)
+						if (len == 0) {
 							return context.runtime.newNumber(0);
-						if (len > 0)
+						}
+						if (len > 0) {
 							return context.runtime.newNumber(1);
+						}
 						return context.runtime.newNumber(-1);
 					}
 				}));
@@ -514,7 +516,7 @@ public class IokeList extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						List<Object> newList = new ArrayList<Object>();
+						List<Object> newList = new ArrayList<>();
 						newList.addAll(((IokeList) IokeObject.data(on))
 								.getList());
 						newList.addAll(
@@ -544,7 +546,7 @@ public class IokeList extends IokeData {
 							Map<String, Object> keywords,
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
-						List<Object> newList = new ArrayList<Object>();
+						List<Object> newList = new ArrayList<>();
 						newList.addAll(((IokeList) IokeObject.data(on))
 								.getList());
 						newList.removeAll(
@@ -653,7 +655,7 @@ public class IokeList extends IokeData {
 
 							if (first < 0) {
 								return context.runtime
-										.newList(new ArrayList<Object>());
+										.newList(new ArrayList<>());
 							}
 
 							int last = Number.extractInt(Range.getTo(arg),
@@ -670,7 +672,7 @@ public class IokeList extends IokeData {
 
 							if (last < 0) {
 								return context.runtime
-										.newList(new ArrayList<Object>());
+										.newList(new ArrayList<>());
 							}
 
 							if (last >= size) {
@@ -681,16 +683,15 @@ public class IokeList extends IokeData {
 							if (first > last
 									|| (!inclusive && first == last)) {
 								return context.runtime
-										.newList(new ArrayList<Object>());
+										.newList(new ArrayList<>());
 							}
 
 							if (!inclusive) {
 								last--;
 							}
 
-							return context.runtime
-									.newList(new ArrayList<Object>(
-											o.subList(first, last + 1)));
+							return context.runtime.newList(new ArrayList<>(
+									o.subList(first, last + 1)));
 						}
 
 						if (!(IokeObject.data(arg) instanceof Number)) {
@@ -706,10 +707,9 @@ public class IokeList extends IokeData {
 						}
 
 						if (index >= 0 && index < o.size()) {
-							return o.get((int) index);
-						} else {
-							return context.runtime.nil;
+							return o.get(index);
 						}
+						return context.runtime.nil;
 					}
 				}));
 
@@ -763,6 +763,7 @@ public class IokeList extends IokeData {
 								context.runtime
 										.withRestartReturningArguments(
 												new RunnableWithControlFlow() {
+													@Override
 													public void run()
 															throws ControlFlow {
 														context.runtime
@@ -772,12 +773,14 @@ public class IokeList extends IokeData {
 												}, context,
 												new Restart.ArgumentGivingRestart(
 														"useValue") {
+													@Override
 													public List<String> getArgumentNames() {
-														return new ArrayList<String>(
+														return new ArrayList<>(
 																Arrays.asList(
 																		"newValue"));
 													}
 
+													@Override
 													public IokeObject invoke(
 															IokeObject context,
 															List<Object> arguments)
@@ -859,6 +862,7 @@ public class IokeList extends IokeData {
 
 							context.runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											context.runtime.errorCondition(
@@ -867,12 +871,13 @@ public class IokeList extends IokeData {
 									}, context,
 									new Restart.ArgumentGivingRestart(
 											"useValue") {
+										@Override
 										public List<String> getArgumentNames() {
-											return new ArrayList<String>(
-													Arrays.asList(
-															"newValue"));
+											return new ArrayList<>(Arrays
+													.asList("newValue"));
 										}
 
+										@Override
 										public IokeObject invoke(
 												IokeObject context,
 												List<Object> arguments)
@@ -897,7 +902,7 @@ public class IokeList extends IokeData {
 							}
 						}
 
-						o.set((int) index, value);
+						o.set(index, value);
 
 						return value;
 					}
@@ -971,7 +976,7 @@ public class IokeList extends IokeData {
 								last--;
 							}
 
-							List<Object> result = new ArrayList<Object>();
+							List<Object> result = new ArrayList<>();
 							for (int i = 0; i <= last - first; i++) {
 								result.add(receiver.remove(first));
 							}
@@ -994,10 +999,9 @@ public class IokeList extends IokeData {
 						}
 
 						if (index >= 0 && index < size) {
-							return receiver.remove((int) index);
-						} else {
-							return context.runtime.nil;
+							return receiver.remove(index);
 						}
+						return context.runtime.nil;
 					}
 				}));
 
@@ -1077,7 +1081,7 @@ public class IokeList extends IokeData {
 							IokeObject context, IokeObject message)
 							throws ControlFlow {
 						List<Object> list = getList(on);
-						List<Object> newList = new ArrayList<Object>();
+						List<Object> newList = new ArrayList<>();
 						Object nil = context.runtime.nil;
 						for (Object o : list) {
 							if (o != nil) {
@@ -1332,7 +1336,7 @@ public class IokeList extends IokeData {
 	}
 
 	private static List<Object> flatten(List<Object> list) {
-		List<Object> result = new ArrayList<Object>(list.size() * 2);
+		List<Object> result = new ArrayList<>(list.size() * 2);
 		flatten(list, result);
 		return result;
 	}
@@ -1394,17 +1398,18 @@ public class IokeList extends IokeData {
 	}
 
 	public static IokeObject emptyList(IokeObject context) {
-		return context.runtime.newList(new ArrayList<Object>());
+		return context.runtime.newList(new ArrayList<>());
 	}
 
 	public static IokeObject copyList(IokeObject context,
 			List<Object> orig) {
-		return context.runtime.newList(new ArrayList<Object>(orig));
+		return context.runtime.newList(new ArrayList<>(orig));
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
-		return new IokeList(new ArrayList<Object>(list));
+		return new IokeList(new ArrayList<>(list));
 	}
 
 	@Override

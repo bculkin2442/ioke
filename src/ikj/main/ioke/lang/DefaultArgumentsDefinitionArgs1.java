@@ -25,6 +25,7 @@ public class DefaultArgumentsDefinitionArgs1
 		this.name0 = name0;
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on, final Call call) throws ControlFlow {
@@ -47,8 +48,8 @@ public class DefaultArgumentsDefinitionArgs1
 		final List<Object> arguments = message.getArguments();
 		int argCount = 0;
 
-		final List<Object> argumentsWithoutKeywords = new ArrayList<Object>();
-		final Map<String, Object> givenKeywords = new HashMap<String, Object>();
+		final List<Object> argumentsWithoutKeywords = new ArrayList<>();
+		final Map<String, Object> givenKeywords = new HashMap<>();
 
 		for (Object o : arguments) {
 			if (Message.isKeyword(o)) {
@@ -96,6 +97,7 @@ public class DefaultArgumentsDefinitionArgs1
 					List<Object> outp = IokeList
 							.getList(runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											runtime.errorCondition(
@@ -137,22 +139,25 @@ public class DefaultArgumentsDefinitionArgs1
 				List<Object> newArguments = IokeList
 						.getList(runtime.withRestartReturningArguments(
 								new RunnableWithControlFlow() {
+									@Override
 									public void run() throws ControlFlow {
 										runtime.errorCondition(condition);
 									}
 								}, context,
 								new Restart.ArgumentGivingRestart(
 										"provideExtraArguments") {
+									@Override
 									public List<String> getArgumentNames() {
-										return new ArrayList<String>(Arrays
+										return new ArrayList<>(Arrays
 												.asList("newArgument"));
 									}
 								},
 								new Restart.DefaultValuesGivingRestart(
 										"substituteNilArguments",
 										runtime.nil, expected - argCount) {
+									@Override
 									public List<String> getArgumentNames() {
-										return new ArrayList<String>();
+										return new ArrayList<>();
 									}
 								}));
 
@@ -161,6 +166,7 @@ public class DefaultArgumentsDefinitionArgs1
 			} else {
 				runtime.withReturningRestart("ignoreExtraArguments",
 						context, new RunnableWithControlFlow() {
+							@Override
 							public void run() throws ControlFlow {
 								IokeObject condition = IokeObject
 										.as(IokeObject.getCellChain(
@@ -187,6 +193,7 @@ public class DefaultArgumentsDefinitionArgs1
 		if (!givenKeywords.isEmpty()) {
 			runtime.withReturningRestart("ignoreExtraKeywords", context,
 					new RunnableWithControlFlow() {
+						@Override
 						public void run() throws ControlFlow {
 							IokeObject condition = IokeObject
 									.as(IokeObject.getCellChain(
@@ -198,11 +205,11 @@ public class DefaultArgumentsDefinitionArgs1
 							condition.setCell("context", context);
 							condition.setCell("receiver", on);
 
-							List<Object> expected = new ArrayList<Object>();
+							List<Object> expected = new ArrayList<>();
 							condition.setCell("expected",
 									runtime.newList(expected));
 
-							List<Object> extra = new ArrayList<Object>();
+							List<Object> extra = new ArrayList<>();
 							for (String s : givenKeywords.keySet()) {
 								extra.add(runtime.newText(s));
 							}
@@ -217,6 +224,7 @@ public class DefaultArgumentsDefinitionArgs1
 		return argumentsWithoutKeywords;
 	}
 
+	@Override
 	public void assignArgumentValues(final IokeObject locals,
 			final IokeObject context, final IokeObject message,
 			final Object on) throws ControlFlow {
@@ -224,35 +232,41 @@ public class DefaultArgumentsDefinitionArgs1
 		locals.setCell(name0, result.get(0));
 	}
 
+	@Override
 	public String getCode() {
 		return getCode(true);
 	}
 
+	@Override
 	public String getCode(boolean lastComma) {
 		if (lastComma) {
 			return name0 + ", ";
-		} else {
-			return name0;
 		}
+		return name0;
 	}
 
+	@Override
 	public Collection<String> getKeywords() {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
+	@Override
 	public List<DefaultArgumentsDefinition.Argument> getArguments() {
 		return Arrays
 				.asList(new DefaultArgumentsDefinition.Argument(name0));
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return false;
 	}
 
+	@Override
 	public String getRestName() {
 		return null;
 	}
 
+	@Override
 	public String getKrestName() {
 		return null;
 	}

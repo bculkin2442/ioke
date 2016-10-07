@@ -59,5 +59,6 @@ public interface Predicate<T> {
 	 * Note that it is always safe <i>not</i> to override
 	 * {@link Object#equals}.
 	 */
+	@Override
 	boolean equals(Object obj);
 }

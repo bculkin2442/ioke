@@ -48,9 +48,11 @@ public class WildcardFilter implements FilenameFilter {
 		matcher = new WildcardPattern(ptn, icase).matcher();
 	}
 
+	@Override
 	public boolean accept(File dir, String name) {
-		if (matcher == null)
+		if (matcher == null) {
 			return false;
+		}
 		matcher.setTarget(name);
 		return matcher.matches();
 	}

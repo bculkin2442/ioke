@@ -25,7 +25,7 @@ public class Message extends IokeData {
 	private int			line;
 	private int			pos;
 
-	public List<Object>	arguments	= new ArrayList<Object>();
+	public List<Object>	arguments	= new ArrayList<>();
 
 	public IokeObject	next;
 	public IokeObject	prev;
@@ -108,7 +108,7 @@ public class Message extends IokeData {
 		copyMsg.isTerminator = orgMsg.isTerminator;
 		copyMsg.cached = orgMsg.cached;
 
-		List<Object> newArgs = new ArrayList<Object>();
+		List<Object> newArgs = new ArrayList<>();
 		for (Object arg : orgMsg.arguments) {
 			if (IokeObject.isMessage(arg)) {
 				newArgs.add(deepCopy(arg));
@@ -852,7 +852,7 @@ public class Message extends IokeData {
 							throws ControlFlow {
 						Object arg = args.get(0);
 						setArguments(IokeObject.as(on, method),
-								new ArrayList<Object>());
+								new ArrayList<>());
 						if (arg == context.runtime.nil) {
 							// no arguments for this message
 						} else if (IokeObject
@@ -953,6 +953,7 @@ public class Message extends IokeData {
 
 							context.runtime.withRestartReturningArguments(
 									new RunnableWithControlFlow() {
+										@Override
 										public void run()
 												throws ControlFlow {
 											context.runtime.errorCondition(
@@ -961,12 +962,13 @@ public class Message extends IokeData {
 									}, context,
 									new Restart.ArgumentGivingRestart(
 											"useValue") {
+										@Override
 										public List<String> getArgumentNames() {
-											return new ArrayList<String>(
-													Arrays.asList(
-															"newValue"));
+											return new ArrayList<>(Arrays
+													.asList("newValue"));
 										}
 
+										@Override
 										public IokeObject invoke(
 												IokeObject context,
 												List<Object> arguments)
@@ -1112,6 +1114,7 @@ public class Message extends IokeData {
 				&& name.charAt(name.length() - 1) == ':';
 	}
 
+	@Override
 	public boolean isSymbol() {
 		return name.length() > 1 && name.charAt(0) == ':';
 	}
@@ -1193,7 +1196,7 @@ public class Message extends IokeData {
 	public IokeData cloneData(IokeObject obj, IokeObject message,
 			IokeObject context) {
 		Message m = new Message(obj.runtime, name);
-		m.arguments = new ArrayList<Object>(
+		m.arguments = new ArrayList<>(
 				((Message) IokeObject.data(obj)).arguments);
 		m.isTerminator = ((Message) IokeObject.data(obj)).isTerminator;
 		m.file = ((Message) IokeObject.data(obj)).file;

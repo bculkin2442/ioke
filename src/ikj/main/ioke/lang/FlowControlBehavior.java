@@ -46,7 +46,7 @@ public class FlowControlBehavior {
 								"Let lexical activation context", context);
 						int ix = 0;
 						int end = args.size() - 1;
-						List<Object[]> valuesToUnbind = new LinkedList<Object[]>();
+						List<Object[]> valuesToUnbind = new LinkedList<>();
 						try {
 							while (ix < end) {
 								IokeObject place = IokeObject
@@ -91,6 +91,7 @@ public class FlowControlBehavior {
 											.withReturningRescue(context,
 													null,
 													new RunnableWithReturnAndControlFlow() {
+														@Override
 														public Object run()
 																throws ControlFlow {
 															return Interpreter
@@ -104,7 +105,7 @@ public class FlowControlBehavior {
 											.size() != 0) {
 										String newName = realPlace
 												.getName() + "=";
-										List<Object> arguments = new ArrayList<Object>(
+										List<Object> arguments = new ArrayList<>(
 												realPlace.getArguments());
 										arguments.add(args.get(ix++));
 										IokeObject msg = context.runtime
@@ -150,7 +151,7 @@ public class FlowControlBehavior {
 											.size() != 0) {
 										String newName = realPlace
 												.getName() + "=";
-										List<Object> arguments = new ArrayList<Object>(
+										List<Object> arguments = new ArrayList<>(
 												realPlace.getArguments());
 
 										if (value == null) {
@@ -159,7 +160,7 @@ public class FlowControlBehavior {
 														context.runtime.removeCellMessage,
 														context,
 														wherePlace,
-														new ArrayList<Object>(
+														new ArrayList<>(
 																realPlace
 																		.getArguments()));
 											} else {
@@ -228,7 +229,7 @@ public class FlowControlBehavior {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -260,7 +261,7 @@ public class FlowControlBehavior {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						Object value = runtime.nil;
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -284,7 +285,7 @@ public class FlowControlBehavior {
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
 						getArguments().getEvaluatedArguments(context,
-								message, on, new ArrayList<Object>(),
+								message, on, new ArrayList<>(),
 								new HashMap<String, Object>());
 
 						throw new ControlFlow.Continue();
@@ -424,9 +425,8 @@ public class FlowControlBehavior {
 								} catch (ControlFlow.Continue e) {
 								}
 							}
-						} else {
-							while (true) {
-							}
+						}
+						while (true) {
 						}
 					}
 				}));
@@ -466,17 +466,14 @@ public class FlowControlBehavior {
 							if (message.getArgumentCount() > 1) {
 								return Interpreter.getEvaluatedArgument(
 										message, 1, itContext);
-							} else {
-								return test;
 							}
-						} else {
-							if (message.getArgumentCount() > 2) {
-								return Interpreter.getEvaluatedArgument(
-										message, 2, itContext);
-							} else {
-								return test;
-							}
+							return test;
 						}
+						if (message.getArgumentCount() > 2) {
+							return Interpreter.getEvaluatedArgument(
+									message, 2, itContext);
+						}
+						return test;
 					}
 				}));
 
@@ -515,17 +512,14 @@ public class FlowControlBehavior {
 							if (message.getArgumentCount() > 2) {
 								return Interpreter.getEvaluatedArgument(
 										message, 2, itContext);
-							} else {
-								return test;
 							}
-						} else {
-							if (message.getArgumentCount() > 1) {
-								return Interpreter.getEvaluatedArgument(
-										message, 1, itContext);
-							} else {
-								return test;
-							}
+							return test;
 						}
+						if (message.getArgumentCount() > 1) {
+							return Interpreter.getEvaluatedArgument(
+									message, 1, itContext);
+						}
+						return test;
 					}
 				}));
 

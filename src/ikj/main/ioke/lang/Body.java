@@ -72,9 +72,9 @@ public final class Body {
 					while (p2.orderedNext != cell) {
 						p2 = p2.orderedNext;
 					}
-					if (p2 != null) {
-						p2.orderedNext = cell.orderedNext;
-					}
+
+					p2.orderedNext = cell.orderedNext;
+
 					if (lastAdded == cell) {
 						lastAdded = p2;
 					}
@@ -156,21 +156,22 @@ public final class Body {
 
 			if (cell != null) {
 				return cell;
-			} else {
-				if (4 * (count + 1) > 3 * cellsLocalRef.length) {
-					cellsLocalRef = new Cell[cellsLocalRef.length * 2];
-					copyTable(cells, cellsLocalRef, count);
-					cells = cellsLocalRef;
-					insertPos = getCellIndex(cellsLocalRef.length, hash);
-				}
+			}
+			if (4 * (count + 1) > 3 * cellsLocalRef.length) {
+				cellsLocalRef = new Cell[cellsLocalRef.length * 2];
+				copyTable(cells, cellsLocalRef, count);
+				cells = cellsLocalRef;
+				insertPos = getCellIndex(cellsLocalRef.length, hash);
 			}
 		}
 		Cell newCell = new Cell(name, hash);
 		++count;
-		if (lastAdded != null)
+		if (lastAdded != null) {
 			lastAdded.orderedNext = newCell;
-		if (firstAdded == null)
+		}
+		if (firstAdded == null) {
 			firstAdded = newCell;
+		}
 		lastAdded = newCell;
 		addKnownAbsentCell(cellsLocalRef, newCell, insertPos);
 		return newCell;
@@ -189,8 +190,9 @@ public final class Body {
 				addKnownAbsentCell(newCells, cell, insertPos);
 				cell.next = null;
 				cell = next;
-				if (--count == 0)
+				if (--count == 0) {
 					return;
+				}
 			}
 		}
 	}

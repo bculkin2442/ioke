@@ -56,36 +56,42 @@ public class DateTime extends Quantity implements Cloneable {
 
 	public DateTime cast(int newComponents) {
 		int oldComponents = mask & ~TIMEZONE_MASK;
-		if (newComponents == oldComponents)
+		if (newComponents == oldComponents) {
 			return this;
+		}
 		DateTime copy = new DateTime(newComponents,
 				(GregorianCalendar) calendar.clone());
 		if ((newComponents & ~oldComponents) != 0
 				// Special case: Casting xs:date to xs:dateTime *is*
 				// allowed.
 				&& !(oldComponents == DATE_MASK
-						&& newComponents == (DATE_MASK | TIME_MASK)))
+						&& newComponents == (DATE_MASK | TIME_MASK))) {
 			throw new ClassCastException(
 					"cannot cast DateTime - missing conponents");
-		if (isZoneUnspecified())
+		}
+		if (isZoneUnspecified()) {
 			copy.mask &= ~TIMEZONE_MASK;
-		else
+		} else {
 			copy.mask |= TIMEZONE_MASK;
+		}
 		int extraComponents = oldComponents & ~newComponents;
 		if ((extraComponents & TIME_MASK) != 0) {
 			copy.calendar.clear(Calendar.HOUR_OF_DAY);
 			copy.calendar.clear(Calendar.MINUTE);
 			copy.calendar.clear(Calendar.SECOND);
-		} else
+		} else {
 			copy.nanoSeconds = nanoSeconds;
+		}
 		if ((extraComponents & YEAR_MASK) != 0) {
 			copy.calendar.clear(Calendar.YEAR);
 			copy.calendar.clear(Calendar.ERA);
 		}
-		if ((extraComponents & MONTH_MASK) != 0)
+		if ((extraComponents & MONTH_MASK) != 0) {
 			copy.calendar.clear(Calendar.MONTH);
-		if ((extraComponents & DAY_MASK) != 0)
+		}
+		if ((extraComponents & DAY_MASK) != 0) {
 			copy.calendar.clear(Calendar.DATE);
+		}
 		return copy;
 	}
 
@@ -114,24 +120,28 @@ public class DateTime extends Quantity implements Cloneable {
 		if (wantDate) {
 			pos = result.parseDate(value, pos, mask);
 			if (wantTime) {
-				if (pos < 0 || pos >= len || value.charAt(pos) != 'T')
+				if (pos < 0 || pos >= len || value.charAt(pos) != 'T') {
 					pos = -1;
-				else
+				} else {
 					pos++;
+				}
 			}
 		}
-		if (wantTime)
+		if (wantTime) {
 			pos = result.parseTime(value, pos);
+		}
 		pos = result.parseZone(value, pos);
-		if (pos != len)
+		if (pos != len) {
 			throw new NumberFormatException(
 					"Unrecognized date/time '" + value + '\'');
+		}
 		return result;
 	}
 
 	int parseDate(String str, int start, int mask) {
-		if (start < 0)
+		if (start < 0) {
 			return start;
+		}
 		int len = str.length();
 		boolean negYear = false;
 		if (start < len && str.charAt(start) == '-') {
@@ -141,51 +151,61 @@ public class DateTime extends Quantity implements Cloneable {
 		int pos = start;
 		int part, year, month;
 		if ((mask & YEAR_MASK) == 0) {
-			if (!negYear)
+			if (!negYear) {
 				return -1;
+			}
 			year = -1;
 		} else {
 			part = parseDigits(str, pos);
 			year = part >> 16;
 			pos = part & 0xffff;
 			if (pos != start + 4
-					&& (pos <= start + 4 || str.charAt(start) == '0'))
+					&& (pos <= start + 4 || str.charAt(start) == '0')) {
 				return -1;
+			}
 			if (negYear || year == 0) {
 				calendar.set(Calendar.ERA, GregorianCalendar.BC);
 				calendar.set(Calendar.YEAR, year + 1);
-			} else
+			} else {
 				calendar.set(Calendar.YEAR, year);
+			}
 		}
-		if ((mask & (MONTH_MASK | DAY_MASK)) == 0)
+		if ((mask & (MONTH_MASK | DAY_MASK)) == 0) {
 			return pos;
-		if (pos >= len || str.charAt(pos) != '-')
+		}
+		if (pos >= len || str.charAt(pos) != '-') {
 			return -1;
+		}
 		start = ++pos;
 		if ((mask & MONTH_MASK) != 0) {
 			part = parseDigits(str, start);
 			month = part >> 16;
 			pos = part & 0xffff;
-			if (month <= 0 || month > 12 || pos != start + 2)
+			if (month <= 0 || month > 12 || pos != start + 2) {
 				return -1;
+			}
 			calendar.set(Calendar.MONTH, month - 1);
-			if ((mask & DAY_MASK) == 0)
+			if ((mask & DAY_MASK) == 0) {
 				return pos;
-		} else
+			}
+		} else {
 			month = -1;
-		if (pos >= len || str.charAt(pos) != '-')
+		}
+		if (pos >= len || str.charAt(pos) != '-') {
 			return -1;
+		}
 		start = pos + 1;
 		part = parseDigits(str, start);
 		int day = part >> 16;
 		pos = part & 0xffff;
 		if (day > 0 && pos == start + 2) {
 			int maxDay;
-			if ((mask & MONTH_MASK) == 0)
+			if ((mask & MONTH_MASK) == 0) {
 				maxDay = 31;
-			else
+			} else {
 				maxDay = daysInMonth(month - 1,
 						(mask & YEAR_MASK) != 0 ? year : 2000);
+			}
 			if (day <= maxDay) {
 				calendar.set(Calendar.DATE, day);
 				return pos;
@@ -215,20 +235,24 @@ public class DateTime extends Quantity implements Cloneable {
 	public static TimeZone GMT = TimeZone.getTimeZone("GMT");
 
 	int parseZone(String str, int start) {
-		if (start < 0)
+		if (start < 0) {
 			return start;
+		}
 		int part = parseZoneMinutes(str, start);
-		if (part == 0)
+		if (part == 0) {
 			return -1;
-		if (part == start)
+		}
+		if (part == start) {
 			return start;
+		}
 		int minutes = part >> 16;
 		TimeZone zone;
 		int pos = part & 0xffff;
-		if (minutes == 0)
+		if (minutes == 0) {
 			zone = GMT;
-		else
+		} else {
 			zone = TimeZone.getTimeZone("GMT" + str.substring(start, pos));
+		}
 		calendar.setTimeZone(zone);
 		mask |= TIMEZONE_MASK;
 		return pos;
@@ -240,46 +264,57 @@ public class DateTime extends Quantity implements Cloneable {
 	 */
 	int parseZoneMinutes(String str, int start) {
 		int len = str.length();
-		if (start == len || start < 0)
+		if (start == len || start < 0) {
 			return start;
+		}
 		char ch = str.charAt(start);
-		if (ch == 'Z')
+		if (ch == 'Z') {
 			return start + 1;
-		if (ch != '+' && ch != '-')
+		}
+		if (ch != '+' && ch != '-') {
 			return start;
+		}
 		start++;
 		int part = parseDigits(str, start);
 		int hour = part >> 16;
-		if (hour > 14)
+		if (hour > 14) {
 			return 0;
+		}
 		int minute = 60 * hour;
 		int pos = part & 0xffff;
-		if (pos != start + 2)
+		if (pos != start + 2) {
 			return 0;
+		}
 		if (pos < len) {
 			if (str.charAt(pos) == ':') {
 				start = pos + 1;
 				part = parseDigits(str, start);
 				pos = part & 0xffff;
 				part >>= 16;
-				if (part > 0 && (part >= 60 || hour == 14))
+				if (part > 0 && (part >= 60 || hour == 14)) {
 					return 0;
+				}
 				minute += part;
-				if (pos != start + 2)
+				if (pos != start + 2) {
 					return 0;
+				}
 			}
-		} else // The minutes part is not optional.
+		} else {
 			return 0;
-		if (minute > 840)
+		}
+		if (minute > 840) {
 			return 0;
-		if (ch == '-')
+		}
+		if (ch == '-') {
 			minute = -minute;
+		}
 		return (minute << 16) | pos;
 	}
 
 	int parseTime(String str, int start) {
-		if (start < 0)
+		if (start < 0) {
 			return start;
+		}
 		int len = str.length();
 		int pos = start;
 		int part = parseDigits(str, start);
@@ -308,20 +343,24 @@ public class DateTime extends Quantity implements Cloneable {
 						int nfrac = 0;
 						for (; pos < len; nfrac++, pos++) {
 							int dig = Character.digit(str.charAt(pos), 10);
-							if (dig < 0)
+							if (dig < 0) {
 								break;
-							if (nfrac < 9)
+							}
+							if (nfrac < 9) {
 								nanos = 10 * nanos + dig;
-							else if (nfrac == 9 && dig >= 5)
+							} else if (nfrac == 9 && dig >= 5) {
 								nanos++;
+							}
 						}
-						while (nfrac++ < 9)
+						while (nfrac++ < 9) {
 							nanos = 10 * nanos;
+						}
 						nanoSeconds = nanos;
 					}
 					if (hour == 24 && (minute != 0 || second != 0
-							|| nanoSeconds != 0))
+							|| nanoSeconds != 0)) {
 						return -1;
+					}
 					calendar.set(Calendar.HOUR_OF_DAY, hour);
 					calendar.set(Calendar.MINUTE, minute);
 					calendar.set(Calendar.SECOND, second);
@@ -340,10 +379,12 @@ public class DateTime extends Quantity implements Cloneable {
 		while (i < len) {
 			char ch = str.charAt(i);
 			int dig = Character.digit(ch, 10);
-			if (dig < 0)
+			if (dig < 0) {
 				break;
-			if (val > 20000)
+			}
+			if (val > 20000) {
 				return 0; // possible overflow
+			}
 			val = val < 0 ? dig : 10 * val + dig;
 			i++;
 		}
@@ -352,8 +393,9 @@ public class DateTime extends Quantity implements Cloneable {
 
 	public int getYear() {
 		int year = calendar.get(Calendar.YEAR);
-		if (calendar.get(Calendar.ERA) == GregorianCalendar.BC)
+		if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
 			year = 1 - year;
+		}
 		return year;
 	}
 
@@ -396,10 +438,12 @@ public class DateTime extends Quantity implements Cloneable {
 		long millis1 = date1.calendar.getTimeInMillis();
 		long millis2 = date2.calendar.getTimeInMillis();
 		if (((date1.mask | date2.mask) & DATE_MASK) == 0) {
-			if (millis1 < 0)
+			if (millis1 < 0) {
 				millis1 += 24 * 60 * 60 * 1000;
-			if (millis2 < 0)
+			}
+			if (millis2 < 0) {
 				millis2 += 24 * 60 * 60 * 1000;
+			}
 		}
 		int nanos1 = date1.nanoSeconds;
 		int nanos2 = date2.nanoSeconds;
@@ -412,9 +456,11 @@ public class DateTime extends Quantity implements Cloneable {
 						: nanos1 < nanos2 ? -1 : nanos1 > nanos2 ? 1 : 0;
 	}
 
+	@Override
 	public int compare(Object obj) {
-		if (obj instanceof DateTime)
+		if (obj instanceof DateTime) {
 			return compare(this, (DateTime) obj);
+		}
 		return ((Numeric) obj).compareReversed(this);
 	}
 
@@ -436,8 +482,9 @@ public class DateTime extends Quantity implements Cloneable {
 	}
 
 	public DateTime withZoneUnspecified() {
-		if (isZoneUnspecified())
+		if (isZoneUnspecified()) {
 			return this;
+		}
 		DateTime r = new DateTime(mask,
 				(GregorianCalendar) calendar.clone());
 		r.calendar.setTimeZone(TimeZone.getDefault());
@@ -449,9 +496,9 @@ public class DateTime extends Quantity implements Cloneable {
 		DateTime r = new DateTime(mask,
 				(GregorianCalendar) calendar.clone());
 		TimeZone zone;
-		if (newOffset == 0)
+		if (newOffset == 0) {
 			zone = GMT;
-		else {
+		} else {
 			StringBuffer sbuf = new StringBuffer("GMT");
 			toStringZone(newOffset, sbuf);
 			zone = TimeZone.getTimeZone(sbuf.toString());
@@ -466,16 +513,18 @@ public class DateTime extends Quantity implements Cloneable {
 				r.calendar.set(Calendar.SECOND, 0);
 				r.nanoSeconds = 0;
 			}
-		} else
+		} else {
 			r.mask |= TIMEZONE_MASK;
+		}
 		return r;
 	}
 
 	public static DateTime add(DateTime x, Duration y, int k) {
 		if (y.unit == Unit.duration || (y.unit == Unit.month
-				&& (x.mask & DATE_MASK) != DATE_MASK))
+				&& (x.mask & DATE_MASK) != DATE_MASK)) {
 			throw new IllegalArgumentException(
 					"invalid date/time +/- duration combinatuion");
+		}
 		DateTime r = new DateTime(x.mask,
 				(GregorianCalendar) x.calendar.clone());
 		if (y.months != 0) {
@@ -496,8 +545,9 @@ public class DateTime extends Quantity implements Cloneable {
 				daysInMonth = daysInMonth(month, 1);
 			}
 
-			if (day > daysInMonth)
+			if (day > daysInMonth) {
 				day = daysInMonth;
+			}
 			r.calendar.set(year, month, day);
 		}
 		long nanos = x.nanoSeconds
@@ -506,8 +556,9 @@ public class DateTime extends Quantity implements Cloneable {
 			if ((x.mask & TIME_MASK) == 0) { // Truncate to 00:00:00
 				long nanosPerDay = 1000000000L * 24 * 60 * 60;
 				long mod = nanos % nanosPerDay;
-				if (mod < 0)
+				if (mod < 0) {
 					mod += nanosPerDay;
+				}
 				nanos -= mod;
 			}
 			long millis = r.calendar.getTimeInMillis();
@@ -536,17 +587,22 @@ public class DateTime extends Quantity implements Cloneable {
 		return r;
 	}
 
+	@Override
 	public Numeric add(Object y, int k) {
-		if (y instanceof Duration)
+		if (y instanceof Duration) {
 			return DateTime.add(this, (Duration) y, k);
-		if (y instanceof DateTime && k == -1)
+		}
+		if (y instanceof DateTime && k == -1) {
 			return DateTime.sub(this, (DateTime) y);
+		}
 		throw new IllegalArgumentException();
 	}
 
+	@Override
 	public Numeric addReversed(Numeric x, int k) {
-		if (x instanceof Duration && k == 1)
+		if (x instanceof Duration && k == 1) {
 			return DateTime.add(this, (Duration) x, k);
+		}
 		throw new IllegalArgumentException();
 	}
 
@@ -555,8 +611,9 @@ public class DateTime extends Quantity implements Cloneable {
 		int start = sbuf.length();
 		sbuf.append(value);
 		int padding = start + minWidth - sbuf.length();
-		while (--padding >= 0)
+		while (--padding >= 0) {
 			sbuf.insert(start, '0');
+		}
 	}
 
 	public void toStringDate(StringBuffer sbuf) {
@@ -565,16 +622,19 @@ public class DateTime extends Quantity implements Cloneable {
 			int year = calendar.get(Calendar.YEAR);
 			if (calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
 				year--;
-				if (year != 0)
+				if (year != 0) {
 					sbuf.append('-');
+				}
 			}
 			append(year, sbuf, 4);
-		} else
+		} else {
 			sbuf.append('-');
+		}
 		if ((mask & (MONTH_MASK | DAY_MASK)) != 0) {
 			sbuf.append('-');
-			if ((mask & MONTH_MASK) != 0)
+			if ((mask & MONTH_MASK) != 0) {
 				append(getMonth(), sbuf, 2);
+			}
 			if ((mask & DAY_MASK) != 0) {
 				sbuf.append('-');
 				append(getDay(), sbuf, 2);
@@ -608,8 +668,9 @@ public class DateTime extends Quantity implements Cloneable {
 	 *            timezone offset in minutes.
 	 */
 	public static TimeZone minutesToTimeZone(int minutes) {
-		if (minutes == 0)
+		if (minutes == 0) {
 			return DateTime.GMT;
+		}
 		StringBuffer sbuf = new StringBuffer("GMT");
 		toStringZone(minutes, sbuf);
 		return TimeZone.getTimeZone(sbuf.toString());
@@ -620,20 +681,22 @@ public class DateTime extends Quantity implements Cloneable {
 	}
 
 	public void toStringZone(StringBuffer sbuf) {
-		if (isZoneUnspecified())
+		if (isZoneUnspecified()) {
 			return;
+		}
 		toStringZone(getZoneMinutes(), sbuf);
 	}
 
 	public static void toStringZone(int minutes, StringBuffer sbuf) {
-		if (minutes == 0)
+		if (minutes == 0) {
 			sbuf.append('Z');
-		else {
+		} else {
 			if (minutes < 0) {
 				sbuf.append('-');
 				minutes = -minutes;
-			} else
+			} else {
 				sbuf.append('+');
+			}
 			append(minutes / 60, sbuf, 2);
 			sbuf.append(':');
 			append(minutes % 60, sbuf, 2);
@@ -646,32 +709,39 @@ public class DateTime extends Quantity implements Cloneable {
 		boolean hasTime = (mask & TIME_MASK) != 0;
 		if (hasDate) {
 			toStringDate(sbuf);
-			if (hasTime)
+			if (hasTime) {
 				sbuf.append('T');
+			}
 		}
-		if (hasTime)
+		if (hasTime) {
 			toStringTime(sbuf);
+		}
 		toStringZone(sbuf);
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer sbuf = new StringBuffer();
 		toString(sbuf);
 		return sbuf.toString();
 	}
 
+	@Override
 	public boolean isExact() {
 		return (mask & TIME_MASK) == 0;
 	}
 
+	@Override
 	public boolean isZero() {
 		throw new Error("DateTime.isZero not meaningful!");
 	}
 
+	@Override
 	public Unit unit() {
 		return unit;
 	}
 
+	@Override
 	public Complex number() {
 		throw new Error("number needs to be implemented!");
 	}

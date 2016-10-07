@@ -256,7 +256,7 @@ final class CustomConcurrentHashMap {
 			if (strategy == null) {
 				throw new NullPointerException("strategy");
 			}
-			return new Impl<K, V, E>(strategy, this);
+			return new Impl<>(strategy, this);
 		}
 
 		/**
@@ -318,7 +318,7 @@ final class CustomConcurrentHashMap {
 				throw new NullPointerException("computer");
 			}
 
-			return new ComputingImpl<K, V, E>(strategy, this, computer);
+			return new ComputingImpl<>(strategy, this, computer);
 		}
 	}
 
@@ -742,6 +742,7 @@ final class CustomConcurrentHashMap {
 
 			static final long serialVersionUID = 0;
 
+			@Override
 			public E getEntry(K key) {
 				if (key == null) {
 					throw new NullPointerException("key");
@@ -750,6 +751,7 @@ final class CustomConcurrentHashMap {
 				return segmentFor(hash).getEntry(key, hash);
 			}
 
+			@Override
 			public boolean removeEntry(E entry, V value) {
 				if (entry == null) {
 					throw new NullPointerException("entry");
@@ -758,6 +760,7 @@ final class CustomConcurrentHashMap {
 				return segmentFor(hash).removeEntry(entry, hash, value);
 			}
 
+			@Override
 			public boolean removeEntry(E entry) {
 				if (entry == null) {
 					throw new NullPointerException("entry");
@@ -870,7 +873,7 @@ final class CustomConcurrentHashMap {
 			}
 
 			AtomicReferenceArray<E> newEntryArray(int size) {
-				return new AtomicReferenceArray<E>(size);
+				return new AtomicReferenceArray<>(size);
 			}
 
 			/**
@@ -1236,9 +1239,8 @@ final class CustomConcurrentHashMap {
 								table.set(index, newFirst);
 								this.count = count; // write-volatile
 								return true;
-							} else {
-								return false;
 							}
+							return false;
 						}
 					}
 
@@ -1282,9 +1284,8 @@ final class CustomConcurrentHashMap {
 								table.set(index, newFirst);
 								this.count = count; // write-volatile
 								return true;
-							} else {
-								return false;
 							}
+							return false;
 						}
 					}
 
@@ -1371,9 +1372,8 @@ final class CustomConcurrentHashMap {
 			for (int i = 0; i < segments.length; ++i) {
 				if (segments[i].count != 0) {
 					return false;
-				} else {
-					mcsum += mc[i] = segments[i].modCount;
 				}
+				mcsum += mc[i] = segments[i].modCount;
 			}
 			// If mcsum happens to be zero, then we know we got a snapshot
 			// before any modifications at all were made. This is
@@ -1439,9 +1439,8 @@ final class CustomConcurrentHashMap {
 			}
 			if (sum > Integer.MAX_VALUE) {
 				return Integer.MAX_VALUE;
-			} else {
-				return (int) sum;
 			}
+			return (int) sum;
 		}
 
 		/**
@@ -1594,6 +1593,7 @@ final class CustomConcurrentHashMap {
 		 * @throws NullPointerException
 		 *             if the specified key or value is null
 		 */
+		@Override
 		public V putIfAbsent(K key, V value) {
 			if (key == null) {
 				throw new NullPointerException("key");
@@ -1646,6 +1646,7 @@ final class CustomConcurrentHashMap {
 		 * @throws NullPointerException
 		 *             if the specified key is null
 		 */
+		@Override
 		public boolean remove(Object key, Object value) {
 			if (key == null) {
 				throw new NullPointerException("key");
@@ -1660,6 +1661,7 @@ final class CustomConcurrentHashMap {
 		 * @throws NullPointerException
 		 *             if any of the arguments are null
 		 */
+		@Override
 		public boolean replace(K key, V oldValue, V newValue) {
 			if (key == null) {
 				throw new NullPointerException("key");
@@ -1682,6 +1684,7 @@ final class CustomConcurrentHashMap {
 		 * @throws NullPointerException
 		 *             if the specified key or value is null
 		 */
+		@Override
 		public V replace(K key, V value) {
 			if (key == null) {
 				throw new NullPointerException("key");
@@ -1871,10 +1874,9 @@ final class CustomConcurrentHashMap {
 				if (key != null && value != null) {
 					nextExternal = new WriteThroughEntry(key, value);
 					return true;
-				} else {
-					// Skip partially reclaimed entry.
-					return false;
 				}
+				// Skip partially reclaimed entry.
+				return false;
 			}
 
 			public boolean hasNext() {
@@ -1902,6 +1904,7 @@ final class CustomConcurrentHashMap {
 		final class KeyIterator extends HashIterator
 				implements Iterator<K> {
 
+			@Override
 			public K next() {
 				return super.nextEntry().getKey();
 			}
@@ -1910,6 +1913,7 @@ final class CustomConcurrentHashMap {
 		final class ValueIterator extends HashIterator
 				implements Iterator<V> {
 
+			@Override
 			public V next() {
 				return super.nextEntry().getValue();
 			}
@@ -1961,6 +1965,7 @@ final class CustomConcurrentHashMap {
 		final class EntryIterator extends HashIterator
 				implements Iterator<Entry<K, V>> {
 
+			@Override
 			public Entry<K, V> next() {
 				return nextEntry();
 			}
@@ -2317,51 +2322,62 @@ final class CustomConcurrentHashMap {
 	 */
 	static class SimpleStrategy<K, V>
 			implements Strategy<K, V, SimpleInternalEntry<K, V>> {
+		@Override
 		public SimpleInternalEntry<K, V> newEntry(K key, int hash,
 				SimpleInternalEntry<K, V> next) {
-			return new SimpleInternalEntry<K, V>(key, hash, null, next);
+			return new SimpleInternalEntry<>(key, hash, null, next);
 		}
 
+		@Override
 		public SimpleInternalEntry<K, V> copyEntry(K key,
 				SimpleInternalEntry<K, V> original,
 				SimpleInternalEntry<K, V> next) {
-			return new SimpleInternalEntry<K, V>(key, original.hash,
+			return new SimpleInternalEntry<>(key, original.hash,
 					original.value, next);
 		}
 
+		@Override
 		public void setValue(SimpleInternalEntry<K, V> entry, V value) {
 			entry.value = value;
 		}
 
+		@Override
 		public V getValue(SimpleInternalEntry<K, V> entry) {
 			return entry.value;
 		}
 
+		@Override
 		public boolean equalKeys(K a, Object b) {
 			return a.equals(b);
 		}
 
+		@Override
 		public boolean equalValues(V a, Object b) {
 			return a.equals(b);
 		}
 
+		@Override
 		public int hashKey(Object key) {
 			return key.hashCode();
 		}
 
+		@Override
 		public K getKey(SimpleInternalEntry<K, V> entry) {
 			return entry.key;
 		}
 
+		@Override
 		public SimpleInternalEntry<K, V> getNext(
 				SimpleInternalEntry<K, V> entry) {
 			return entry.next;
 		}
 
+		@Override
 		public int getHash(SimpleInternalEntry<K, V> entry) {
 			return entry.hash;
 		}
 
+		@Override
 		public void setInternals(
 				Internals<K, V, SimpleInternalEntry<K, V>> internals) {
 			// ignore?

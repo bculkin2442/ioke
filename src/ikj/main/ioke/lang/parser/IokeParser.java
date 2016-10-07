@@ -37,9 +37,9 @@ public class IokeParser {
 	protected ChainContext					top						= new ChainContext(
 			null);
 
-	protected final Map<String, OpEntry>	operatorTable			= new HashMap<String, OpEntry>();
-	protected final Map<String, OpArity>	trinaryOperatorTable	= new HashMap<String, OpArity>();
-	protected final Map<String, OpEntry>	invertedOperatorTable	= new HashMap<String, OpEntry>();
+	protected final Map<String, OpEntry>	operatorTable			= new HashMap<>();
+	protected final Map<String, OpArity>	trinaryOperatorTable	= new HashMap<>();
+	protected final Map<String, OpEntry>	invertedOperatorTable	= new HashMap<>();
 	protected final Set<String>				unaryOperators			= DEFAULT_UNARY_OPERATORS;
 	protected final Set<String>				onlyUnaryOperators		= DEFAULT_ONLY_UNARY_OPERATORS;
 
@@ -61,8 +61,9 @@ public class IokeParser {
 	protected IokeObject parseMessageChain()
 			throws IOException, ControlFlow {
 		top = new ChainContext(top);
-		while (parseMessage())
+		while (parseMessage()) {
 			;
+		}
 		top.popOperatorsTo(999999);
 		IokeObject ret = top.pop();
 		top = top.parent;
@@ -71,7 +72,7 @@ public class IokeParser {
 
 	protected List<Object> parseCommaSeparatedMessageChains()
 			throws IOException, ControlFlow {
-		ArrayList<Object> chain = new ArrayList<Object>();
+		ArrayList<Object> chain = new ArrayList<>();
 
 		IokeObject curr = parseMessageChain();
 		while (curr != null) {
@@ -85,7 +86,7 @@ public class IokeParser {
 					fail("Expected expression following comma");
 				}
 			} else {
-				if (curr != null && Message.isTerminator(curr)
+				if (Message.isTerminator(curr)
 						&& Message.next(curr) == null) {
 					chain.remove(chain.size() - 1);
 				}
@@ -262,9 +263,8 @@ public class IokeParser {
 					if ((rr = peek()) == '\n') {
 						read();
 						break;
-					} else {
-						fail("Expected newline after free-floating escape character");
 					}
+					fail("Expected newline after free-floating escape character");
 				case '\r':
 				case '\n':
 					read();
@@ -610,7 +610,7 @@ public class IokeParser {
 
 		int rr;
 		String name = "internal:createRegexp";
-		List<Object> args = new ArrayList<Object>();
+		List<Object> args = new ArrayList<>();
 
 		while (true) {
 			switch (rr = peek()) {
@@ -648,9 +648,8 @@ public class IokeParser {
 									return;
 							}
 						}
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case ']':
 					read();
@@ -682,9 +681,8 @@ public class IokeParser {
 									return;
 							}
 						}
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case '#':
 					read();
@@ -697,7 +695,7 @@ public class IokeParser {
 						readWhiteSpace();
 						parseCharacter('}');
 					} else {
-						sb.append((char) '#');
+						sb.append('#');
 					}
 					break;
 				case '\\':
@@ -726,9 +724,9 @@ public class IokeParser {
 
 		int rr;
 		String name = "internal:createText";
-		List<Object> args = new ArrayList<Object>();
-		List<Integer> lines = new ArrayList<Integer>();
-		List<Integer> cols = new ArrayList<Integer>();
+		List<Object> args = new ArrayList<>();
+		List<Integer> lines = new ArrayList<>();
+		List<Integer> cols = new ArrayList<>();
 		lines.add(l);
 		cols.add(cc);
 
@@ -764,9 +762,8 @@ public class IokeParser {
 						Message.setArguments(mm, args);
 						top.add(mm);
 						return;
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case ']':
 					read();
@@ -795,9 +792,8 @@ public class IokeParser {
 						Message.setArguments(mm, args);
 						top.add(mm);
 						return;
-					} else {
-						sb.append((char) rr);
 					}
+					sb.append((char) rr);
 					break;
 				case '#':
 					read();
@@ -816,7 +812,7 @@ public class IokeParser {
 						cc = currentCharacter;
 						parseCharacter('}');
 					} else {
-						sb.append((char) '#');
+						sb.append('#');
 					}
 					break;
 				case '\\':

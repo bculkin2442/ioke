@@ -27,7 +27,7 @@ public class Hook extends IokeData {
 	private void rewire(IokeObject self) {
 		for (IokeObject io : connected) {
 			if (io.body.hooks == null) {
-				io.body.hooks = new LinkedList<IokeObject>();
+				io.body.hooks = new LinkedList<>();
 			}
 			if (!io.body.hooks.contains(self)) {
 				io.body.hooks.add(self);
@@ -163,7 +163,7 @@ public class Hook extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -171,7 +171,7 @@ public class Hook extends IokeData {
 								message);
 						hook.singleMimicsWithoutCheck(obj);
 
-						List<IokeObject> objs = new ArrayList<IokeObject>(
+						List<IokeObject> objs = new ArrayList<>(
 								args.size());
 						for (Object o : args) {
 							objs.add(IokeObject.as(o, context));
@@ -216,7 +216,7 @@ public class Hook extends IokeData {
 					public Object activate(IokeObject method,
 							IokeObject context, IokeObject message,
 							Object on) throws ControlFlow {
-						List<Object> args = new ArrayList<Object>();
+						List<Object> args = new ArrayList<>();
 						getArguments().getEvaluatedArguments(context,
 								message, on, args,
 								new HashMap<String, Object>());
@@ -229,8 +229,9 @@ public class Hook extends IokeData {
 				}));
 	}
 
+	@Override
 	public IokeData cloneData(IokeObject obj, IokeObject m,
 			IokeObject context) {
-		return new Hook(new ArrayList<IokeObject>(connected));
+		return new Hook(new ArrayList<>(connected));
 	}
 }// Hook

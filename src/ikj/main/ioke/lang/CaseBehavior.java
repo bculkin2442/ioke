@@ -91,9 +91,8 @@ public class CaseBehavior {
 								return runtime.interpreter.evaluate(msg,
 										context, context.getRealContext(),
 										context);
-							} else {
-								index++;
 							}
+							index++;
 							argCount -= 2;
 						}
 

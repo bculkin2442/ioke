@@ -67,8 +67,10 @@ public class Dir {
 					s++;
 					break;
 				case '*':
-					while (pat < pend && (c = bytes.charAt(pat++)) == '*')
+					while (pat < pend
+							&& (c = bytes.charAt(pat++)) == '*') {
 						;
+					}
 					if (s < send && (period && string.charAt(s) == '.'
 							&& (s == 0 || (pathname
 									&& isdirsep(string.charAt(s - 1)))))) {
@@ -78,9 +80,8 @@ public class Dir {
 						if (pathname
 								&& rb_path_next(string, s, send) < send) {
 							return FNM_NOMATCH;
-						} else {
-							return 0;
 						}
+						return 0;
 					} else if ((pathname && isdirsep(c))) {
 						s = rb_path_next(string, s, send);
 						if (s < send) {
@@ -136,6 +137,7 @@ public class Dir {
 					}
 					if (DOSISH && (pathname && isdirsep(c)
 							&& isdirsep(string.charAt(s)))) {
+						// TODO should something be done here?
 					} else {
 						if (nocase) {
 							if (Character.toLowerCase(c) != Character
@@ -208,10 +210,9 @@ public class Dir {
 				}
 				return FNM_NOMATCH;
 			}
-		} else {
-			return fnmatch_helper(bytes, pstart, pend, string, sstart,
-					send, flags);
 		}
+		return fnmatch_helper(bytes, pstart, pend, string, sstart, send,
+				flags);
 
 	}
 
@@ -289,7 +290,7 @@ public class Dir {
 
 	public static List<String> push_glob(String cwd, String globString,
 			int flags) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (globString.length() > 0) {
 			push_braces(cwd, result, new GlobPattern(globString, flags));
 		}
@@ -318,8 +319,9 @@ public class Dir {
 		}
 
 		public int findClosingIndexOf(int leftTokenIndex) {
-			if (leftTokenIndex == -1 || leftTokenIndex > end)
+			if (leftTokenIndex == -1 || leftTokenIndex > end) {
 				return -1;
+			}
 
 			char leftToken = string.charAt(leftTokenIndex);
 			char rightToken;
@@ -368,9 +370,11 @@ public class Dir {
 		}
 
 		public int indexOf(char c) {
-			while (hasNext())
-				if (next() == c)
+			while (hasNext()) {
+				if (next() == c) {
 					return index();
+				}
+			}
 
 			return -1;
 		}
@@ -397,6 +401,7 @@ public class Dir {
 	}
 
 	public final static GlobFunc	push_pattern	= new GlobFunc() {
+														@Override
 														@SuppressWarnings("unchecked")
 														public int call(
 																String ptr,
@@ -411,6 +416,7 @@ public class Dir {
 														}
 													};
 	public final static GlobFunc	glob_caller		= new GlobFunc() {
+														@Override
 														public int call(
 																String ptr,
 																int p,
@@ -434,8 +440,9 @@ public class Dir {
 														// right-most brace
 
 		// No or mismatched braces..Move along..nothing to see here
-		if (lbrace == -1 || rbrace == -1)
+		if (lbrace == -1 || rbrace == -1) {
 			return push_globs(cwd, result, pattern);
+		}
 
 		// Peel onion...make subpatterns out of outer layer of glob and
 		// recall with each subpattern
@@ -448,8 +455,9 @@ public class Dir {
 			for (i = middleRegionIndex; i < pattern.end
 					&& pattern.string.charAt(i) != '}'
 					&& pattern.string.charAt(i) != ','; i++) {
-				if (pattern.string.charAt(i) == '{')
+				if (pattern.string.charAt(i) == '{') {
 					pattern.findClosingIndexOf(i); // skip inner braces
+				}
 			}
 
 			buf = "";
@@ -458,8 +466,9 @@ public class Dir {
 			buf += pattern.string.substring(rbrace + 1, pattern.end);
 			int status = push_braces(cwd, result,
 					new GlobPattern(buf, 0, buf.length(), pattern.flags));
-			if (status != 0)
+			if (status != 0) {
 				return status;
+			}
 		}
 
 		return 0; // All braces pushed..
@@ -485,7 +494,8 @@ public class Dir {
 				case '*':
 					return true;
 				case '[': /*
-							 * Only accept an open brace if there is a close
+							 * Only accept an open brace if there is a
+							 * close
 							 */
 					open++; /*
 							 * brace to match it. Bracket expressions must
@@ -493,19 +503,22 @@ public class Dir {
 							 */
 					continue; /* complete, according to Posix.2 */
 				case ']':
-					if (open > 0)
+					if (open > 0) {
 						return true;
+					}
 
 					continue;
 				case '\\':
-					if (escape && i == end)
+					if (escape && i == end) {
 						return false;
+					}
 
 					break;
 				default:
 					if (FNM_SYSCASE == 0 && nocase
-							&& Character.isLetter(bytes.charAt(i)))
+							&& Character.isLetter(bytes.charAt(i))) {
 						return true;
+					}
 			}
 		}
 
@@ -517,8 +530,9 @@ public class Dir {
 		int t = index;
 
 		for (; index < len; index++, t++) {
-			if (bytes.charAt(index) == '\\' && ++index == len)
+			if (bytes.charAt(index) == '\\' && ++index == len) {
 				break;
+			}
 
 			bytes.replace(t, t + 1, bytes.substring(index, index + 1));
 		}
@@ -528,8 +542,9 @@ public class Dir {
 
 	private static int strchr(String bytes, int begin, int end, char ch) {
 		for (int i = begin; i < end; i++) {
-			if (bytes.charAt(i) == ch)
+			if (bytes.charAt(i) == ch) {
 				return i;
+			}
 		}
 
 		return -1;
@@ -538,17 +553,19 @@ public class Dir {
 	private static String extract_path(String bytes, int begin, int end) {
 		int len = end - begin;
 
-		if (len > 1 && bytes.charAt(end - 1) == '/'
-				&& (!DOSISH || (len < 2 || bytes.charAt(end - 2) != ':')))
+		if (len > 1 && bytes.charAt(end - 1) == '/' && (!DOSISH
+				|| (len < 2 || bytes.charAt(end - 2) != ':'))) {
 			len--;
+		}
 
 		return bytes.substring(begin, begin + len);
 	}
 
 	private static String extract_elem(String bytes, int begin, int end) {
 		int elementEnd = strchr(bytes, begin, end, '/');
-		if (elementEnd == -1)
+		if (elementEnd == -1) {
 			elementEnd = end;
+		}
 
 		return extract_path(bytes, begin, elementEnd);
 	}
@@ -579,11 +596,11 @@ public class Dir {
 			filesPlusDotFiles[1] = "..";
 
 			return filesPlusDotFiles;
-		} else {
-			return new String[0];
 		}
+		return new String[0];
 	}
 
+	@SuppressWarnings("resource")
 	private static int glob_helper(String cwd, String _bytes, int begin,
 			int end, int sub, int flags, GlobFunc func, GlobArgs arg) {
 		CharSequence bytes = _bytes;
@@ -628,15 +645,18 @@ public class Dir {
 				try {
 					JarFile jf = new JarFile(st);
 
-					if (jar.startsWith("/"))
+					if (jar.startsWith("/")) {
 						jar = jar.substring(1);
-					if (jf.getEntry(jar + "/") != null)
+					}
+					if (jf.getEntry(jar + "/") != null) {
 						jar = jar + "/";
+					}
 					if (jf.getEntry(jar) != null) {
 						status = func.call(bytes.toString(), begin, end,
 								arg);
 					}
 				} catch (Exception e) {
+					// We don't care
 				}
 			} else if ((end - begin) > 0) { // Length check is a hack. We
 											// should not be reeiving "" as
@@ -653,10 +673,11 @@ public class Dir {
 
 		String bytes2 = bytes.toString();
 		String buf = "";
-		List<String> link = new ArrayList<String>();
+		List<String> link = new ArrayList<>();
 		mainLoop: while (p != -1 && status == 0) {
-			if (bytes2.charAt(p) == '/')
+			if (bytes2.charAt(p) == '/') {
 				p++;
+			}
 
 			m = strchr(bytes2, p, end, '/');
 			if (has_magic(bytes2, p, m == -1 ? end : m, flags)) {
@@ -686,10 +707,12 @@ public class Dir {
 						try {
 							jf = new JarFile(st);
 
-							if (jar.startsWith("/"))
+							if (jar.startsWith("/")) {
 								jar = jar.substring(1);
-							if (jf.getEntry(jar + "/") != null)
+							}
+							if (jf.getEntry(jar + "/") != null) {
 								jar = jar + "/";
+							}
 						} catch (Exception e) {
 							jar = null;
 							jf = null;
@@ -771,9 +794,10 @@ public class Dir {
 						}
 					} else {
 						try {
-							List<JarEntry> dirp = new ArrayList<JarEntry>();
-							for (Enumeration<JarEntry> eje = jf
-									.entries(); eje.hasMoreElements();) {
+							List<JarEntry> dirp = new ArrayList<>();
+							for (@SuppressWarnings("null")
+							Enumeration<JarEntry> eje = jf.entries(); eje
+									.hasMoreElements();) {
 								JarEntry je = eje.nextElement();
 								String name = je.getName();
 								int ix = name.indexOf('/', jar.length());
@@ -838,6 +862,7 @@ public class Dir {
 								}
 							}
 						} catch (Exception e) {
+							// We don't care
 						}
 					}
 				} while (false);
