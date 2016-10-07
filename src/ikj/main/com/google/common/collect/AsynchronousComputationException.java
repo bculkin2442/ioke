@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2009 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -17,13 +17,16 @@
 package com.google.common.collect;
 
 /**
- * Wraps an exception that occured during a computation in a different thread.
+ * Wraps an exception that occured during a computation in a different
+ * thread.
  *
  * @author Bob Lee
  */
-public class AsynchronousComputationException extends ComputationException {
-  public AsynchronousComputationException(Throwable cause) {
-    super(cause);
-  }
-  private static final long serialVersionUID = 0;
+public class AsynchronousComputationException
+		extends ComputationException {
+	public AsynchronousComputationException(Throwable cause) {
+		super(cause);
+	}
+
+	private static final long serialVersionUID = 0;
 }

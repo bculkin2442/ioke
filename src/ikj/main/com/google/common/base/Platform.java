@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2009 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -22,14 +22,16 @@ package com.google.common.base;
  * @author Jesse Wilson
  */
 final class Platform {
-  private Platform() {}
+	private Platform() {
+	}
 
-  /**
-   * Calls {@link Class#isInstance(Object)}.
-   *
-   * <p>This method is not supported in GWT yet.
-   */
-  static boolean isInstance(Class<?> clazz, Object obj) {
-    return clazz.isInstance(obj);
-  }
+	/**
+	 * Calls {@link Class#isInstance(Object)}.
+	 *
+	 * <p>
+	 * This method is not supported in GWT yet.
+	 */
+	static boolean isInstance(Class<?> clazz, Object obj) {
+		return clazz.isInstance(obj);
+	}
 }

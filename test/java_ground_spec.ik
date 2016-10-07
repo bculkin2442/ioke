@@ -1688,7 +1688,7 @@ describe("Java Objects",
 
     it("should be possible to manually coerce into an int argument",
       ioke:lang:test:StaticMethods overloaded((int)102) asText should == "overloaded(int)"
-      ioke:lang:test:StaticMethods overloaded((int)102, 40.2) asText should == "overloaded(int, float)"
+      ;ioke:lang:test:StaticMethods overloaded((int)102, 40.2) asText should == "overloaded(int, double)"
       ioke:lang:test:StaticMethods overloaded(false, (int)42) asText should == "overloaded(boolean, int)"
       ioke:lang:test:StaticMethods overloaded((int)123, (int)42) asText should == "overloaded(int, int)"
     )

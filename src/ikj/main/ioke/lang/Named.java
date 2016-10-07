@@ -1,5 +1,6 @@
 /*
- * See LICENSE file in distribution for copyright and licensing information.
+ * See LICENSE file in distribution for copyright and licensing
+ * information.
  */
 package ioke.lang;
 
@@ -8,7 +9,7 @@ package ioke.lang;
  * @author <a href="mailto:ola.bini@gmail.com">Ola Bini</a>
  */
 public interface Named {
-    String getName();
-    void setName(String name);
-}
+	String getName();
 
+	void setName(String name);
+}

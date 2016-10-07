@@ -1,5 +1,6 @@
 /*
- * See LICENSE file in distribution for copyright and licensing information.
+ * See LICENSE file in distribution for copyright and licensing
+ * information.
  */
 package ioke.lang;
 

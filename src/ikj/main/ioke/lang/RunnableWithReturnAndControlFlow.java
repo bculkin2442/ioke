@@ -1,5 +1,6 @@
 /*
- * See LICENSE file in distribution for copyright and licensing information.
+ * See LICENSE file in distribution for copyright and licensing
+ * information.
  */
 package ioke.lang;
 
@@ -10,5 +11,5 @@ import ioke.lang.exceptions.ControlFlow;
  * @author <a href="mailto:ola.bini@gmail.com">Ola Bini</a>
  */
 public interface RunnableWithReturnAndControlFlow {
-    public Object run() throws ControlFlow;
+	public Object run() throws ControlFlow;
 }// RunnableWithReturnAndControlFlow

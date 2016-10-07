@@ -1,5 +1,6 @@
 /*
- * See LICENSE file in distribution for copyright and licensing information.
+ * See LICENSE file in distribution for copyright and licensing
+ * information.
  */
 package ioke.lang;
 
@@ -11,6 +12,6 @@ import ioke.lang.exceptions.ControlFlow;
  */
 public interface RunnableWithControlFlow {
 
-    public void run() throws ControlFlow;
+	public void run() throws ControlFlow;
 
 }// RunnableWithControlFlow

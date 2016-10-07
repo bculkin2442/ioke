@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2007 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -19,24 +19,27 @@ package com.google.common.base;
 import java.lang.ref.WeakReference;
 
 /**
- * Weak reference with a {@code finalizeReferent()} method which a background
- * thread invokes after the garbage collector reclaims the referent. This is a
- * simpler alternative to using a {@link java.lang.ref.ReferenceQueue}.
+ * Weak reference with a {@code finalizeReferent()} method which a
+ * background thread invokes after the garbage collector reclaims the
+ * referent. This is a simpler alternative to using a
+ * {@link java.lang.ref.ReferenceQueue}.
  *
  * @author Bob Lee
  */
 public abstract class FinalizableWeakReference<T> extends WeakReference<T>
-    implements FinalizableReference {
+		implements FinalizableReference {
 
-  /**
-   * Consructs a new finalizable weak reference.
-   *
-   * @param referent to weakly reference
-   * @param queue that should finalize the referent
-   */
-  protected FinalizableWeakReference(T referent,
-      FinalizableReferenceQueue queue) {
-    super(referent, queue.queue);
-    queue.cleanUp();
-  }
+	/**
+	 * Consructs a new finalizable weak reference.
+	 *
+	 * @param referent
+	 *            to weakly reference
+	 * @param queue
+	 *            that should finalize the referent
+	 */
+	protected FinalizableWeakReference(T referent,
+			FinalizableReferenceQueue queue) {
+		super(referent, queue.queue);
+		queue.cleanUp();
+	}
 }

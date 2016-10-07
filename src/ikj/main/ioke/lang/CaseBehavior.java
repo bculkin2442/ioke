@@ -1,15 +1,10 @@
 /*
- * See LICENSE file in distribution for copyright and licensing information.
+ * See LICENSE file in distribution for copyright and licensing
+ * information.
  */
 package ioke.lang;
 
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.HashSet;
 
 import ioke.lang.exceptions.ControlFlow;
 
@@ -18,78 +13,101 @@ import ioke.lang.exceptions.ControlFlow;
  * @author <a href="mailto:ola.bini@gmail.com">Ola Bini</a>
  */
 public class CaseBehavior {
-    public static IokeObject transformWhenStatement(Object when, IokeObject context, IokeObject message, IokeObject caseMimic) throws ControlFlow {
-        String outerName = Message.name(when);
+	public static IokeObject transformWhenStatement(Object when,
+			IokeObject context, IokeObject message, IokeObject caseMimic)
+			throws ControlFlow {
+		String outerName = Message.name(when);
 
-        if(caseMimic.body.has("case:" + outerName)) {
-            IokeObject cp = Message.deepCopy(when);
-            replaceAllCaseNames(cp, context, message, caseMimic);
-            return cp;
-        }
+		if (caseMimic.body.has("case:" + outerName)) {
+			IokeObject cp = Message.deepCopy(when);
+			replaceAllCaseNames(cp, context, message, caseMimic);
+			return cp;
+		}
 
-        return IokeObject.as(when, context);
-    }
+		return IokeObject.as(when, context);
+	}
 
-    private static void replaceAllCaseNames(IokeObject when, IokeObject context, IokeObject message, IokeObject caseMimic) throws ControlFlow {
-        String theName = "case:" + Message.name(when);
-        if(caseMimic.body.has(theName)) {
-            Message.setName(when, theName);
+	private static void replaceAllCaseNames(IokeObject when,
+			IokeObject context, IokeObject message, IokeObject caseMimic)
+			throws ControlFlow {
+		String theName = "case:" + Message.name(when);
+		if (caseMimic.body.has(theName)) {
+			Message.setName(when, theName);
 
-            for(Object arg : when.getArguments()) {
-                replaceAllCaseNames(IokeObject.as(arg, context), context, message, caseMimic);
-            }
-        }
-    }
+			for (Object arg : when.getArguments()) {
+				replaceAllCaseNames(IokeObject.as(arg, context), context,
+						message, caseMimic);
+			}
+		}
+	}
 
-    public static void init(final IokeObject obj) throws ControlFlow {
-        final Runtime runtime = obj.runtime;
-        obj.setKind("DefaultBehavior Case");
+	public static void init(final IokeObject obj) throws ControlFlow {
+		final Runtime runtime = obj.runtime;
+		obj.setKind("DefaultBehavior Case");
 
-        obj.registerMethod(runtime.newNativeMethod("takes one argument that should evaluate to a value, zero or more whenAndThen pairs and one optional else clause. will first evaluate the initial value, then check each whenAndThen pair against this value. if the when part of a pair returns true, then return the result of evaluating the then part. if no pair matches and no else clause is present, returns nil. if an else clause is there, it should be the last one. each whenAndThen pair is comprised of two arguments, where the first is the when argument and the second is the then argument. the when part will be evaluated and the result of this evaluation will be sent a === message with the value as argument.", new NativeMethod("case") {
-                private final DefaultArgumentsDefinition ARGUMENTS = DefaultArgumentsDefinition
-                    .builder()
-                    .withRequiredPositional("value")
-                    .withRestUnevaluated("whensAndThens")
-                    .withOptionalPositionalUnevaluated("elseCode")
-                    .getArguments();
+		obj.registerMethod(runtime.newNativeMethod(
+				"takes one argument that should evaluate to a value, zero or more whenAndThen pairs and one optional else clause. will first evaluate the initial value, then check each whenAndThen pair against this value. if the when part of a pair returns true, then return the result of evaluating the then part. if no pair matches and no else clause is present, returns nil. if an else clause is there, it should be the last one. each whenAndThen pair is comprised of two arguments, where the first is the when argument and the second is the then argument. the when part will be evaluated and the result of this evaluation will be sent a === message with the value as argument.",
+				new NativeMethod("case") {
+					private final DefaultArgumentsDefinition ARGUMENTS = DefaultArgumentsDefinition
+							.builder().withRequiredPositional("value")
+							.withRestUnevaluated("whensAndThens")
+							.withOptionalPositionalUnevaluated("elseCode")
+							.getArguments();
 
-                @Override
-                public DefaultArgumentsDefinition getArguments() {
-                    return ARGUMENTS;
-                }
+					@Override
+					public DefaultArgumentsDefinition getArguments() {
+						return ARGUMENTS;
+					}
 
-                @Override
-                public Object activate(IokeObject method, IokeObject context, IokeObject message, Object on) throws ControlFlow {
-                    getArguments().checkArgumentCount(context, message, on);
-                    final Runtime runtime = context.runtime;
+					@Override
+					public Object activate(IokeObject method,
+							IokeObject context, IokeObject message,
+							Object on) throws ControlFlow {
+						getArguments().checkArgumentCount(context, message,
+								on);
+						final Runtime runtime = context.runtime;
 
-                    List<Object> args = message.getArguments();
-                    int argCount = args.size();
-                    int index = 0;
-                    IokeObject msg = IokeObject.as(args.get(index++), context);
-                    Object value = runtime.interpreter.evaluate(msg, context, context.getRealContext(), context);
-                    argCount--;
+						List<Object> args = message.getArguments();
+						int argCount = args.size();
+						int index = 0;
+						IokeObject msg = IokeObject.as(args.get(index++),
+								context);
+						Object value = runtime.interpreter.evaluate(msg,
+								context, context.getRealContext(),
+								context);
+						argCount--;
 
-                    while(argCount > 1) {
-                        msg = transformWhenStatement(args.get(index++), context, message, obj);
-                        Object when = runtime.interpreter.evaluate(msg, context, context.getRealContext(), context);
-                        if(IokeObject.isTrue(Interpreter.send(runtime.eqqMessage, context, when, value))) {
-                            msg = IokeObject.as(args.get(index++), context);
-                            return runtime.interpreter.evaluate(msg, context, context.getRealContext(), context);
-                        } else {
-                            index++;
-                        }
-                        argCount -= 2;
-                    }
+						while (argCount > 1) {
+							msg = transformWhenStatement(args.get(index++),
+									context, message, obj);
+							Object when = runtime.interpreter.evaluate(msg,
+									context, context.getRealContext(),
+									context);
+							if (IokeObject.isTrue(
+									Interpreter.send(runtime.eqqMessage,
+											context, when, value))) {
+								msg = IokeObject.as(args.get(index++),
+										context);
+								return runtime.interpreter.evaluate(msg,
+										context, context.getRealContext(),
+										context);
+							} else {
+								index++;
+							}
+							argCount -= 2;
+						}
 
-                    if(argCount == 1) {
-                        msg = IokeObject.as(args.get(index++), context);
-                        return runtime.interpreter.evaluate(msg, context, context.getRealContext(), context);
-                    }
+						if (argCount == 1) {
+							msg = IokeObject.as(args.get(index++),
+									context);
+							return runtime.interpreter.evaluate(msg,
+									context, context.getRealContext(),
+									context);
+						}
 
-                    return runtime.nil;
-                }
-            }));
+						return runtime.nil;
+					}
+				}));
 
-    }
+	}
 }

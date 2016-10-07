@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2007 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -17,19 +17,19 @@
 package com.google.common.base;
 
 /**
- * Implemented by references that have code to run after garbage collection of
- * their referents.
+ * Implemented by references that have code to run after garbage collection
+ * of their referents.
  *
  * @see FinalizableReferenceQueue
  * @author Bob Lee
  */
 public interface FinalizableReference {
 
-  /**
-   * Invoked on a background thread after the referent has been garbage
-   * collected unless security restictions prevented starting a background
-   * thread, in which case this method is invoked when new references
-   * are created.
-   */
-  void finalizeReferent();
+	/**
+	 * Invoked on a background thread after the referent has been garbage
+	 * collected unless security restictions prevented starting a
+	 * background thread, in which case this method is invoked when new
+	 * references are created.
+	 */
+	void finalizeReferent();
 }
